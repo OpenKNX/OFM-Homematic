@@ -1,0 +1,24 @@
+{
+    "name": "OFM-Homematic",
+    "version": "0.0.1",
+    "description": "Gateway for communication with Homematic RF devices, to embed in firmware and ETS-applications based on OpenKNX",
+    "keywords": [
+        "knx",
+        "OpenKNX",
+        "Homematic",
+        "RF",
+        "Gateway",
+        "CCU2",
+        "XML-RPC"
+    ],
+    "license": "AGPL-3.0-only",
+    "homepage": "https://openknx.de",
+    "authors": {
+        "name": "Cornelius Köpp (OpenKNX)",
+        "maintainer": true
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/OpenKNX/OFM-Homematic"
+    }
+}

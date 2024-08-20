@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="../../Organization/knxprod-support/knx_project_20/knx-editor.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<KNX xmlns:op="http://github.com/OpenKNX/OpenKNXproducer" xmlns="http://knx.org/xml/project/20" CreatedBy="KNX MT" ToolVersion="5.1.255.16695">
+  <ManufacturerData>
+    <Manufacturer>
+      <ApplicationPrograms>
+        <ApplicationProgram>
+          <Static>
+            <Parameters>
+              <Parameter Id="%AID%_P-%TT%%CC%001" Name="d%C%Name"            ParameterType="%AID%_PT-Text40Byte"   Text="Beschreibung"                  Value="" />
+              <Parameter Id="%AID%_P-%TT%%CC%002" Name="d%C%Comment"         ParameterType="%AID%_PT-Text512Byte"  Text="Kommentar"                     Value="" />
+
+              <Union SizeInBit="96"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%003" Name="d%C%Active"               ParameterType="%AID%_PT-ChannelSwitchMaster"   Offset="0" BitOffset="0" Text="Kanal verwenden?"                      Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%004" Name="d%C%DeviceSerial"         ParameterType="%AID%_PT-DeviceSerialNumber"    Offset="1" BitOffset="0" Text="Geräte-Seriennummer"                   Value=""  />
+                <!-- 1 byte free after string -->
+              </Union>
+
+            </Parameters>
+            <ParameterRefs>
+              <ParameterRef Id="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" RefId="%AID%_P-%TT%%CC%001" />
+              <ParameterRef Id="%AID%_P-%TT%%CC%002_R-%TT%%CC%00201" RefId="%AID%_P-%TT%%CC%002" />
+              <ParameterRef Id="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" RefId="%AID%_UP-%TT%%CC%003" />
+              <ParameterRef Id="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" RefId="%AID%_UP-%TT%%CC%004" />
+              <!--
+              <ParameterRef Id="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" RefId="%AID%_UP-%TT%%CC%005" />
+              <ParameterRef Id="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" RefId="%AID%_UP-%TT%%CC%006" />
+              -->
+            </ParameterRefs>
+            <ComObjectTable>
+              <ComObject Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%002" Name="KOd%C%TempCurrent"     Text="Aktuelle Temperatur" Number="%K2%"  FunctionText="Gerät %C%, Ausgabe aktuelle Temperatur"    DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVultage"  Text="Batteriestatus"      Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         DatapointType="DPST-9-20"  ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%004" Name="KOd%C%BoostState"      Text="Boost-Status"        Number="%K4%"  FunctionText="Gerät %C%, Ausgabe Boost-Status"           DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%005" Name="KOd%C%BoostTrigger"    Text="Boost starten"       Number="%K5%"  FunctionText="Gerät %C%, Eingang Boost ausführen"        DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               DatapointType="DPST-16-1"  ObjectSize="14 Bytes"  ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%008" Name="KOd%C%TempSet"         Text="Soll-Temperatur"     Number="%K8%"  FunctionText="Gerät %C%, Eingang Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%009" Name="KOd%C%ValveState"      Text="Ventilposition"      Number="%K9%"  FunctionText="Gerät %C%, Ausgabe Ventil-Position"        DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+            </ComObjectTable>
+            <ComObjectRefs>
+              <ComObjectRef Id="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" RefId="%AID%_O-%TT%%CC%000" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" RefId="%AID%_O-%TT%%CC%001" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%002_R-%TT%%CC%00201" RefId="%AID%_O-%TT%%CC%002" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" RefId="%AID%_O-%TT%%CC%003" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%004_R-%TT%%CC%00401" RefId="%AID%_O-%TT%%CC%004" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%005_R-%TT%%CC%00501" RefId="%AID%_O-%TT%%CC%005" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" RefId="%AID%_O-%TT%%CC%006" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" RefId="%AID%_O-%TT%%CC%007" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" RefId="%AID%_O-%TT%%CC%008" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" RefId="%AID%_O-%TT%%CC%009" />
+            </ComObjectRefs>
+          </Static>
+          <Dynamic>
+            <ChannelIndependentBlock> 
+              <choose ParamRefId="%AID%_UP-%TT%00001_R-%TT%0000101">
+                <when test="&gt;=%C%">
+                  <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" Icon="thermostat" >
+
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="Homematic Geräte-Definition" UIHint="Headline" />
+                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
+
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                    <!-- Documentation --><!-- Multi-Line Comment (not the Module from Common) -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%002_R-%TT%%CC%00201" /><!-- HelpContext="DFA-Kommentar" -->
+                    <Button Id="%AID%_B-%TT%%CC%002" Text="Alle '\n' im Text durch Zeilenumbruch ersetzen" EventHandler="newline" EventHandlerParameters="{ &quot;textbox&quot;:&quot;%PREFIX%_a%C%Comment&quot; }" />
+
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" /><!-- HelpContext="DFA-Kanal-verwenden" -->
+                    <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
+                      <when test="!=0">
+
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" /><!-- HelpContext="DFA-Kanal-verwenden" -->
+
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%002_R-%TT%%CC%00201" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%004_R-%TT%%CC%00401" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%005_R-%TT%%CC%00501" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" />
+          
+                      </when>
+                    </choose>
+
+                  </ParameterBlock>
+                </when>
+              </choose>
+            </ChannelIndependentBlock>
+          </Dynamic>
+        </ApplicationProgram>
+      </ApplicationPrograms>
+    </Manufacturer>
+  </ManufacturerData>
+</KNX>

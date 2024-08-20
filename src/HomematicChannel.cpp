@@ -1,0 +1,278 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2024 Cornelius Koepp
+
+#include "HomematicChannel.h"
+
+#include "HTTPClient.h"
+#include <tinyxml2.h>
+
+HomematicChannel::HomematicChannel(uint8_t index)
+{
+    _channelIndex = index;
+    // do not request all at the same time
+    
+    // TODO cleanup based on channel
+    _lastRequest_millis = 1000 * _channelIndex;
+}
+
+const std::string HomematicChannel::name()
+{
+    return "Homematic-Channel";
+}
+
+void HomematicChannel::setup()
+{
+    _channelActive = (ParamHMG_dActive == 0b01);
+    if (_channelActive)
+    {
+        logDebugP("active (Serial=%s)", ParamHMG_dDeviceSerial);
+    }
+}
+
+void HomematicChannel::processAfterStartupDelay()
+{
+    // start after device global delay
+    if (_channelActive)
+    {
+        logDebugP("processAfterStartupDelay");
+        _running = true;
+    }
+}
+
+void HomematicChannel::loop()
+{
+    // TODO use configured delay!
+
+    // !_channelActive will result in _running=false, so no need for checking
+    if (_running)
+    {
+        if (delayCheckMillis(_lastRequest_millis, 60 * 1000))
+        {
+            update();
+            _lastRequest_millis = millis();
+        }
+    }
+}
+
+void HomematicChannel::update()
+{
+    logDebugP("update()");
+
+    // TODO check moving to module
+    String url = "http://";
+    url += (const char *)ParamHMG_Host;
+    url += ":";
+    url += ParamHMG_Port;
+
+    // TODO check moveing to attribute
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>getParamset</methodName>";
+    request += "<params>";
+
+    request += "<param><value><string>";
+    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
+    request += ":4";
+    request += "</string></value></param>";
+
+    request += "<param><value><string>VALUES</string></value></param>";
+
+    request += "</params>";
+    request += "</methodCall>";
+
+    logDebugP("Device Serial: %s", ParamHMG_dDeviceSerial);
+    logDebugP("Read URL POST: %s", url.c_str());
+
+    const uint32_t tStart = millis();
+
+    HTTPClient http;
+    /*
+#ifdef ARDUINO_ARCH_RP2040
+    if (url.startsWith("https://"))
+        http.setInsecure();
+#endif
+    http.begin(url);
+    */
+
+    // TODO check using reuse of the connection; needs moving to model
+    http.setReuse(false);
+
+    http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
+
+    http.addHeader("Content-Type", "text/xml");
+    http.addHeader("Accept", "text/xml");
+
+    // send value read request
+    int httpStatus = http.POST(request);
+    if (httpStatus != 200)
+    {
+        http.end();
+        logErrorP("POST request with status-code %d", httpStatus);
+        return;
+    }
+
+#ifdef OPENKNX_DEBUG
+    String response = http.getString();
+    logDebugP("response length: %d", response.length());
+    const size_t len = response.length();
+    const size_t lineLen = 100;
+    for (size_t i = 0; i < len; i += lineLen)
+    {
+        logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
+    }
+#endif    
+
+    tinyxml2::XMLDocument doc;
+    if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
+    {
+        http.end();
+        logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
+        return;
+    }
+
+    http.end();
+
+    // path in xml: //methodResponse/params/param/value/struct/member[]/value/$type
+    tinyxml2::XMLElement *root = doc.FirstChildElement("methodResponse");
+    if (root == nullptr)
+    {
+        logErrorP("Root-Element <methodResponse> is missing!");
+        // TODO check error-handling improvement
+    }
+    else
+    {
+        tinyxml2::XMLElement *params = root->FirstChildElement("params");
+        if (params == nullptr)
+        {
+            logErrorP("Element /methodResponse/params is missing!");
+            // TODO check error-handling improvement
+        }
+        else
+        {
+            tinyxml2::XMLElement *param = params->FirstChildElement("param");
+            if (param == nullptr)
+            {
+                logErrorP("Element /methodResponse/params/param is missing!");
+                // TODO check error-handling improvement
+            }
+            else
+            {
+                tinyxml2::XMLElement *value = param->FirstChildElement("value");
+                if (value == nullptr)
+                {
+                    logErrorP("Element /methodResponse/params/param/value is missing!");
+                    // TODO check error-handling improvement
+                }
+                else
+                {
+                    tinyxml2::XMLElement *structElement = value->FirstChildElement("struct");
+                    if (structElement == nullptr)
+                    {
+                        logErrorP("Element /methodResponse/params/param/value/struct is missing!");
+                        // TODO check error-handling improvement
+                    }
+                    else
+                    {
+                        tinyxml2::XMLElement *member = structElement->FirstChildElement("member");
+                        if (member == nullptr)
+                        {
+                            logErrorP("Element /methodResponse/params/param/value/struct[]/member is missing!");
+                            // TODO check error-handling improvement
+                        }
+                        for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
+                        {
+                            // structure: 
+                            //   <member><name>$NAME</name><value><$TYPE>$VALUE</$TYPE></value></member>
+                            tinyxml2::XMLElement *memberName = member->FirstChildElement("name");
+                            tinyxml2::XMLElement *memberValue = member->FirstChildElement("value");
+                            if (memberName == nullptr)
+                            {
+                                logErrorP("Element /methodResponse/params/param/value/struct[]/member/name is missing!");
+                                // TODO check error-handling improvement
+                            }
+                            else if (memberValue == nullptr)
+                            {
+                                logErrorP("Element /methodResponse/params/param/value/struct[]/member/value is missing!");
+                                // TODO check error-handling improvement
+                            }
+                            else // => <name> and <value> are present
+                            {
+                                if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
+                                {
+                                    const char *pName = memberName->GetText();
+                                    const double value = doubleElement->DoubleText();
+                                    if (strcmp(pName, "ACTUAL_TEMPERATURE") == 0)
+                                    {
+                                        logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
+                                        KoHMG_KOdTempCurrent.value(value, DPT_Value_Temp);
+                                    }
+                                    else if (strcmp(pName, "BATTERY_STAT") == 0)
+                                    {
+                                        logDebugP("=> BATTERY_STAT=%f", value);
+                                        KoHMG_KOdBatteryVultage.value(value * 1000, DPT_Value_Volt);
+                                    }
+                                    else if (strcmp(pName, "SET_TEMPERATURE") == 0)
+                                    {
+                                        logDebugP("=> SET_TEMPERATURE=%f", value);
+                                        KoHMG_KOdTempSet.value(value, DPT_Value_Temp);
+                                    }
+                                    else
+                                    {
+                                        logDebugP("[IGNORE] double-value: %f", value);
+                                    }
+                                }
+                                else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
+                                {
+                                    const char *pName = memberName->GetText();
+                                    const int32_t value = i4Element->IntText();
+                                    if (strcmp(pName, "BOOST_STATE") == 0)
+                                    {
+                                        logDebugP("=> BOOST_STATE=%d", value);
+                                        KoHMG_KOdBoostState.value(value, DPT_State);
+                                    }
+                                    else if (strcmp(pName, "FAULT_REPORTING") == 0)
+                                    {
+                                        logDebugP("=> FAULT_REPORTING=%d", value);
+                                        KoHMG_KOdError.value(value, DPT_Alarm);
+                                    }
+                                    else if (strcmp(pName, "VALVE_STATE") == 0)
+                                    {
+                                        logDebugP("=> VALVE_STATE=%d", value);
+                                        KoHMG_KOdValveState.value(value, DPT_Scaling);
+                                    }
+                                    else
+                                    {
+                                        logDebugP("[IGNORE] i4-value: %d", value);
+                                    }
+                                }
+                                else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
+                                {
+                                    logDebugP("[IGNORE] other value: %s", elem->GetText());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    const uint32_t tEnd = millis();
+    const uint32_t tDur_ms = tEnd - tStart;
+    logDebugP("[DONE] duration %d ms", tDur_ms);
+
+    KoHMG_KOdReachable.value(true, DPT_Switch);
+}
+
+void HomematicChannel::processInputKo(GroupObject &ko)
+{
+    if (!_channelActive)
+        return; // ignore inactive channel
+
+    // implement
+}
+
+bool HomematicChannel::processCommandOverview()
+{
+    return false;
+}
