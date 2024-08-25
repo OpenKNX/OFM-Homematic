@@ -18,6 +18,9 @@ class HomematicChannel : public OpenKNX::Channel
 
     uint32_t _lastRequest_millis = 0;
 
+    // is setting values allowed?
+    bool _allowedWriting = true;
+
     bool update();
     bool updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc);
     void sendSetTemperature(double targetTemperature);

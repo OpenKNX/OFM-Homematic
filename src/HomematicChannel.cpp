@@ -267,14 +267,20 @@ void HomematicChannel::processInputKo(GroupObject &ko)
     {
         case HMG_KoKOdTempSet:
         {
-            const double temperature = KoHMG_KOdTempSet.value(DPT_Value_Temp);
-            sendSetTemperature(temperature);
+            if (_allowedWriting)
+            {
+                const double temperature = KoHMG_KOdTempSet.value(DPT_Value_Temp);
+                sendSetTemperature(temperature);
+            }
             break;
         }
         case HMG_KoKOdBoostTrigger:
         {
-            sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
-            // TODO prepare update within the next seconds!
+            if (_allowedWriting)
+            {
+                sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
+                // TODO prepare update within the next seconds!
+            }
             break;
         }        
         case HMG_KoKOdTriggerRequest:
