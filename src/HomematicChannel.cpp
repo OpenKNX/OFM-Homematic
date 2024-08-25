@@ -276,6 +276,16 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
             // TODO prepare update within the next seconds!
             break;
+        }        
+        case HMG_KoKOdTriggerRequest:
+        {
+            if (KoHMG_KOdTriggerRequest.value(DPT_Trigger))
+            {
+                const bool success = update();
+                KoHMG_KOdReachable.value(success, DPT_Switch);
+                _lastRequest_millis = millis();
+            }
+            break;
         }  
     }
 }
