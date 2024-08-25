@@ -139,132 +139,134 @@ void HomematicChannel::update()
     KoHMG_KOdReachable.value(true, DPT_Switch);
 }
 
-void HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
+bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
 {
     // path in xml: //methodResponse/params/param/value/struct/member[]/value/$type
+
     tinyxml2::XMLElement *root = doc.FirstChildElement("methodResponse");
     if (root == nullptr)
     {
         logErrorP("Root-Element <methodResponse> is missing!");
         // TODO check error-handling improvement
+        return false;
     }
-    else
+
+    tinyxml2::XMLElement *params = root->FirstChildElement("params");
+    if (params == nullptr)
     {
-        tinyxml2::XMLElement *params = root->FirstChildElement("params");
-        if (params == nullptr)
+        logErrorP("Element /methodResponse/params is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *param = params->FirstChildElement("param");
+    if (param == nullptr)
+    {
+        logErrorP("Element /methodResponse/params/param is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *value = param->FirstChildElement("value");
+    if (value == nullptr)
+    {
+        logErrorP("Element /methodResponse/params/param/value is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *structElement = value->FirstChildElement("struct");
+    if (structElement == nullptr)
+    {
+        logErrorP("Element /methodResponse/params/param/value/struct is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *member = structElement->FirstChildElement("member");
+    if (member == nullptr)
+    {
+        logErrorP("Element /methodResponse/params/param/value/struct[]/member is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
+    {
+        // structure:
+        //   <member><name>$NAME</name><value><$TYPE>$VALUE</$TYPE></value></member>
+        tinyxml2::XMLElement *memberName = member->FirstChildElement("name");
+        tinyxml2::XMLElement *memberValue = member->FirstChildElement("value");
+        if (memberName == nullptr)
         {
-            logErrorP("Element /methodResponse/params is missing!");
+            logErrorP("Element /methodResponse/params/param/value/struct[]/member/name is missing!");
             // TODO check error-handling improvement
+            return false;
         }
-        else
+        else if (memberValue == nullptr)
         {
-            tinyxml2::XMLElement *param = params->FirstChildElement("param");
-            if (param == nullptr)
+            logErrorP("Element /methodResponse/params/param/value/struct[]/member/value is missing!");
+            // TODO check error-handling improvement
+            return false;
+        }
+        else // => <name> and <value> are present
+        {
+            if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
             {
-                logErrorP("Element /methodResponse/params/param is missing!");
-                // TODO check error-handling improvement
-            }
-            else
-            {
-                tinyxml2::XMLElement *value = param->FirstChildElement("value");
-                if (value == nullptr)
+                const char *pName = memberName->GetText();
+                const double value = doubleElement->DoubleText();
+                if (strcmp(pName, "ACTUAL_TEMPERATURE") == 0)
                 {
-                    logErrorP("Element /methodResponse/params/param/value is missing!");
-                    // TODO check error-handling improvement
+                    logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
+                    KoHMG_KOdTempCurrent.value(value, DPT_Value_Temp);
+                }
+                else if (strcmp(pName, "BATTERY_STAT") == 0)
+                {
+                    logDebugP("=> BATTERY_STAT=%f", value);
+                    KoHMG_KOdBatteryVultage.value(value * 1000, DPT_Value_Volt);
+                }
+                else if (strcmp(pName, "SET_TEMPERATURE") == 0)
+                {
+                    logDebugP("=> SET_TEMPERATURE=%f", value);
+                    KoHMG_KOdTempSet.value(value, DPT_Value_Temp);
                 }
                 else
                 {
-                    tinyxml2::XMLElement *structElement = value->FirstChildElement("struct");
-                    if (structElement == nullptr)
-                    {
-                        logErrorP("Element /methodResponse/params/param/value/struct is missing!");
-                        // TODO check error-handling improvement
-                    }
-                    else
-                    {
-                        tinyxml2::XMLElement *member = structElement->FirstChildElement("member");
-                        if (member == nullptr)
-                        {
-                            logErrorP("Element /methodResponse/params/param/value/struct[]/member is missing!");
-                            // TODO check error-handling improvement
-                        }
-                        for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
-                        {
-                            // structure:
-                            //   <member><name>$NAME</name><value><$TYPE>$VALUE</$TYPE></value></member>
-                            tinyxml2::XMLElement *memberName = member->FirstChildElement("name");
-                            tinyxml2::XMLElement *memberValue = member->FirstChildElement("value");
-                            if (memberName == nullptr)
-                            {
-                                logErrorP("Element /methodResponse/params/param/value/struct[]/member/name is missing!");
-                                // TODO check error-handling improvement
-                            }
-                            else if (memberValue == nullptr)
-                            {
-                                logErrorP("Element /methodResponse/params/param/value/struct[]/member/value is missing!");
-                                // TODO check error-handling improvement
-                            }
-                            else // => <name> and <value> are present
-                            {
-                                if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
-                                {
-                                    const char *pName = memberName->GetText();
-                                    const double value = doubleElement->DoubleText();
-                                    if (strcmp(pName, "ACTUAL_TEMPERATURE") == 0)
-                                    {
-                                        logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
-                                        KoHMG_KOdTempCurrent.value(value, DPT_Value_Temp);
-                                    }
-                                    else if (strcmp(pName, "BATTERY_STAT") == 0)
-                                    {
-                                        logDebugP("=> BATTERY_STAT=%f", value);
-                                        KoHMG_KOdBatteryVultage.value(value * 1000, DPT_Value_Volt);
-                                    }
-                                    else if (strcmp(pName, "SET_TEMPERATURE") == 0)
-                                    {
-                                        logDebugP("=> SET_TEMPERATURE=%f", value);
-                                        KoHMG_KOdTempSet.value(value, DPT_Value_Temp);
-                                    }
-                                    else
-                                    {
-                                        logDebugP("[IGNORE] double-value: %f", value);
-                                    }
-                                }
-                                else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
-                                {
-                                    const char *pName = memberName->GetText();
-                                    const int32_t value = i4Element->IntText();
-                                    if (strcmp(pName, "BOOST_STATE") == 0)
-                                    {
-                                        logDebugP("=> BOOST_STATE=%d", value);
-                                        KoHMG_KOdBoostState.value(value, DPT_State);
-                                    }
-                                    else if (strcmp(pName, "FAULT_REPORTING") == 0)
-                                    {
-                                        logDebugP("=> FAULT_REPORTING=%d", value);
-                                        KoHMG_KOdError.value(value, DPT_Alarm);
-                                    }
-                                    else if (strcmp(pName, "VALVE_STATE") == 0)
-                                    {
-                                        logDebugP("=> VALVE_STATE=%d", value);
-                                        KoHMG_KOdValveState.value(value, DPT_Scaling);
-                                    }
-                                    else
-                                    {
-                                        logDebugP("[IGNORE] i4-value: %d", value);
-                                    }
-                                }
-                                else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
-                                {
-                                    logDebugP("[IGNORE] other value: %s", elem->GetText());
-                                }
-                            }
-                        }
-                    }
+                    logDebugP("[IGNORE] double-value: %f", value);
                 }
+            }
+            else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
+            {
+                const char *pName = memberName->GetText();
+                const int32_t value = i4Element->IntText();
+                if (strcmp(pName, "BOOST_STATE") == 0)
+                {
+                    logDebugP("=> BOOST_STATE=%d", value);
+                    KoHMG_KOdBoostState.value(value, DPT_State);
+                }
+                else if (strcmp(pName, "FAULT_REPORTING") == 0)
+                {
+                    logDebugP("=> FAULT_REPORTING=%d", value);
+                    KoHMG_KOdError.value(value, DPT_Alarm);
+                }
+                else if (strcmp(pName, "VALVE_STATE") == 0)
+                {
+                    logDebugP("=> VALVE_STATE=%d", value);
+                    KoHMG_KOdValveState.value(value, DPT_Scaling);
+                }
+                else
+                {
+                    logDebugP("[IGNORE] i4-value: %d", value);
+                }
+            }
+            else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
+            {
+                logDebugP("[IGNORE] other value: %s", elem->GetText());
             }
         }
     }
+
+    return true;
 }
 
 void HomematicChannel::processInputKo(GroupObject &ko)
