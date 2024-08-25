@@ -4,6 +4,7 @@
 #pragma once
 #include "OpenKNX.h"
 
+#include "HTTPClient.h"
 #include <tinyxml2.h>
 
 class HomematicChannel : public OpenKNX::Channel
@@ -28,6 +29,8 @@ class HomematicChannel : public OpenKNX::Channel
     void requestAddParamInteger4(arduino::String &request, int32_t i4Value);
 
     bool sendRequest(arduino::String &request);
+
+    void debugLogResponse(HTTPClient &http);
 
   public:
     explicit HomematicChannel(uint8_t index);

@@ -3,8 +3,6 @@
 
 #include "HomematicChannel.h"
 
-#include "HTTPClient.h"
-
 HomematicChannel::HomematicChannel(uint8_t index)
 {
     _channelIndex = index;
@@ -106,16 +104,7 @@ void HomematicChannel::update()
         return;
     }
 
-#ifdef OPENKNX_DEBUG
-    String response = http.getString();
-    logDebugP("response length: %d", response.length());
-    const size_t len = response.length();
-    const size_t lineLen = 100;
-    for (size_t i = 0; i < len; i += lineLen)
-    {
-        logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
-    }
-#endif    
+    debugLogResponse(http);
 
     tinyxml2::XMLDocument doc;
     if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
@@ -385,6 +374,18 @@ bool HomematicChannel::sendRequest(arduino::String &request)
         return false;
     }
 
+    debugLogResponse(http);
+
+    // TODO needs to check result?
+
+    const uint32_t tEnd = millis();
+    const uint32_t tDur_ms = tEnd - tStart;
+    logDebugP("[DONE] duration %d ms", tDur_ms);
+    return true;
+}
+
+void HomematicChannel::debugLogResponse(HTTPClient &http)
+{
 #ifdef OPENKNX_DEBUG
     String response = http.getString();
     logDebugP("response length: %d", response.length());
@@ -395,11 +396,4 @@ bool HomematicChannel::sendRequest(arduino::String &request)
         logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
     }
 #endif
-
-    // TODO needs to check result?
-
-    const uint32_t tEnd = millis();
-    const uint32_t tDur_ms = tEnd - tStart;
-    logDebugP("[DONE] duration %d ms", tDur_ms);
-    return true;
 }
