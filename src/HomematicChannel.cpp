@@ -45,13 +45,17 @@ void HomematicChannel::loop()
     {
         if (delayCheckMillis(_lastRequest_millis, 60 * 1000))
         {
-            update();
+            const bool success = update();
+            if (KoHMG_KOdReachable.valueNoSendCompare(success, DPT_Switch))
+            {
+                KoHMG_KOdReachable.objectWritten();
+            }
             _lastRequest_millis = millis();
         }
     }
 }
 
-void HomematicChannel::update()
+bool HomematicChannel::update()
 {
     logDebugP("update()");
 
@@ -101,7 +105,7 @@ void HomematicChannel::update()
     {
         http.end();
         logErrorP("POST request with status-code %d", httpStatus);
-        return;
+        return false;
     }
 
     debugLogResponse(http);
@@ -111,7 +115,7 @@ void HomematicChannel::update()
     {
         http.end();
         logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
-        return;
+        return false;
     }
 
     http.end();
@@ -121,7 +125,7 @@ void HomematicChannel::update()
     const uint32_t tDur_ms = tEnd - tStart;
     logDebugP("[DONE] duration %d ms", tDur_ms);
 
-    KoHMG_KOdReachable.value(true, DPT_Switch);
+    return true;
 }
 
 bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
