@@ -269,10 +269,125 @@ void HomematicChannel::processInputKo(GroupObject &ko)
     if (!_channelActive)
         return; // ignore inactive channel
 
-    // implement
+    switch (HMG_KoCalcIndex(ko.asap()))
+    {
+        case HMG_KoKOdTempSet:
+        {
+            const double temperature = KoHMG_KOdTempSet.value(DPT_Value_Temp);
+            sendSetTemperature(temperature);
+            break;
+        }
+        case HMG_KoKOdBoostTrigger:
+        {
+            sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
+            // TODO prepare update within the next seconds!
+            break;
+        }  
+    }
 }
 
 bool HomematicChannel::processCommandOverview()
 {
     return false;
+}
+
+void HomematicChannel::sendSetTemperature(double targetTemperature)
+{
+    logDebugP("sendSetTemperature(%.3g)", targetTemperature);
+
+    // TODO check moveing to attribute
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>setValue</methodName>";
+    request += "<params>";
+
+    request += "<param><value><string>";
+    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
+    request += ":4";
+    request += "</string></value></param>";
+
+    request += "<param><value><string>";
+    request += "SET_TEMPERATURE";
+    request += "</string></value></param>";
+
+    request += "<param><value><double>";
+    request += targetTemperature;
+    request += "</double></value></param>";
+
+    request += "</params>";
+    request += "</methodCall>";
+
+    logDebugP("Set Device %s Temperature to %.3g", ParamHMG_dDeviceSerial, targetTemperature);
+
+    sendRequest(request);
+}
+
+void HomematicChannel::sendBoost(bool boost)
+{
+    logDebugP("sendBoost(%s)", boost ? "true" : "false");
+
+    // TODO check moving to attribute
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>setValue</methodName>";
+    request += "<params>";
+
+    request += "<param><value><string>";
+    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
+    request += ":4";
+    request += "</string></value></param>";
+
+    request += "<param><value><string>";
+    request += "BOOST_STATE";
+    request += "</string></value></param>";
+
+    request += "<param><value><i4>";
+    request += boost ? 1: 0;
+    request += "</i4></value></param>";
+
+    request += "</params>";
+    request += "</methodCall>";
+
+    logDebugP("Set Device %s Boost to %s", ParamHMG_dDeviceSerial, boost ? "true" : "false");
+
+    sendRequest(request);
+}
+
+bool HomematicChannel::sendRequest(arduino::String &request)
+{
+    const uint32_t tStart = millis();
+
+    HTTPClient http;
+    http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
+    // TODO check using reuse of the connection; needs moving to model
+    http.setReuse(false);
+    http.addHeader("Content-Type", "text/xml");
+    http.addHeader("Accept", "text/xml");
+
+    // send value read request
+    int httpStatus = http.POST(request);
+    if (httpStatus != 200)
+    {
+        http.end();
+        logErrorP("POST request with status-code %d", httpStatus);
+        return false;
+    }
+
+#ifdef OPENKNX_DEBUG
+    String response = http.getString();
+    logDebugP("response length: %d", response.length());
+    const size_t len = response.length();
+    const size_t lineLen = 100;
+    for (size_t i = 0; i < len; i += lineLen)
+    {
+        logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
+    }
+#endif
+
+    // TODO needs to check result?
+
+    const uint32_t tEnd = millis();
+    const uint32_t tDur_ms = tEnd - tStart;
+    logDebugP("[DONE] duration %d ms", tDur_ms);
+    return true;
 }

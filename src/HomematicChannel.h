@@ -17,8 +17,12 @@ class HomematicChannel : public OpenKNX::Channel
 
     void update();
 
+    void sendSetTemperature(double targetTemperature);
+    void sendBoost(bool boost);
 
-  public:
+    bool sendRequest(arduino::String &request);
+
+public:
     explicit HomematicChannel(uint8_t index);
     const std::string name() override;
     void setup() override;
