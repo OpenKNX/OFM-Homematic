@@ -4,7 +4,6 @@
 #include "HomematicChannel.h"
 
 #include "HTTPClient.h"
-#include <tinyxml2.h>
 
 HomematicChannel::HomematicChannel(uint8_t index)
 {
@@ -132,6 +131,16 @@ void HomematicChannel::update()
 
     http.end();
 
+    updateKOsFromMethodResponse(doc);
+    const uint32_t tEnd = millis();
+    const uint32_t tDur_ms = tEnd - tStart;
+    logDebugP("[DONE] duration %d ms", tDur_ms);
+
+    KoHMG_KOdReachable.value(true, DPT_Switch);
+}
+
+void HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
+{
     // path in xml: //methodResponse/params/param/value/struct/member[]/value/$type
     tinyxml2::XMLElement *root = doc.FirstChildElement("methodResponse");
     if (root == nullptr)
@@ -181,7 +190,7 @@ void HomematicChannel::update()
                         }
                         for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
                         {
-                            // structure: 
+                            // structure:
                             //   <member><name>$NAME</name><value><$TYPE>$VALUE</$TYPE></value></member>
                             tinyxml2::XMLElement *memberName = member->FirstChildElement("name");
                             tinyxml2::XMLElement *memberValue = member->FirstChildElement("value");
@@ -256,12 +265,6 @@ void HomematicChannel::update()
             }
         }
     }
-
-    const uint32_t tEnd = millis();
-    const uint32_t tDur_ms = tEnd - tStart;
-    logDebugP("[DONE] duration %d ms", tDur_ms);
-
-    KoHMG_KOdReachable.value(true, DPT_Switch);
 }
 
 void HomematicChannel::processInputKo(GroupObject &ko)

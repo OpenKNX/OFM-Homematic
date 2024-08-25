@@ -4,6 +4,8 @@
 #pragma once
 #include "OpenKNX.h"
 
+#include <tinyxml2.h>
+
 class HomematicChannel : public OpenKNX::Channel
 {
   private:
@@ -16,7 +18,7 @@ class HomematicChannel : public OpenKNX::Channel
     uint32_t _lastRequest_millis = 0;
 
     void update();
-
+    void updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc);
     void sendSetTemperature(double targetTemperature);
     void sendBoost(bool boost);
 
