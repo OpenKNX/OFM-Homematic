@@ -69,12 +69,8 @@ void HomematicChannel::update()
     request += "<methodName>getParamset</methodName>";
     request += "<params>";
 
-    request += "<param><value><string>";
-    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
-    request += ":4";
-    request += "</string></value></param>";
-
-    request += "<param><value><string>VALUES</string></value></param>";
+    requestAddParamDeviceSerial(request);
+    requestAddParamString(request, "VALUES");
 
     request += "</params>";
     request += "</methodCall>";
@@ -306,18 +302,9 @@ void HomematicChannel::sendSetTemperature(double targetTemperature)
     request += "<methodName>setValue</methodName>";
     request += "<params>";
 
-    request += "<param><value><string>";
-    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
-    request += ":4";
-    request += "</string></value></param>";
-
-    request += "<param><value><string>";
-    request += "SET_TEMPERATURE";
-    request += "</string></value></param>";
-
-    request += "<param><value><double>";
-    request += targetTemperature;
-    request += "</double></value></param>";
+    requestAddParamDeviceSerial(request);
+    requestAddParamString(request, "SET_TEMPERATURE");
+    requestAddParamDouble(request, targetTemperature);
 
     request += "</params>";
     request += "</methodCall>";
@@ -337,18 +324,9 @@ void HomematicChannel::sendBoost(bool boost)
     request += "<methodName>setValue</methodName>";
     request += "<params>";
 
-    request += "<param><value><string>";
-    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
-    request += ":4";
-    request += "</string></value></param>";
-
-    request += "<param><value><string>";
-    request += "BOOST_STATE";
-    request += "</string></value></param>";
-
-    request += "<param><value><i4>";
-    request += boost ? 1: 0;
-    request += "</i4></value></param>";
+    requestAddParamDeviceSerial(request);
+    requestAddParamString(request, "BOOST_STATE");
+    requestAddParamInteger4(request, boost ? 1 : 0);
 
     request += "</params>";
     request += "</methodCall>";
@@ -356,6 +334,35 @@ void HomematicChannel::sendBoost(bool boost)
     logDebugP("Set Device %s Boost to %s", ParamHMG_dDeviceSerial, boost ? "true" : "false");
 
     sendRequest(request);
+}
+
+void HomematicChannel::requestAddParamString(arduino::String &request, const char *str)
+{
+    request += "<param><value><string>";
+    request += str;
+    request += "</string></value></param>";
+}
+
+void HomematicChannel::requestAddParamDeviceSerial(arduino::String &request)
+{
+    request += "<param><value><string>";
+    request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
+    request += ":4";
+    request += "</string></value></param>";
+}
+
+void HomematicChannel::requestAddParamDouble(arduino::String &request, double targetTemperature)
+{
+    request += "<param><value><double>";
+    request += targetTemperature;
+    request += "</double></value></param>";
+}
+
+void HomematicChannel::requestAddParamInteger4(arduino::String &request, int32_t i4Value)
+{
+    request += "<param><value><i4>";
+    request += i4Value;
+    request += "</i4></value></param>";
 }
 
 bool HomematicChannel::sendRequest(arduino::String &request)

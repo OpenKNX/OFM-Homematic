@@ -22,9 +22,14 @@ class HomematicChannel : public OpenKNX::Channel
     void sendSetTemperature(double targetTemperature);
     void sendBoost(bool boost);
 
+    void requestAddParamDeviceSerial(arduino::String &request);
+    void requestAddParamString(arduino::String &request, const char *str);
+    void requestAddParamDouble(arduino::String &request, double value);
+    void requestAddParamInteger4(arduino::String &request, int32_t i4Value);
+
     bool sendRequest(arduino::String &request);
 
-public:
+  public:
     explicit HomematicChannel(uint8_t index);
     const std::string name() override;
     void setup() override;
