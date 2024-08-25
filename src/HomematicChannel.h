@@ -29,6 +29,7 @@ class HomematicChannel : public OpenKNX::Channel
     void requestAddParamInteger4(arduino::String &request, int32_t i4Value);
 
     bool sendRequest(arduino::String &request);
+    bool checkSendRequestResponse(tinyxml2::XMLDocument &doc);
 
     void debugLogResponse(HTTPClient &http);
 

@@ -376,11 +376,85 @@ bool HomematicChannel::sendRequest(arduino::String &request)
 
     debugLogResponse(http);
 
-    // TODO needs to check result?
+    tinyxml2::XMLDocument doc;
+    if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
+    {
+        http.end();
+        logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
+        return false;
+    }
+
+    http.end();
+
+    if (!checkSendRequestResponse(doc))
+    {
+        return false;
+    }
 
     const uint32_t tEnd = millis();
     const uint32_t tDur_ms = tEnd - tStart;
     logDebugP("[DONE] duration %d ms", tDur_ms);
+    return true;
+}
+
+bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
+{
+    /* OK:
+
+    <?xml version="1.0" encoding="iso-8859-1"?>
+    <methodResponse><params><param>
+        <value></value>
+    </param></params></methodResponse>
+    */
+
+    /* FAIL:
+
+    <?xml version="1.0" encoding="iso-8859-1"?>
+    <methodResponse><fault>
+        <value><struct><member><name>faultCode</name><value><i4>-5</i4></value></member><member><name>faultString</name><value>Unknown parameter</value></member></struct></value>
+    </fault></methodResponse>
+    */
+
+    tinyxml2::XMLElement *root = doc.FirstChildElement("methodResponse");
+    if (root == nullptr)
+    {
+        logErrorP("Root-Element <methodResponse> is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    if (tinyxml2::XMLElement *fault = root->FirstChildElement("fault"))
+    {
+        // FAIL path in xml: //methodResponse/fault/value/struct/member[]/{name,value/$type}
+        // TODO extract error-code!
+        logErrorP("Failed! Element /methodResponse/fault/ is present!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *params = root->FirstChildElement("params");
+    if (params == nullptr)
+    {
+        logErrorP("Unexpected Structure. Element /methodResponse/{fault,params} is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *param = params->FirstChildElement("param");
+    if (param == nullptr)
+    {
+        logErrorP("Unexpected Structure. Element /methodResponse/params/param is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
+
+    tinyxml2::XMLElement *value = param->FirstChildElement("value");
+    if (value == nullptr)
+    {
+        logErrorP("Unexpected Structure. Element /methodResponse/params/param/value is missing!");
+        // TODO check error-handling improvement
+        return false;
+    }
     return true;
 }
 
