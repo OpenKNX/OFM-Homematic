@@ -76,7 +76,7 @@
             </ComObjectRefs>
           </Static>
           <Dynamic>
-            <Channel Name="HmgChannel" Text="HomeMatic" Number="%TT%" Id="%AID%_CH-%TT%" Icon="crop-square" >
+            <Channel Name="HmgChannel" Text="HomeMatic" Number="%TT%" Id="%AID%_CH-%TT%" Icon="crop-square--square-medium" >
               <ParameterBlock Name="HMgInfo" Text="Allgemein" Id="%AID%_PB-nnn" Icon="cog-outline"><!-- HelpContext="HMG-Dokumentation" -->
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="HomeMatic" UIHint="Headline" />
