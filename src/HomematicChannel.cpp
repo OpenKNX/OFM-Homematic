@@ -207,17 +207,17 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
                 if (strcmp(pName, "ACTUAL_TEMPERATURE") == 0)
                 {
                     logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
-                    KoHMG_KOdTempCurrent.value(value, DPT_Value_Temp);
+                    KoHMG_KOdTempCurrent.valueCompare(value, DPT_Value_Temp);
                 }
                 else if (strcmp(pName, "BATTERY_STAT") == 0)
                 {
                     logDebugP("=> BATTERY_STAT=%f", value);
-                    KoHMG_KOdBatteryVultage.value(value * 1000, DPT_Value_Volt);
+                    KoHMG_KOdBatteryVultage.valueCompare(value * 1000, DPT_Value_Volt);
                 }
                 else if (strcmp(pName, "SET_TEMPERATURE") == 0)
                 {
                     logDebugP("=> SET_TEMPERATURE=%f", value);
-                    KoHMG_KOdTempSet.value(value, DPT_Value_Temp);
+                    KoHMG_KOdTempSet.valueCompare(value, DPT_Value_Temp);
                 }
                 else
                 {
@@ -231,17 +231,17 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
                 if (strcmp(pName, "BOOST_STATE") == 0)
                 {
                     logDebugP("=> BOOST_STATE=%d", value);
-                    KoHMG_KOdBoostState.value(value, DPT_State);
+                    KoHMG_KOdBoostState.valueCompare(value, DPT_State);
                 }
                 else if (strcmp(pName, "FAULT_REPORTING") == 0)
                 {
                     logDebugP("=> FAULT_REPORTING=%d", value);
-                    KoHMG_KOdError.value(value, DPT_Alarm);
+                    KoHMG_KOdError.valueCompare(value, DPT_Alarm);
                 }
                 else if (strcmp(pName, "VALVE_STATE") == 0)
                 {
                     logDebugP("=> VALVE_STATE=%d", value);
-                    KoHMG_KOdValveState.value(value, DPT_Scaling);
+                    KoHMG_KOdValveState.valueCompare(value, DPT_Scaling);
                 }
                 else
                 {
