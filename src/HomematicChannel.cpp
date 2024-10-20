@@ -209,9 +209,9 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
                     logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
                     KoHMG_KOdTempCurrent.valueCompare(value, DPT_Value_Temp);
                 }
-                else if (strcmp(pName, "BATTERY_STAT") == 0)
+                else if (strcmp(pName, "BATTERY_STATE") == 0)
                 {
-                    logDebugP("=> BATTERY_STAT=%f", value);
+                    logDebugP("=> BATTERY_STATE=%f", value);
                     KoHMG_KOdBatteryVultage.valueCompare(value * 1000, DPT_Value_Volt);
                 }
                 else if (strcmp(pName, "SET_TEMPERATURE") == 0)
