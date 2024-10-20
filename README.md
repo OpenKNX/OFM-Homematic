@@ -16,7 +16,7 @@ Das Modul ermöglicht einen rudimentären lesenden und schreibenden Zugriff auf 
 >
 > * Test der XML-RPC Kommunikation auf OpenKNX-Hardware mit Ethernet-Schnittstelle
 > * HTTP-Requests gemeinsam mit anderen Modulen
-> * Abruf relevater Werte
+> * Abruf relevanter Werte
 > * Auslösen relevanter Steuerungsaktionen
 > * Konfiguration
 >
@@ -56,6 +56,7 @@ Bei Interesse können *nach vorheriger Absprache* Pull-Request zur Funktionsweit
 ### Aktionen
 
 * Setzen der SOLL-Temperatur
+* Sofortigen Werteabruf von CCU auslösen (sonst in regelmäßigem Intervall)
 * (aktuell ohne Funktion) Boost-Modus auslösen 
 
 
