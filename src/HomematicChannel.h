@@ -22,7 +22,9 @@ class HomematicChannel : public OpenKNX::Channel
     bool _allowedWriting = true;
 
     bool update();
+    tinyxml2::XMLElement* getMethodResponseMember(tinyxml2::XMLDocument &doc);
     bool updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc);
+    bool processRssiInfoResponse(tinyxml2::XMLDocument &doc);
     void sendSetTemperature(double targetTemperature);
     void sendBoost(bool boost);
 
