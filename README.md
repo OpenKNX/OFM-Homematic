@@ -57,7 +57,7 @@ Bei Interesse können *nach vorheriger Absprache* Pull-Request zur Funktionsweit
 
 * Setzen der SOLL-Temperatur
 * Sofortigen Werteabruf von CCU auslösen (sonst in regelmäßigem Intervall)
-* (aktuell ohne Funktion) Boost-Modus auslösen 
+* Boost-Modus auslösen 
 
 
 

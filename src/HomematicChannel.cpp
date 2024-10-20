@@ -403,8 +403,8 @@ void HomematicChannel::sendBoost(bool boost)
     request += "<params>";
 
     requestAddParamDeviceSerial(request);
-    requestAddParamString(request, "BOOST_STATE");
-    requestAddParamInteger4(request, boost ? 1 : 0);
+    requestAddParamString(request, "BOOST_MODE");
+    requestAddParamBoolean(request, boost);
 
     request += "</params>";
     request += "</methodCall>";
@@ -441,6 +441,13 @@ void HomematicChannel::requestAddParamInteger4(arduino::String &request, int32_t
     request += "<param><value><i4>";
     request += i4Value;
     request += "</i4></value></param>";
+}
+
+void HomematicChannel::requestAddParamBoolean(arduino::String &request, boolean value)
+{
+    request += "<param><value><boolean>";
+    request += value ? 1 : 0;
+    request += "</boolean></value></param>";
 }
 
 bool HomematicChannel::sendRequest(arduino::String &request)
