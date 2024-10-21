@@ -61,6 +61,10 @@ void HomematicChannel::loop()
         if (delayCheckMillis(_lastRequest_millis, _requestInterval_millis))
         {
             const bool success = update();
+            if (success)
+            {
+                updateRssi();
+            }
             if (KoHMG_KOdReachable.valueNoSendCompare(success, DPT_Switch))
             {
                 KoHMG_KOdReachable.objectWritten();
@@ -137,6 +141,74 @@ bool HomematicChannel::update()
     http.end();
 
     updateKOsFromMethodResponse(doc);
+    const uint32_t tEnd = millis();
+    const uint32_t tDur_ms = tEnd - tStart;
+    logDebugP("[DONE] duration %d ms", tDur_ms);
+
+    return true;
+}
+
+bool HomematicChannel::updateRssi()
+{
+    logDebugP("updateRssi()");
+
+    // TODO check moving to attribute
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>rssiInfo</methodName>";
+    request += "</methodCall>";
+
+    logDebugP("Device Serial: %s", ParamHMG_dDeviceSerial);
+    logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
+
+    const uint32_t tStart = millis();
+
+    HTTPClient http;
+    /*
+    // TODO check moving to module
+    String url = "http://";
+    url += (const char *)ParamHMG_Host;
+    url += ":";
+    url += ParamHMG_Port;
+
+#ifdef ARDUINO_ARCH_RP2040
+    if (url.startsWith("https://"))
+        http.setInsecure();
+#endif
+    http.begin(url);
+    */
+
+    // TODO check using reuse of the connection; needs moving to model
+    http.setReuse(false);
+
+    http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
+
+    http.addHeader("Content-Type", "text/xml");
+    http.addHeader("Accept", "text/xml");
+
+    // send value read request
+    int httpStatus = http.POST(request);
+    if (httpStatus != 200)
+    {
+        http.end();
+        logErrorP("POST request with status-code %d", httpStatus);
+        return false;
+    }
+
+    debugLogResponse(http);
+
+    tinyxml2::XMLDocument doc;
+    if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
+    {
+        http.end();
+        logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
+        return false;
+    }
+
+    http.end();
+
+    processRssiInfoResponse(doc);
+
     const uint32_t tEnd = millis();
     const uint32_t tDur_ms = tEnd - tStart;
     logDebugP("[DONE] duration %d ms", tDur_ms);
@@ -310,15 +382,30 @@ bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
                 const int32_t rssi1 = elemInt1->IntText();
                 const int32_t rssi2 = elemInt2->IntText();
 
+                logDebugP("RSSI: %s <-> %s", serial1, serial2);
+                logIndentUp();
+
                 if (rssi1 != 65536)
                 {
                     // TODO calc signal strenght
+                    logDebugP("rssi1=%i", rssi1);
+                }
+                else 
+                {
+                    logDebugP("rssi1 unknown");
                 }
 
                 if (rssi2 != 65536)
                 {
                     // TODO calc signal strenght
+                    logDebugP("rssi2=%i", rssi2);
                 }
+                else 
+                {
+                    logDebugP("rssi2 unknown");
+                }
+
+                logIndentDown();
 
             }
 
