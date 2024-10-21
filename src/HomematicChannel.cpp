@@ -23,7 +23,7 @@ HomematicChannel::HomematicChannel(uint8_t index)
     // do not request all at the same time
     
     // TODO cleanup based on channel
-    _lastRequest_millis = 1000 * _channelIndex;
+    _lastRequest_millis = 2000 * _channelIndex;
 }
 
 const std::string HomematicChannel::name()
