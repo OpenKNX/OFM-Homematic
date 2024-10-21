@@ -17,6 +17,7 @@ class HomematicChannel : public OpenKNX::Channel
     bool _running = false;
 
     uint32_t _lastRequest_millis = 0;
+    uint32_t _requestInterval_millis = 60 * 1000;
 
     // is setting values allowed?
     bool _allowedWriting = true;

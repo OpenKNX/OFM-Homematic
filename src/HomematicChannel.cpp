@@ -22,6 +22,7 @@ HomematicChannel::HomematicChannel(uint8_t index)
     _channelIndex = index;
     // do not request all at the same time
     
+    _requestInterval_millis = 60 * 1000; // TODO use config
     // TODO cleanup based on channel
     _lastRequest_millis = 2000 * _channelIndex;
 }
@@ -57,13 +58,14 @@ void HomematicChannel::loop()
     // !_channelActive will result in _running=false, so no need for checking
     if (_running)
     {
-        if (delayCheckMillis(_lastRequest_millis, 60 * 1000))
+        if (delayCheckMillis(_lastRequest_millis, _requestInterval_millis))
         {
             const bool success = update();
             if (KoHMG_KOdReachable.valueNoSendCompare(success, DPT_Switch))
             {
                 KoHMG_KOdReachable.objectWritten();
             }
+            _requestInterval_millis = 60 * 1000; // TODO use config
             _lastRequest_millis = millis();
         }
     }
@@ -349,7 +351,8 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             if (_allowedWriting)
             {
                 sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
-                // TODO prepare update within the next seconds!
+                _requestInterval_millis = 10 * 1000; // TODO use config for forced quick update?
+                _lastRequest_millis = millis();
             }
             break;
         }        
@@ -359,6 +362,7 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             {
                 const bool success = update();
                 KoHMG_KOdReachable.value(success, DPT_Switch);
+                _requestInterval_millis = 60 * 1000; // TODO use config
                 _lastRequest_millis = millis();
             }
             break;
