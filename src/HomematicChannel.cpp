@@ -73,11 +73,6 @@ bool HomematicChannel::update()
 {
     logDebugP("update()");
 
-    // TODO check moving to module
-    String url = "http://";
-    url += (const char *)ParamHMG_Host;
-    url += ":";
-    url += ParamHMG_Port;
 
     // TODO check moveing to attribute
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -92,12 +87,18 @@ bool HomematicChannel::update()
     request += "</methodCall>";
 
     logDebugP("Device Serial: %s", ParamHMG_dDeviceSerial);
-    logDebugP("Read URL POST: %s", url.c_str());
+    logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
 
     const uint32_t tStart = millis();
 
     HTTPClient http;
     /*
+    // TODO check moving to module
+    String url = "http://";
+    url += (const char *)ParamHMG_Host;
+    url += ":";
+    url += ParamHMG_Port;
+
 #ifdef ARDUINO_ARCH_RP2040
     if (url.startsWith("https://"))
         http.setInsecure();
