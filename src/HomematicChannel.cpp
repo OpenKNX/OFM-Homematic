@@ -276,7 +276,8 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
             else if (strcmp(pName, "SET_TEMPERATURE") == 0)
             {
                 logDebugP("=> SET_TEMPERATURE=%f", value);
-                KoHMG_KOdTempSet.valueCompare(value, DPT_Value_Temp);
+                // TODO use separate KO, or prevent sending on startup!
+                // KoHMG_KOdTempSet.valueCompare(value, DPT_Value_Temp);
             }
             else
             {
