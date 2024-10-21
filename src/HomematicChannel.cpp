@@ -75,8 +75,7 @@ bool HomematicChannel::update()
 {
     logDebugP("update()");
 
-
-    // TODO check moveing to attribute
+    // TODO check moving to attribute
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>getParamset</methodName>";
