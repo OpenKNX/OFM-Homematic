@@ -79,141 +79,30 @@ bool HomematicChannel::update()
 {
     logDebugP("update()");
 
-    // TODO check moving to attribute
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>getParamset</methodName>";
     request += "<params>";
-
     requestAddParamDeviceSerial(request);
     requestAddParamString(request, "VALUES");
-
     request += "</params>";
     request += "</methodCall>";
 
-    logDebugP("Device Serial: %s", ParamHMG_dDeviceSerial);
-    logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
-
-    const uint32_t tStart = millis();
-
-    HTTPClient http;
-    /*
-    // TODO check moving to module
-    String url = "http://";
-    url += (const char *)ParamHMG_Host;
-    url += ":";
-    url += ParamHMG_Port;
-
-#ifdef ARDUINO_ARCH_RP2040
-    if (url.startsWith("https://"))
-        http.setInsecure();
-#endif
-    http.begin(url);
-    */
-
-    // TODO check using reuse of the connection; needs moving to model
-    http.setReuse(false);
-
-    http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
-
-    http.addHeader("Content-Type", "text/xml");
-    http.addHeader("Accept", "text/xml");
-
-    // send value read request
-    int httpStatus = http.POST(request);
-    if (httpStatus != 200)
-    {
-        http.end();
-        logErrorP("POST request with status-code %d", httpStatus);
-        return false;
-    }
-
-    debugLogResponse(http);
-
     tinyxml2::XMLDocument doc;
-    if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
-    {
-        http.end();
-        logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
-        return false;
-    }
-
-    http.end();
-
-    updateKOsFromMethodResponse(doc);
-    const uint32_t tEnd = millis();
-    const uint32_t tDur_ms = tEnd - tStart;
-    logDebugP("[DONE] duration %d ms", tDur_ms);
-
-    return true;
+    return sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc);
 }
 
 bool HomematicChannel::updateRssi()
 {
     logDebugP("updateRssi()");
 
-    // TODO check moving to attribute
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>rssiInfo</methodName>";
     request += "</methodCall>";
 
-    logDebugP("Device Serial: %s", ParamHMG_dDeviceSerial);
-    logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
-
-    const uint32_t tStart = millis();
-
-    HTTPClient http;
-    /*
-    // TODO check moving to module
-    String url = "http://";
-    url += (const char *)ParamHMG_Host;
-    url += ":";
-    url += ParamHMG_Port;
-
-#ifdef ARDUINO_ARCH_RP2040
-    if (url.startsWith("https://"))
-        http.setInsecure();
-#endif
-    http.begin(url);
-    */
-
-    // TODO check using reuse of the connection; needs moving to model
-    http.setReuse(false);
-
-    http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
-
-    http.addHeader("Content-Type", "text/xml");
-    http.addHeader("Accept", "text/xml");
-
-    // send value read request
-    int httpStatus = http.POST(request);
-    if (httpStatus != 200)
-    {
-        http.end();
-        logErrorP("POST request with status-code %d", httpStatus);
-        return false;
-    }
-
-    debugLogResponse(http);
-
     tinyxml2::XMLDocument doc;
-    if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
-    {
-        http.end();
-        logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
-        return false;
-    }
-
-    http.end();
-
-    processRssiInfoResponse(doc);
-
-    const uint32_t tEnd = millis();
-    const uint32_t tDur_ms = tEnd - tStart;
-    logDebugP("[DONE] duration %d ms", tDur_ms);
-
-    return true;
+    return sendRequestGetResponseDoc(request, doc) && processRssiInfoResponse(doc);
 }
 
 tinyxml2::XMLElement* HomematicChannel::getMethodResponseMember(tinyxml2::XMLDocument &doc)
@@ -243,6 +132,8 @@ tinyxml2::XMLElement* HomematicChannel::getMethodResponseMember(tinyxml2::XMLDoc
 
 bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
 {
+    const uint32_t tStart = millis();
+
     tinyxml2::XMLElement *member = getMethodResponseMember(doc);
     if (member == nullptr)
     {
@@ -314,12 +205,15 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
         }
     }
 
+    logDebugP("[DONE] updateKOsFromMethodResponse() %d ms", millis() - tStart);
     return true;
 }
 
 // TODO check moving to module
 bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 {
+    const uint32_t tStart = millis();
+
     tinyxml2::XMLElement *member = getMethodResponseMember(doc);
     if (member == nullptr)
     {
@@ -414,6 +308,7 @@ bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 
     }
 
+    logDebugP("[DONE] processRssiInfoResponse() %d ms", millis() - tStart);
     return true;
 }
 
@@ -481,7 +376,7 @@ void HomematicChannel::sendSetTemperature(double targetTemperature)
 
     logDebugP("Set Device %s Temperature to %.3g", ParamHMG_dDeviceSerial, targetTemperature);
 
-    sendRequest(request);
+    sendRequestCheckResponseOk(request);
 }
 
 void HomematicChannel::sendBoost(bool boost)
@@ -503,7 +398,7 @@ void HomematicChannel::sendBoost(bool boost)
 
     logDebugP("Set Device %s Boost to %s", ParamHMG_dDeviceSerial, boost ? "true" : "false");
 
-    sendRequest(request);
+    sendRequestCheckResponseOk(request);
 }
 
 void HomematicChannel::requestAddParamString(arduino::String &request, const char *str)
@@ -542,11 +437,28 @@ void HomematicChannel::requestAddParamBoolean(arduino::String &request, boolean 
     request += "</boolean></value></param>";
 }
 
-bool HomematicChannel::sendRequest(arduino::String &request)
+bool HomematicChannel::sendRequestGetResponseDoc(arduino::String &request, tinyxml2::XMLDocument &doc)
 {
     const uint32_t tStart = millis();
 
+    logDebugP("Device Serial: %s", ParamHMG_dDeviceSerial);
+    // logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
+
     HTTPClient http;
+    /*
+    // TODO check moving to module
+    String url = "http://";
+    url += (const char *)ParamHMG_Host;
+    url += ":";
+    url += ParamHMG_Port;
+
+#ifdef ARDUINO_ARCH_RP2040
+    if (url.startsWith("https://"))
+        http.setInsecure();
+#endif
+    http.begin(url);
+    */
+
     http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
     // TODO check using reuse of the connection; needs moving to model
     http.setReuse(false);
@@ -562,31 +474,37 @@ bool HomematicChannel::sendRequest(arduino::String &request)
         return false;
     }
 
-    debugLogResponse(http);
+    logDebugP("[DONE] duration request %d ms", millis() - tStart);
 
-    tinyxml2::XMLDocument doc;
+    const uint32_t tStart2 = millis();
+    debugLogResponse(http);
+    logDebugP("[DONE] duration request %d ms", millis() - tStart2);
+
+    const uint32_t tStart3 = millis();
     if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
     {
         http.end();
         logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
         return false;
     }
+    logDebugP("[DONE] parse %d ms", millis() - tStart3);
 
     http.end();
 
-    if (!checkSendRequestResponse(doc))
-    {
-        return false;
-    }
-
-    const uint32_t tEnd = millis();
-    const uint32_t tDur_ms = tEnd - tStart;
-    logDebugP("[DONE] duration %d ms", tDur_ms);
+    logDebugP("[DONE] sendRequest2 %d ms", millis() - tStart2);
     return true;
+}
+
+bool HomematicChannel::sendRequestCheckResponseOk(arduino::String &request)
+{
+    tinyxml2::XMLDocument doc;
+    return sendRequestGetResponseDoc(request, doc) && checkSendRequestResponse(doc);
 }
 
 bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
 {
+    const uint32_t tStart = millis();
+
     /* OK:
 
     <?xml version="1.0" encoding="iso-8859-1"?>
@@ -643,6 +561,8 @@ bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
         // TODO check error-handling improvement
         return false;
     }
+
+    logDebugP("[DONE] checkSendRequestResponse() in %d ms", millis() - tStart);
     return true;
 }
 
