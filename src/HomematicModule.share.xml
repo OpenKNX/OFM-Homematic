@@ -19,7 +19,7 @@
               </ParameterType> 
 
               <ParameterType Id="%AID%_PT-HostPort" Name="HostPort">
-                <TypeNumber SizeInBit="16" Type="unsignedInt" minInclusive="0" maxInclusive="65536" />
+                <TypeNumber SizeInBit="16" Type="unsignedInt" minInclusive="0" maxInclusive="65535" />
               </ParameterType>
 
               <!-- serialNumber AAA1234567 -->
