@@ -206,7 +206,7 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
             }
             else
             {
-                logDebugP("[IGNORE] double-value: %f", value);
+                logTraceP("[IGNORE] double-value: %f", value);
             }
         }
         else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
@@ -230,12 +230,12 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
             }
             else
             {
-                logDebugP("[IGNORE] i4-value: %d", value);
+                logTraceP("[IGNORE] i4-value: %d", value);
             }
         }
         else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
         {
-            logDebugP("[IGNORE] other value: %s", elem->GetText());
+            logTraceP("[IGNORE] other value: %s", elem->GetText());
         }
     }
 
