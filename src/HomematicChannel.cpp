@@ -278,24 +278,14 @@ bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
                 logDebugP("RSSI: %s <-> %s", serial1, serial2);
                 logIndentUp();
 
-                if (rssi1 != 65536)
+                if (rssi1 == 65536 || rssi2 == 65536)
                 {
-                    // TODO calc signal strenght
-                    logDebugP("rssi1=%i", rssi1);
+                    KoHMG_KOdSignalQuality.valueCompare((int32_t)0x7F, DPT_Value_2_Count);
                 }
-                else 
+                else
                 {
-                    logDebugP("rssi1 unknown");
-                }
-
-                if (rssi2 != 65536)
-                {
-                    // TODO calc signal strenght
-                    logDebugP("rssi2=%i", rssi2);
-                }
-                else 
-                {
-                    logDebugP("rssi2 unknown");
+                    logDebugP("rssi1=%i / rssi2=%i", rssi1, rssi2);
+                    KoHMG_KOdSignalQuality.valueCompare((rssi1 + rssi2)/2, DPT_Value_2_Count);
                 }
 
                 logIndentDown();

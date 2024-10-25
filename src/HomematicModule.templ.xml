@@ -39,6 +39,7 @@
               <ComObject Id="%AID%_O-%TT%%CC%008" Name="KOd%C%TempSet"         Text="Soll-Temperatur"     Number="%K8%"  FunctionText="Gerät %C%, Eingang Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
               <ComObject Id="%AID%_O-%TT%%CC%010" Name="KOd%C%TempSetCurrent"  Text="Soll-Temperatur"     Number="%K9%"  FunctionText="Gerät %C%, Ausgabe Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
               <ComObject Id="%AID%_O-%TT%%CC%009" Name="KOd%C%ValveState"      Text="Ventilposition"      Number="%K10%" FunctionText="Gerät %C%, Ausgabe Ventil-Position"        DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        DatapointType="DPST-8-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
             </ComObjectTable>
             <ComObjectRefs>
               <ComObjectRef Id="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" RefId="%AID%_O-%TT%%CC%000" />
@@ -52,6 +53,7 @@
               <ComObjectRef Id="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" RefId="%AID%_O-%TT%%CC%008" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" RefId="%AID%_O-%TT%%CC%009" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%010_R-%TT%%CC%01001" RefId="%AID%_O-%TT%%CC%010" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" RefId="%AID%_O-%TT%%CC%011" />
             </ComObjectRefs>
           </Static>
           <Dynamic>
@@ -90,6 +92,7 @@
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" />
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" />
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%010_R-%TT%%CC%01001" />
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" />
           
                       </when>
                     </choose>
