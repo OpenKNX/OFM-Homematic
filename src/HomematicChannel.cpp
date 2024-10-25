@@ -4,17 +4,14 @@
 #include "HomematicChannel.h"
 
 
-#define CHECK_NULL(element, name) \
+#define CHECK_RETURN(element, name, result) \
     if (element == nullptr) { \
-        logErrorP("Element " name " is missing!"); \
-        return nullptr; \
+        logErrorP("Element %s is missing!", name); \
+        return result; \
     }
 
-#define CHECK_FALSE(element, name) \
-    if (element == nullptr) { \
-        logErrorP("Element " name " is missing!"); \
-        return false; \
-    }
+#define CHECK_NULL(element, name) CHECK_RETURN(element, name, nullptr);
+#define CHECK_FALSE(element, name) CHECK_RETURN(element, name, false);
 
 
 HomematicChannel::HomematicChannel(uint8_t index)
@@ -522,12 +519,7 @@ bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
     */
 
     tinyxml2::XMLElement *root = doc.FirstChildElement("methodResponse");
-    if (root == nullptr)
-    {
-        logErrorP("Root-Element <methodResponse> is missing!");
-        // TODO check error-handling improvement
-        return false;
-    }
+    CHECK_FALSE(root, "/methodResponse")
 
     if (tinyxml2::XMLElement *fault = root->FirstChildElement("fault"))
     {
@@ -539,28 +531,13 @@ bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
     }
 
     tinyxml2::XMLElement *params = root->FirstChildElement("params");
-    if (params == nullptr)
-    {
-        logErrorP("Unexpected Structure. Element /methodResponse/{fault,params} is missing!");
-        // TODO check error-handling improvement
-        return false;
-    }
+    CHECK_FALSE(params, "/methodResponse/{fault,params}")
 
     tinyxml2::XMLElement *param = params->FirstChildElement("param");
-    if (param == nullptr)
-    {
-        logErrorP("Unexpected Structure. Element /methodResponse/params/param is missing!");
-        // TODO check error-handling improvement
-        return false;
-    }
+    CHECK_FALSE(param, "/methodResponse/params/param")
 
     tinyxml2::XMLElement *value = param->FirstChildElement("value");
-    if (value == nullptr)
-    {
-        logErrorP("Unexpected Structure. Element /methodResponse/params/param/value is missing!");
-        // TODO check error-handling improvement
-        return false;
-    }
+    CHECK_FALSE(value, "/methodResponse/params/param/value")
 
     logDebugP("[DONE] checkSendRequestResponse() in %d ms", millis() - tStart);
     return true;
