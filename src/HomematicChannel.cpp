@@ -196,10 +196,12 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
                 logTraceP("[IGNORE] i4-value: %d", value);
             }
         }
+        /*
         else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
         {
             logTraceP("[IGNORE] other value: %s", elem->GetText());
         }
+        */
     }
 
     logDebugP("[DONE] updateKOsFromMethodResponse() %d ms", millis() - tStart);
@@ -358,16 +360,13 @@ void HomematicChannel::sendSetTemperature(double targetTemperature)
 {
     logDebugP("sendSetTemperature(%.3g)", targetTemperature);
 
-    // TODO check moveing to attribute
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
-
     requestAddParamDeviceSerial(request);
     requestAddParamString(request, "SET_TEMPERATURE");
     requestAddParamDouble(request, targetTemperature);
-
     request += "</params>";
     request += "</methodCall>";
 
@@ -380,16 +379,13 @@ void HomematicChannel::sendBoost(bool boost)
 {
     logDebugP("sendBoost(%s)", boost ? "true" : "false");
 
-    // TODO check moving to attribute
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
-
     requestAddParamDeviceSerial(request);
     requestAddParamString(request, "BOOST_MODE");
     requestAddParamBoolean(request, boost);
-
     request += "</params>";
     request += "</methodCall>";
 
