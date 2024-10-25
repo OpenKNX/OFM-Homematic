@@ -22,6 +22,8 @@ class HomematicChannel : public OpenKNX::Channel
     // is setting values allowed?
     bool _allowedWriting = true;
 
+    bool _logResponse = false;
+
     bool update();
     bool updateRssi();
     tinyxml2::XMLElement* getMethodResponseMember(tinyxml2::XMLDocument &doc);

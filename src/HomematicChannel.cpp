@@ -531,13 +531,16 @@ bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
 void HomematicChannel::debugLogResponse(HTTPClient &http)
 {
 #ifdef OPENKNX_DEBUG
-    String response = http.getString();
-    logDebugP("response length: %d", response.length());
-    const size_t len = response.length();
-    const size_t lineLen = 100;
-    for (size_t i = 0; i < len; i += lineLen)
+    if (_logResponse)
     {
-        logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
+        String response = http.getString();
+        logDebugP("response length: %d", response.length());
+        const size_t len = response.length();
+        const size_t lineLen = 100;
+        for (size_t i = 0; i < len; i += lineLen)
+        {
+            logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
+        }
     }
 #endif
 }
