@@ -63,7 +63,7 @@
                 <Parameter Id="%AID%_UP-%TT%00001"   Name="VisibleChannels"          ParameterType="%AID%_PT-HMGNumChannels"   Offset="0"  BitOffset="0"  Text="Verfügbare Kanäle"                     Value="%HMG_NumChannelsDefault%"    SuffixText=" von %N%" />
                 <Parameter Id="%AID%_UP-%TT%00002"   Name="StartupDelayBase"         ParameterType="%AID%_PT-DelayBase"        Offset="1"  BitOffset="0"  Text="Einschaltverzögerung Zeitbasis"        Value="0"                                                 />
                 <Parameter Id="%AID%_UP-%TT%00003"   Name="StartupDelayTime"         ParameterType="%AID%_PT-DelayTime"        Offset="1"  BitOffset="2"  Text="Einschaltverzögerung Zeit"             Value="1"                                                 />
-                <Parameter Id="%AID%_UP-%TT%00004"   Name="Host"                     ParameterType="%AID%_PT-Host"             Offset="3"  BitOffset="0"  Text="Host"                                  Value="0"                                                 />
+                <Parameter Id="%AID%_UP-%TT%00004"   Name="Host"                     ParameterType="%AID%_PT-Host"             Offset="3"  BitOffset="0"  Text="Host"                                  Value="homematic-ccu2"                                    />
                 <!-- 1 byte free after string -->
                 <Parameter Id="%AID%_UP-%TT%00005"   Name="Port"                     ParameterType="%AID%_PT-HostPort"         Offset="84" BitOffset="0"  Text="Port"                                  Value="2001"                                              />
              </Union>
