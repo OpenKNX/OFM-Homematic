@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024 Cornelius Koepp
+// Copyright (C) 2024-2025 Cornelius Koepp
 
 #include "HomematicChannel.h"
 
@@ -19,7 +19,7 @@ HomematicChannel::HomematicChannel(uint8_t index)
     _channelIndex = index;
     // do not request all at the same time
     
-    _requestInterval_millis = 60 * 1000; // TODO use config
+    _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
     // TODO cleanup based on channel
     _lastRequest_millis = 2000 * _channelIndex;
 }
@@ -31,7 +31,7 @@ const std::string HomematicChannel::name()
 
 void HomematicChannel::setup()
 {
-    _channelActive = (ParamHMG_dActive == 0b01);
+    _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable;
     if (_channelActive)
     {
         logDebugP("active (Serial=%s)", ParamHMG_dDeviceSerial);
@@ -66,7 +66,7 @@ void HomematicChannel::loop()
             {
                 KoHMG_KOdReachable.objectWritten();
             }
-            _requestInterval_millis = 60 * 1000; // TODO use config
+            _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
             _lastRequest_millis = millis();
         }
     }
@@ -321,7 +321,7 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             if (_allowedWriting)
             {
                 sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
-                _requestInterval_millis = 10 * 1000; // TODO use config for forced quick update?
+                _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
                 _lastRequest_millis = millis();
             }
             break;
@@ -332,7 +332,7 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             {
                 const bool success = update();
                 KoHMG_KOdReachable.value(success, DPT_Switch);
-                _requestInterval_millis = 60 * 1000; // TODO use config
+                _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
                 _lastRequest_millis = millis();
             }
             break;

@@ -22,50 +22,42 @@
                 <TypeNumber SizeInBit="16" Type="unsignedInt" minInclusive="0" maxInclusive="65535" />
               </ParameterType>
 
+              <ParameterType Id="%AID%_PT-RequestIntervallSeconds" Name="RequestIntervallSeconds">
+                <TypeNumber SizeInBit="14" Type="unsignedInt" minInclusive="30" maxInclusive="7200" />
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-RequestIntervallSecondsShort" Name="RequestIntervallSecondsShort">
+                <TypeNumber SizeInBit="8" Type="unsignedInt" minInclusive="3" maxInclusive="180" />
+              </ParameterType>
+
+
               <!-- serialNumber AAA1234567 -->
               <ParameterType Id="%AID%_PT-DeviceSerialNumber" Name="DeviceSerialNumber">
                 <TypeText SizeInBit="80" />
               </ParameterType>
 
               <ParameterType Id="%AID%_PT-HmDevType" Name="HmDevType">
-                <TypeRestriction Base="Value" SizeInBit="1">
+                <TypeRestriction Base="Value" SizeInBit="5">
                   <Enumeration Id="%ENID%" Value="0" Text="inaktiv"                              />
                   <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN (Funk-Thermostat)"        />
                 </TypeRestriction>
               </ParameterType>
-              <!--
-              <ParameterType Id="%AID%_PT-DiagnoseAccess" Name="DiagnoseAccess">
-                <TypeRestriction Base="Value" SizeInBit="1">
-                  <Enumeration Id="%ENID%" Value="0" Text="nur Status-Ausgabe"        />
-                  <Enumeration Id="%ENID%" Value="1" Text="Steuerung erlauben"        />
-                </TypeRestriction>
-              </ParameterType>
-              -->
-              
 
               <ParameterType Id="%AID%_PT-DocText255" Name="DocumentationText255Char">
                 <TypeText SizeInBit="2040" />
               </ParameterType>              
 
-              <!-- channel master switch -->
-              <ParameterType Id="%AID%_PT-ChannelSwitchMaster" Name="ChannelSwitchMaster">
-                <TypeRestriction Base="Value" SizeInBit="2">
-                  <Enumeration Text="inaktiv"                                                Value="0" Id="%ENID%" /><!-- 0b00 -->
-                  <Enumeration Text="aktiv"                                                  Value="1" Id="%ENID%" /><!-- 0b01 -->
-                  <Enumeration Text="temporär inaktiv (KOs/Konfiguration sichtbar)"          Value="2" Id="%ENID%" /><!-- 0b10 -->
-                </TypeRestriction>
-              </ParameterType>
-
-
             </ParameterTypes>
             <Parameters>
-              <Union SizeInBit="688"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
+              <Union SizeInBit="712"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
                 <Parameter Id="%AID%_UP-%TT%00001"   Name="VisibleChannels"          ParameterType="%AID%_PT-HMGNumChannels"   Offset="0"  BitOffset="0"  Text="Verfügbare Kanäle"                     Value="%HMG_NumChannelsDefault%"    SuffixText=" von %N%" />
                 <Parameter Id="%AID%_UP-%TT%00002"   Name="StartupDelayBase"         ParameterType="%AID%_PT-DelayBase"        Offset="1"  BitOffset="0"  Text="Einschaltverzögerung Zeitbasis"        Value="0"                                                 />
                 <Parameter Id="%AID%_UP-%TT%00003"   Name="StartupDelayTime"         ParameterType="%AID%_PT-DelayTime"        Offset="1"  BitOffset="2"  Text="Einschaltverzögerung Zeit"             Value="1"                                                 />
                 <Parameter Id="%AID%_UP-%TT%00004"   Name="Host"                     ParameterType="%AID%_PT-Host"             Offset="3"  BitOffset="0"  Text="Host"                                  Value="homematic-ccu2"                                    />
                 <!-- 1 byte free after string -->
                 <Parameter Id="%AID%_UP-%TT%00005"   Name="Port"                     ParameterType="%AID%_PT-HostPort"         Offset="84" BitOffset="0"  Text="Port"                                  Value="2001"                                              />
+                <Parameter Id="%AID%_UP-%TT%00006"   Name="RequestIntervall"         ParameterType="%AID%_PT-RequestIntervallSeconds"         Offset="86" BitOffset="2"  Text="Update-Intervall"       Value="60"                          SuffixText="s"        />
+                <Parameter Id="%AID%_UP-%TT%00007"   Name="RequestIntervallShort"    ParameterType="%AID%_PT-RequestIntervallSecondsShort"    Offset="88" BitOffset="0"  Text="Update-Intervall kurz (nach Scheiben)"  Value="10"          SuffixText="s"        />
              </Union>
             </Parameters>
             <ParameterRefs>
@@ -74,6 +66,8 @@
               <ParameterRef Id="%AID%_UP-%TT%00003_R-%TT%0000301" RefId="%AID%_UP-%TT%00003" />
               <ParameterRef Id="%AID%_UP-%TT%00004_R-%TT%0000401" RefId="%AID%_UP-%TT%00004" />
               <ParameterRef Id="%AID%_UP-%TT%00005_R-%TT%0000501" RefId="%AID%_UP-%TT%00005" />
+              <ParameterRef Id="%AID%_UP-%TT%00006_R-%TT%0000601" RefId="%AID%_UP-%TT%00006" />
+              <ParameterRef Id="%AID%_UP-%TT%00007_R-%TT%0000701" RefId="%AID%_UP-%TT%00007" />
             </ParameterRefs>
             <ComObjectTable>
               <!-- TODO ko for connection state -->
@@ -82,10 +76,10 @@
             </ComObjectRefs>
           </Static>
           <Dynamic>
-            <Channel Name="HmgChannel" Text="Homematic" Number="%TT%" Id="%AID%_CH-%TT%" Icon="crop-square" >
+            <Channel Name="HmgChannel" Text="HomeMatic" Number="%TT%" Id="%AID%_CH-%TT%" Icon="crop-square" >
               <ParameterBlock Name="HMgInfo" Text="Allgemein" Id="%AID%_PB-nnn" Icon="cog-outline"><!-- HelpContext="HMG-Dokumentation" -->
 
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="Homematic" UIHint="Headline" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="HomeMatic" UIHint="Headline" />
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Version: %ModuleVersion%"  />
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
@@ -93,8 +87,7 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl" UIHint="Headline" />
                 <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" /><!-- HelpContext="TODO"  -->
 
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
-
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Startverhalten" UIHint="Headline" />
                 <!-- ChannelDelay Delay pattern, as used in LOG or VPM -->
                 <ParameterBlock Id="%AID%_PB-nnn" Name="a%C%ChannelDelayCycle" Inline="true" Layout="Grid" ><!-- HelpContext="HMG-Verzoegerung-nach-Neustart" -->
                   <Rows>
@@ -105,18 +98,20 @@
                     <Column Id="%AID%_PB-nnn_C-2" Name="Col2" Width="15%" />
                     <Column Id="%AID%_PB-nnn_C-3" Name="Col3" Width="20%" />
                   </Columns>
-                  <ParameterSeparator Id="%AID%_PS-nnn" Text="Verzögerung nach Neustart" Cell="1,1" />
+                  <ParameterSeparator Id="%AID%_PS-nnn" Text="  Verzögerung nach Neustart" Cell="1,1" />
                   <ParameterRefRef RefId="%AID%_UP-%TT%00003_R-%TT%0000301" Cell="1,2" />
                   <ParameterRefRef RefId="%AID%_UP-%TT%00002_R-%TT%0000201" Cell="1,3" />
                 </ParameterBlock>
 
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
-
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="CCU" UIHint="Headline" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00004_R-%TT%0000401" IndentLevel="1" /><!-- HelpContext="HMG-Kanalauswahl"  -->
-                <ParameterRefRef RefId="%AID%_UP-%TT%00005_R-%TT%0000501" IndentLevel="1" /><!-- HelpContext="HMG-Kanalauswahl"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00004_R-%TT%0000401" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00005_R-%TT%0000501" IndentLevel="1" /><!-- HelpContext="TODO"  -->
 
-              </ParameterBlock>                            
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräte-Kommunikation" UIHint="Headline" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="  Zyklischer Datenabruf" />
+                <ParameterRefRef RefId="%AID%_UP-%TT%00006_R-%TT%0000601" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00007_R-%TT%0000701" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+              </ParameterBlock>
 
               <!-- all channels: -->
               <!--

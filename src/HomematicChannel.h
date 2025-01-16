@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024 Cornelius Koepp
+// Copyright (C) 2024-2025 Cornelius Koepp
 
 #pragma once
 #include "OpenKNX.h"
@@ -17,7 +17,7 @@ class HomematicChannel : public OpenKNX::Channel
     bool _running = false;
 
     uint32_t _lastRequest_millis = 0;
-    uint32_t _requestInterval_millis = 60 * 1000;
+    uint32_t _requestInterval_millis = 3600 * 1000;
 
     // is setting values allowed?
     bool _allowedWriting = true;
