@@ -91,7 +91,7 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl" UIHint="Headline" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" /><!-- HelpContext="HMG-Kanalauswahl"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" /><!-- HelpContext="TODO"  -->
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
@@ -113,8 +113,8 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="CCU" UIHint="Headline" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00004_R-%TT%0000401" /><!-- HelpContext="HMG-Kanalauswahl"  -->
-                <ParameterRefRef RefId="%AID%_UP-%TT%00005_R-%TT%0000501" /><!-- HelpContext="HMG-Kanalauswahl"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00004_R-%TT%0000401" IndentLevel="1" /><!-- HelpContext="HMG-Kanalauswahl"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00005_R-%TT%0000501" IndentLevel="1" /><!-- HelpContext="HMG-Kanalauswahl"  -->
 
               </ParameterBlock>                            
 

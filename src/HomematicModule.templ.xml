@@ -63,23 +63,23 @@
                   <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" Icon="thermostat" ShowInComObjectTree="true">
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Homematic Geräte-Definition" UIHint="Headline" />
-                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" IndentLevel="1" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                     <!-- Documentation --><!-- Multi-Line Comment (not the Module from Common) -->
-                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%002_R-%TT%%CC%00201" /><!-- HelpContext="DFA-Kommentar" -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%002_R-%TT%%CC%00201" IndentLevel="1" /><!-- HelpContext="DFA-Kommentar" -->
                     <Button Id="%AID%_B-%TT%%CC%002" Text="Alle '\n' im Text durch Zeilenumbruch ersetzen" EventHandler="newline" EventHandlerParameters="{ &quot;textbox&quot;:&quot;%PREFIX%_d%C%Comment&quot; }" />
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
-                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" /><!-- HelpContext="DFA-Kanal-verwenden" -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" IndentLevel="1" /><!-- HelpContext="DFA-Kanal-verwenden" -->
                     <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
                       <when test="!=0">
 
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="HM-CC-RT-DN Funk Heizkörperthermostat" UIHint="Headline" />
 
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" /><!-- HelpContext="DFA-Kanal-verwenden" -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" /><!-- HelpContext="DFA-Kanal-verwenden" -->
 
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" />
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" />
