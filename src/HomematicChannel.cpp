@@ -34,7 +34,8 @@ void HomematicChannel::setup()
     _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable;
     if (_channelActive)
     {
-        logDebugP("active (Serial=%s)", ParamHMG_dDeviceSerial);
+        _allowedWriting = ParamHMG_dWrite;
+        logDebugP("active (write=%u; serial='%s')", _allowedWriting, ParamHMG_dDeviceSerial);
     }
 }
 
