@@ -1,3 +1,14 @@
+# 2025-01 Alpha2
+
+* Config/UI Rework and Extension
+  * Channel-Activation by Type-Selection (Allows other Device Types later)
+  * Separate Checkbox for Temporary Disable
+  * Config Params for Update Request Intervall (regular + after write command)
+  * Feature #9: Config Param to Switch of Write-Access
+* Fixes:
+  * Command "hmg runtime"
+  * Module in Current OpenKNX-Environment
+
 # 2024-10 Alpha
 
 * Fixes:
