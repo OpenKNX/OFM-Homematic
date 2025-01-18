@@ -5,10 +5,6 @@
 
 HomematicModule::HomematicModule()
 {
-    for (uint8_t i = 0; i < HMG_ChannelCount; i++)
-    {
-        _channels[i] = new HomematicChannel(i);
-    }
 }
 
 const std::string HomematicModule::name()
@@ -27,6 +23,7 @@ void HomematicModule::setup()
     logIndentUp();
     for (uint8_t i = 0; i < HMG_ChannelCount; i++)
     {
+        _channels[i] = new HomematicChannel(i);
         _channels[i]->setup();
     }
     logIndentDown();
