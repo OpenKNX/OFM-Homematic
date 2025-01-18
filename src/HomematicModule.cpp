@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024 Cornelius Koepp
+// Copyright (C) 2024-2025 Cornelius Koepp
 
 #include "HomematicModule.h"
 
@@ -99,9 +99,9 @@ bool HomematicModule::processCommand(const std::string cmd, bool diagnoseKo)
             }
         }
 #ifdef OPENKNX_RUNTIME_STAT
-        else if (cmd == "dfa runtime")
+        else if (cmd == "hmg runtime")
         {
-            logInfoP("DFA Runtime Statistics: (Uptime=%dms)", millis());
+            logInfoP("HMG Runtime Statistics: (Uptime=%dms)", millis());
             logIndentUp();
             OpenKNX::Stat::RuntimeStat::showStatHeader();
             char labelLoop[8 + 1] = "Ch00Loop";
