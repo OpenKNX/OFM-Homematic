@@ -1,6 +1,6 @@
 {
     "name": "OFM-Homematic",
-    "version": "0.1.0-dev",
+    "version": "0.2.0-dev",
     "description": "Gateway for communication with Homematic RF devices, to embed in firmware and ETS-applications based on OpenKNX",
     "keywords": [
         "knx",
@@ -8,8 +8,10 @@
         "Homematic",
         "RF",
         "Gateway",
+        "CCU",
         "CCU2",
-        "XML-RPC"
+        "XML-RPC",
+        "HVAC"
     ],
     "license": "AGPL-3.0-only",
     "homepage": "https://openknx.de",

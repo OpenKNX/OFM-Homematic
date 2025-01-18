@@ -1,7 +1,7 @@
 # Homematic-Gateway zur Integration in OpenKNX
 
 
-Von Cornelius Köpp 2024
+Von Cornelius Köpp 2024-2025
 
 
 
