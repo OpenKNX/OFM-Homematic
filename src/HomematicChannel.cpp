@@ -459,9 +459,7 @@ bool HomematicChannel::sendRequestGetResponseDoc(arduino::String &request, tinyx
 
     logDebugP("[DONE] duration request %d ms", millis() - tStart);
 
-    const uint32_t tStart2 = millis();
     debugLogResponse(http);
-    logDebugP("[DONE] duration request %d ms", millis() - tStart2);
 
     const uint32_t tStart3 = millis();
     if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
@@ -534,6 +532,8 @@ void HomematicChannel::debugLogResponse(HTTPClient &http)
 #ifdef OPENKNX_DEBUG
     if (_logResponse)
     {
+        const uint32_t tStart2 = millis();
+
         String response = http.getString();
         logDebugP("response length: %d", response.length());
         const size_t len = response.length();
@@ -542,6 +542,8 @@ void HomematicChannel::debugLogResponse(HTTPClient &http)
         {
             logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
         }
+
+        logDebugP("[DONE] duration log response %d ms", millis() - tStart2);
     }
 #endif
 }
