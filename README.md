@@ -28,10 +28,10 @@ Das Modul ermöglicht einen rudimentären lesenden und schreibenden Zugriff auf 
 
 # Test-Status
 
-| Hardware                                                                      | Status     | Anmerkung |
-|-------------------------------------------------------------------------------|------------|-----------|
-| RP2040 / [OpenKNX Reg1-ETH](https://github.com/OpenKNX/OpenKNX/wiki/REG1-Eth) | Alpha      | Zusammen mit anderen Modulen als OAM-InternetServices          |
-| ESP32                                                                         | ungetestet |           |
+| Architektur / Hardware                                                        | Status     | Anmerkung                                     |
+|-------------------------------------------------------------------------------|------------|-----------------------------------------------|
+| RP2040 / [OpenKNX Reg1-ETH](https://github.com/OpenKNX/OpenKNX/wiki/REG1-Eth) | Alpha      | Zusammen mit anderen Modulen in OAM-Homematic |
+| ESP32                                                                         | ungetestet |                                               |
 
 
 # Unterstützte Geräte
