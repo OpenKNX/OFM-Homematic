@@ -1,4 +1,4 @@
-# Homematic-Gateway zur Integration in OpenKNX
+# OFM-Homematic: Gateway Modul zur Integration in OpenKNX
 
 
 Von Cornelius Köpp 2024-2025
