@@ -35,7 +35,8 @@ void HomematicChannel::setup()
     if (_channelActive)
     {
         _allowedWriting = ParamHMG_dWrite;
-        logDebugP("active (write=%u; serial='%s')", _allowedWriting, ParamHMG_dDeviceSerial);
+        logDebugP("active (Serial=%s)", ParamHMG_dDeviceSerial);
+        // logDebugP("active (write=%u; serial='%s')", _allowedWriting, ParamHMG_dDeviceSerial);
     }
 }
 
@@ -51,8 +52,6 @@ void HomematicChannel::processAfterStartupDelay()
 
 void HomematicChannel::loop()
 {
-    // TODO use configured delay!
-
     // !_channelActive will result in _running=false, so no need for checking
     if (_running)
     {
