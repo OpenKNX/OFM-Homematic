@@ -36,7 +36,7 @@ Das Modul ermöglicht einen rudimentären lesenden und schreibenden Zugriff auf 
 
 # Unterstützte Geräte
 
-Bislang werden ausschließlich Thermostatventile unterstützt. 
+Bislang werden ausschließlich Funk-Thermostatventile des Types HM-CC-RT-DN unterstützt. 
 Die Anbindung anderer Gerätetypen ist bis auf Weiteres nicht geplant.
 Bei Interesse können *nach vorheriger Absprache* Pull-Request zur Funktionsweiterung erstellt werden.
 
