@@ -122,7 +122,7 @@ tinyxml2::XMLElement* HomematicChannel::getMethodResponseMember(tinyxml2::XMLDoc
     CHECK_NULL(elem, "/methodResponse/params/param/value/struct")
 
     elem = elem->FirstChildElement("member");
-    CHECK_NULL(elem, "/methodResponse/params/param/value/struct[]/member")
+    CHECK_NULL(elem, "/methodResponse/params/param/value/struct/member[]")
 
     return elem;
 }
