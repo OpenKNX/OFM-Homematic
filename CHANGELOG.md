@@ -1,3 +1,6 @@
+# (geplant) v0.3
+
+
 # 2025-01 Alpha2
 
 * Config/UI Rework and Extension
@@ -8,6 +11,7 @@
 * Fixes:
   * Command "hmg runtime"
   * Module in Current OpenKNX-Environment
+
 
 # 2024-10 Alpha
 
