@@ -442,7 +442,7 @@ bool HomematicChannel::sendRequestGetResponseDoc(arduino::String &request, tinyx
     */
 
     http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
-    // TODO check using reuse of the connection; needs moving to model
+    // TODO check using reuse of the connection; needs moving to module
     http.setReuse(false);
     http.addHeader("Content-Type", "text/xml");
     http.addHeader("Accept", "text/xml");
