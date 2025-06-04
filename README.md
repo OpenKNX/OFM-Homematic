@@ -9,6 +9,8 @@ Von Cornelius Köpp 2024-2025
 Das Modul ermöglicht einen rudimentären lesenden und schreibenden Zugriff auf ausgewählte Homematic-Geräte (Funkschnittstelle), 
 über eine Zentrale mit XML-RPC-Schnittstelle wie z.B. der Homematic CCU2.
 
+[Applikationsbeschreibung](doc/Applikationsbeschreibung-Homematic.md)
+
 
 > ## Achtung ALPHA-STATUS!
 > 
