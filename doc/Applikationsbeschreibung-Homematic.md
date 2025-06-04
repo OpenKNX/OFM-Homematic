@@ -7,12 +7,12 @@
 # Inhaltsverzeichnis
 
 * ETS-Konfiguration:<br />
-  [**HomeMatic**](#ets-applikationsteilbr-homematic)
+  [**HomeMatic**](#ets-applikationsteilhomematic)
     * [**Allgemein**](#allgemein)
       * [CCU](#ccu)
-      * [Gerätekommunikation](#geraete-kommunikation)
-    * [**Gerät n**](#geraet-n)
-    * [**(mehr)**](#mehr)
+      * [Geräte-Kommunikation](#geräte-kommunikation)
+    * [**Gerät n: ...**](#gerät-n-)
+    <!-- * [**(mehr)**](#mehr) -->
 
 * [Kommunikationsobjekte](#kommunikationsobjekte)
 
