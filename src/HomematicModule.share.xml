@@ -38,8 +38,10 @@
 
               <ParameterType Id="%AID%_PT-HmDevType" Name="HmDevType">
                 <TypeRestriction Base="Value" SizeInBit="5">
-                  <Enumeration Id="%ENID%" Value="0" Text="inaktiv"                              />
-                  <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN (Funk-Thermostat)"        />
+                  <Enumeration Id="%ENID%" Value="0" Text="inaktiv"                                           />
+                  <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN             (Funk-Thermostat)"         />
+                  <!-- ... other ... sort by HM-Product Id? ... -->
+                  <Enumeration Id="%ENID%" Value="6" Text="HM-LC-Sw1-Pl-DN-R1 (Funk-Zwischenstecker-Schaltaktor 1fach)"      />
                 </TypeRestriction>
               </ParameterType>
 

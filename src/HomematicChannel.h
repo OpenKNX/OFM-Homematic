@@ -7,6 +7,31 @@
 #include "HTTPClient.h"
 #include <tinyxml2.h>
 
+
+#define HMG_DEVTYPE_1 (1)
+#define HMG_DEVTYPE_6 (6)
+
+// KOs for device type 1: 
+#define HMG_KoKOdTempSet          HMG_KoKOd__KO__8
+#define HMG_KoKOdBoostTrigger     HMG_KoKOd__KO__10
+#define KoHMG_KOdTempCurrent      KoHMG_KOd__KO__6
+#define KoHMG_KOdTempSetCurrent   KoHMG_KOd__KO__7
+#define KoHMG_KOdTempSet          KoHMG_KOd__KO__8
+#define KoHMG_KOdBoostState       KoHMG_KOd__KO__9
+#define KoHMG_KOdBoostTrigger     KoHMG_KOd__KO__10
+#define KoHMG_KOdValveState       KoHMG_KOd__KO__11 
+
+// KOs for device type 9:
+#define HMG_KoKOdSwitch           HMG_KoKOd__KO__7
+#define HMG_KoKOdSwitchStair      HMG_KoKOd__KO__8
+#define HMG_KoKOdLock             HMG_KoKOd__KO__10
+#define KoHMG_KOdSwitchState      KoHMG_KOd__KO__6
+#define KoHMG_KOdSwitch           KoHMG_KOd__KO__7
+#define KoHMG_KOdSwitchStair      KoHMG_KOd__KO__8
+#define KoHMG_KOdLockState        KoHMG_KOd__KO__9
+#define KoHMG_KOdLock             KoHMG_KOd__KO__10
+
+
 class HomematicChannel : public OpenKNX::Channel
 {
   private:
@@ -46,6 +71,9 @@ class HomematicChannel : public OpenKNX::Channel
     bool checkSendRequestResponse(tinyxml2::XMLDocument &doc);
 
     void debugLogResponse(HTTPClient &http);
+
+    void processInputKo_DevType1(GroupObject &ko);
+    void processInputKo_DevType6(GroupObject &ko);
 
   public:
     explicit HomematicChannel(uint8_t index);

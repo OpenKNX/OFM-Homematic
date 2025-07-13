@@ -151,6 +151,8 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
         {
             const char *pName = memberName->GetText();
             const double value = doubleElement->DoubleText();
+
+            // TODO limit to device-type 1
             if (strcmp(pName, "ACTUAL_TEMPERATURE") == 0)
             {
                 logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
@@ -175,6 +177,8 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
         {
             const char *pName = memberName->GetText();
             const int32_t value = i4Element->IntText();
+
+            // TODO limit to device-type 1
             if (strcmp(pName, "BOOST_STATE") == 0)
             {
                 logDebugP("=> BOOST_STATE=%d", value);
@@ -195,7 +199,35 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
                 logTraceP("[IGNORE] i4-value: %d", value);
             }
         }
-        /*
+        else if (tinyxml2::XMLElement *boolElement = memberValue->FirstChildElement("boolean"))
+        {
+            const char *pName = memberName->GetText();
+            const bool value = boolElement->IntText();
+
+            // TODO limit to device-type 6
+            if (strcmp(pName, "INHIBIT") == 0)
+            {
+                logDebugP("=> INHIBIT=%d", value);
+                // TODO KO: create and define output type!
+                KoHMG_KOdLockState.valueCompare(value, DPT_State);
+            }
+            else if (strcmp(pName, "STATE") == 0)
+            {
+                logDebugP("=> STATE=%d", value);
+                // TODO KO: create and define output type!
+                KoHMG_KOdSwitchState.valueCompare(value, DPT_Switch);
+            }
+            else if (strcmp(pName, "WORKING") == 0)
+            {
+                logDebugP("=> WORKING=%d", value);
+                // TODO KO: create and define output type!
+                // KoHMG_KOdWorking.valueCompare(value, DPT_Scaling);
+            }
+            else
+            {
+                logTraceP("[IGNORE] bool-value: %d", value);
+            }
+        }        /*
         else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
         {
             logTraceP("[IGNORE] other value: %s", elem->GetText());
@@ -305,6 +337,23 @@ void HomematicChannel::processInputKo(GroupObject &ko)
     if (!_channelActive)
         return; // ignore inactive channel
 
+    // TODO refactor for multiple device types
+    switch (ParamHMG_dDeviceType)
+    {
+        case HMG_DEVTYPE_1:
+            processInputKo_DevType1(ko);
+            break;
+        case HMG_DEVTYPE_6:
+            processInputKo_DevType6(ko);
+            break;
+        default:
+            break;
+    }
+       
+}
+
+void HomematicChannel::processInputKo_DevType1(GroupObject &ko)
+{
     switch (HMG_KoCalcIndex(ko.asap()))
     {
         case HMG_KoKOdTempSet:
@@ -326,6 +375,7 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             }
             break;
         }        
+        // TODO remove dumplicate >>>
         case HMG_KoKOdTriggerRequest:
         {
             if (KoHMG_KOdTriggerRequest.value(DPT_Trigger))
@@ -337,6 +387,65 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             }
             break;
         }  
+        // <<<
+    }
+}
+
+void HomematicChannel::processInputKo_DevType6(GroupObject &ko)
+{
+    switch (HMG_KoCalcIndex(ko.asap()))
+    {
+        case HMG_KoKOdSwitch:
+        {
+            if (_allowedWriting)
+            {
+                 rpcSetValueBool("STATE", KoHMG_KOdSwitch.value(DPT_Switch));
+                _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
+                _lastRequest_millis = millis();
+            }
+            break;
+        }
+        case HMG_KoKOdSwitchStair:
+        {
+            if (_allowedWriting)
+            {
+                const bool switchStair = KoHMG_KOdSwitchStair.value(DPT_Switch);
+                if (switchStair)
+                {
+                    rpcSetValueDouble("ON_TIME", 30.0);
+                }
+                if (switchStair || true /* allow switch off */)
+                {
+                    rpcSetValueBool("STATE", switchStair);
+                    _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
+                    _lastRequest_millis = millis();
+                }
+            }
+            break;
+        }
+        case HMG_KoKOdLock:
+        {
+            if (_allowedWriting)
+            {
+                 rpcSetValueBool("INHIBIT", KoHMG_KOdLock.value(DPT_Switch));
+                _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
+                _lastRequest_millis = millis();
+            }
+            break;
+        }
+        // TODO remove dumplicate >>>
+        case HMG_KoKOdTriggerRequest:
+        {
+            if (KoHMG_KOdTriggerRequest.value(DPT_Trigger))
+            {
+                const bool success = update();
+                KoHMG_KOdReachable.value(success, DPT_Switch);
+                _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
+                _lastRequest_millis = millis();
+            }
+            break;
+        }  
+        // <<<
     }
 }
 
@@ -402,7 +511,18 @@ void HomematicChannel::requestAddParamDeviceSerial(arduino::String &request)
 {
     request += "<param><value><string>";
     request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
-    request += ":4";
+    if (ParamHMG_dDeviceType == HMG_DEVTYPE_1)
+    {
+        request += ":4";
+    }
+    else if (ParamHMG_dDeviceType == HMG_DEVTYPE_6)
+    {
+        request += ":1";
+    }
+    else 
+    {
+        request += ":0";
+    }
     request += "</string></value></param>";
 }
 

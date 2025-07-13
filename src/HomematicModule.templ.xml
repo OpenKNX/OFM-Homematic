@@ -2,9 +2,9 @@
 <?xml-model href="../../Organization/knxprod-support/knx_project_20/knx-editor.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <KNX xmlns:op="http://github.com/OpenKNX/OpenKNXproducer" xmlns="http://knx.org/xml/project/20" CreatedBy="KNX MT" ToolVersion="5.1.255.16695">
   <ManufacturerData>
-    <Manufacturer>
+    <Manufacturer RefId="M-00FA">
       <ApplicationPrograms>
-        <ApplicationProgram>
+        <ApplicationProgram Id="M-00FA_CS-OpenKNX" ApplicationNumber="0" ApplicationVersion="0" ProgramType="ApplicationProgram" MaskVersion="MV-07B0" Name="" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="de" DynamicTableManagement="false" Linkable="false">
           <Static>
             <Parameters>
               <Parameter Id="%AID%_P-%TT%%CC%001" Name="d%C%Name"            ParameterType="%AID%_PT-Text40Byte"   Text="Name / Beschreibung"           Value="" />
@@ -29,32 +29,49 @@
               <ParameterRef Id="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" RefId="%AID%_UP-%TT%%CC%006" />
             </ParameterRefs>
             <ComObjectTable>
-              <ComObject Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%002" Name="KOd%C%TempCurrent"     Text="Aktuelle Temperatur" Number="%K2%"  FunctionText="Gerät %C%, Ausgabe aktuelle Temperatur"    DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVoltage"  Text="Batteriestatus"      Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         DatapointType="DPST-9-20"  ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%004" Name="KOd%C%BoostState"      Text="Boost-Status"        Number="%K4%"  FunctionText="Gerät %C%, Ausgabe Boost-Status"           DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%005" Name="KOd%C%BoostTrigger"    Text="Boost starten"       Number="%K5%"  FunctionText="Gerät %C%, Eingang Boost ausführen"        DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               DatapointType="DPST-16-1"  ObjectSize="14 Bytes"  ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%008" Name="KOd%C%TempSet"         Text="Soll-Temperatur"     Number="%K8%"  FunctionText="Gerät %C%, Eingang Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%010" Name="KOd%C%TempSetCurrent"  Text="Soll-Temperatur"     Number="%K9%"  FunctionText="Gerät %C%, Ausgabe Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%009" Name="KOd%C%ValveState"      Text="Ventilposition"      Number="%K10%" FunctionText="Gerät %C%, Ausgabe Ventil-Position"        DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
-              <ComObject Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        DatapointType="DPST-8-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"                 Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"          Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"                   Number="%K2%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               DatapointType="DPST-16-1"  ObjectSize="14 Bytes"  ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"                     Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"            Number="%K4%"  FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        DatapointType="DPST-8-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVoltage"  Text="Batteriestatus"             Number="%K5%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         DatapointType="DPST-9-20"  ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <!-- disable all flags but comm -->
+              <ComObject Id="%AID%_O-%TT%%CC%002" Name="KOd%C%__KO__6"         Text="%K6%"                       Number="%K6%"  FunctionText="Gerät %C%"                                 DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%010" Name="KOd%C%__KO__7"         Text="%K7%"                       Number="%K7%"  FunctionText="Gerät %C%"                                 DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%008" Name="KOd%C%__KO__8"         Text="%K8%"                       Number="%K8%"  FunctionText="Gerät %C%"                                 DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%004" Name="KOd%C%__KO__9"         Text="%K9%"                       Number="%K9%"  FunctionText="Gerät %C%"                                 DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%005" Name="KOd%C%__KO__10"        Text="%K10%"                      Number="%K10%" FunctionText="Gerät %C%"                                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%%CC%009" Name="KOd%C%__KO__11"        Text="%K11%"                      Number="%K11%" FunctionText="Gerät %C%"                                 DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
             </ComObjectTable>
             <ComObjectRefs>
               <ComObjectRef Id="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" RefId="%AID%_O-%TT%%CC%000" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" RefId="%AID%_O-%TT%%CC%001" />
-              <ComObjectRef Id="%AID%_O-%TT%%CC%002_R-%TT%%CC%00201" RefId="%AID%_O-%TT%%CC%002" />
+              <!-- 002 specific -->
               <ComObjectRef Id="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" RefId="%AID%_O-%TT%%CC%003" />
-              <ComObjectRef Id="%AID%_O-%TT%%CC%004_R-%TT%%CC%00401" RefId="%AID%_O-%TT%%CC%004" />
-              <ComObjectRef Id="%AID%_O-%TT%%CC%005_R-%TT%%CC%00501" RefId="%AID%_O-%TT%%CC%005" />
+              <!-- 004..005 specific -->
               <ComObjectRef Id="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" RefId="%AID%_O-%TT%%CC%006" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" RefId="%AID%_O-%TT%%CC%007" />
-              <ComObjectRef Id="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" RefId="%AID%_O-%TT%%CC%008" />
-              <ComObjectRef Id="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" RefId="%AID%_O-%TT%%CC%009" />
-              <ComObjectRef Id="%AID%_O-%TT%%CC%010_R-%TT%%CC%01001" RefId="%AID%_O-%TT%%CC%010" />
+              <!-- 008..009..010 specific -->
               <ComObjectRef Id="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" RefId="%AID%_O-%TT%%CC%011" />
+              <!-- next number see at end -->
+
+              <!-- type 1 -->
+              <ComObjectRef Id="%AID%_O-%TT%%CC%002_R-%TT%%CC%00201" RefId="%AID%_O-%TT%%CC%002" Text="Aktuelle Temperatur"        FunctionText="Gerät %C%, Ausgabe aktuelle Temperatur"    DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%010_R-%TT%%CC%01001" RefId="%AID%_O-%TT%%CC%010" Text="Soll-Temperatur"            FunctionText="Gerät %C%, Ausgabe Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" RefId="%AID%_O-%TT%%CC%008" Text="Soll-Temperatur setzen"     FunctionText="Gerät %C%, Eingang Soll-Temperatur"        DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%004_R-%TT%%CC%00401" RefId="%AID%_O-%TT%%CC%004" Text="Boost-Status"               FunctionText="Gerät %C%, Ausgabe Boost-Status"           DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%005_R-%TT%%CC%00501" RefId="%AID%_O-%TT%%CC%005" Text="Boost starten"              FunctionText="Gerät %C%, Eingang Boost ausführen"        DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" RefId="%AID%_O-%TT%%CC%009" Text="Ventilposition"             FunctionText="Gerät %C%, Ausgabe Ventil-Position"        DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           />
+
+              <!-- type 6 -->
+              <ComObjectRef Id="%AID%_O-%TT%%CC%002_R-%TT%%CC%00206" RefId="%AID%_O-%TT%%CC%002" Text="Schalt-Status"              FunctionText="Gerät %C%, Ausgabe Schalt-Status"          DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%010_R-%TT%%CC%01006" RefId="%AID%_O-%TT%%CC%010" Text="Schalt-Befehl"              FunctionText="Gerät %C%, Eingang Schalten"               DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%008_R-%TT%%CC%00806" RefId="%AID%_O-%TT%%CC%008" Text="Treppenhaus-Schalt-Befehl"  FunctionText="Gerät %C%, Eingang Schalten (Treppenhaus)" DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%004_R-%TT%%CC%00406" RefId="%AID%_O-%TT%%CC%004" Text="Sperr-Status"               FunctionText="Gerät %C%, Ausgabe Sperr-Status"           DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%005_R-%TT%%CC%00506" RefId="%AID%_O-%TT%%CC%005" Text="Sperren"                    FunctionText="Gerät %C%, Eingang Sperre"                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            />
+              <!--          Id="%AID%_O-%TT%%CC%009_R-%TT%%CC%00906" RefId="%AID%_O-%TT%%CC%009" Text=""                           FunctionText="Gerät %C%, "                               DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                          -->
+
+              <!-- NEXT 012 -->
             </ComObjectRefs>
           </Static>
           <Dynamic>
@@ -77,37 +94,84 @@
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
                     <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" IndentLevel="1" /><!-- HelpContext="TODO" -->
                     <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
+
+
                       <when test="!=0"><!-- ALLE Aktiven -->
                         <!-- Temporary Disable -->
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" IndentLevel="2" /><!-- HelpContext="TODO" -->
                         <!-- Serial -->
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" /><!-- HelpContext="TODO" -->
                       </when>
-                      <when test="1"><!-- HM-CC-RT-DN (Funk-Thermostat) -->
+
+
+                      <when test="1"><!-- 1 = HM-CC-RT-DN (Funk-Thermostat) -->
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
 
-                        <!-- permanent visible KOs for status output -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%002_R-%TT%%CC%00201" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%004_R-%TT%%CC%00401" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%010_R-%TT%%CC%01001" />
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" />
+                        <!-- BEGIN possible DUPLICATION -->
+                        <!-- generic -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" /><!-- Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" /><!-- Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" /><!-- Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" /><!-- Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 -->
+                        <!-- generic/radio -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" /><!-- Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        -->
+                        <!-- generic/battery -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" /><!-- Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVoltage"  Text="Batteriestatus"      Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         -->
+                        <!-- END possible DUPLICATION -->
+
+                        <!-- specific for device -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%002_R-%TT%%CC%00201" /><!-- Id="%AID%_O-%TT%%CC%002" Name="KOd%C%TempCurrent"     Text="Aktuelle Temperatur" Number="%K2%"  FunctionText="Gerät %C%, Ausgabe aktuelle Temperatur"    -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%010_R-%TT%%CC%01001" /><!-- Id="%AID%_O-%TT%%CC%010" Name="KOd%C%TempSetCurrent"  Text="Soll-Temperatur"     Number="%K9%"  FunctionText="Gerät %C%, Ausgabe Soll-Temperatur"        -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%004_R-%TT%%CC%00401" /><!-- Id="%AID%_O-%TT%%CC%004" Name="KOd%C%BoostState"      Text="Boost-Status"        Number="%K4%"  FunctionText="Gerät %C%, Ausgabe Boost-Status"           -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%009_R-%TT%%CC%00901" /><!-- Id="%AID%_O-%TT%%CC%009" Name="KOd%C%ValveState"      Text="Ventilposition"      Number="%K10%" FunctionText="Gerät %C%, Ausgabe Ventil-Position"        -->
 
                         <choose ParamRefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601">
                           <when test="1"><!-- == Steuerung über KNX erlauben -->
-                            <!-- KOd%C%BoostTrigger -->
-                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%005_R-%TT%%CC%00501" />
                             <!-- KOd%C%TempSet -->
-                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" />
+                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%008_R-%TT%%CC%00801" /><!-- Id="%AID%_O-%TT%%CC%008" Name="KOd%C%TempSet"         Text="Soll-Temperatur"     Number="%K8%"  FunctionText="Gerät %C%, Eingang Soll-Temperatur"        -->
+                            <!-- KOd%C%BoostTrigger -->
+                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%005_R-%TT%%CC%00501" /><!-- Id="%AID%_O-%TT%%CC%005" Name="KOd%C%BoostTrigger"    Text="Boost starten"       Number="%K5%"  FunctionText="Gerät %C%, Eingang Boost ausführen"        -->
                           </when>
                         </choose>
 
                       </when>
+
+
+                      <!-- other types -->
+
+
+                      <when test="6"><!-- verschiedene Zwischensteckdosen -->
+                        <!-- 6 = HM-LC-Sw1-Pl-DN-R1 (Funk-Zwischenstecker-Schaltaktor 1fach) -->
+
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
+
+                        <!-- BEGIN possible DUPLICATION -->
+                        <!-- generic -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" /><!-- Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" /><!-- Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" /><!-- Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" /><!-- Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 -->
+                        <!-- generic/radio -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" /><!-- Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        -->
+                        <!-- generic/battery
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" />
+                         --><!-- Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVoltage"  Text="Batteriestatus"      Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         -->
+                        <!-- END possible DUPLICATION -->
+
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%002_R-%TT%%CC%00206" /><!--                          Text="Schalt-Status"              FunctionText="Gerät %C%, Ausgabe Schalt-Status"          DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           /-->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%004_R-%TT%%CC%00406" /><!--                          Text="Sperr-Status"               FunctionText="Gerät %C%, Ausgabe Sperr-Status"           DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           /-->
+
+                        <choose ParamRefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601">
+                          <when test="1"><!-- == Steuerung über KNX erlauben -->
+                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%010_R-%TT%%CC%01006" /><!--                          Text="Schalt-Befehl"              FunctionText="Gerät %C%, Eingang Schalten"               DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
+                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%008_R-%TT%%CC%00806" /><!--                          Text="Treppenhaus-Schalt-Befehl"  FunctionText="Gerät %C%, Eingang Schalten (Treppenhaus)" DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
+                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%005_R-%TT%%CC%00506" /><!--                          Text="Sperren"                    FunctionText="Gerät %C%, Eingang Sperre"                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
+                          </when>
+                        </choose>
+                        
+                      </when>
+
+
                     </choose>
 
                   </ParameterBlock>
