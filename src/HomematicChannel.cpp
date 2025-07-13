@@ -348,39 +348,47 @@ bool HomematicChannel::processCommandOverview()
 void HomematicChannel::sendSetTemperature(double targetTemperature)
 {
     logDebugP("sendSetTemperature(%.3g)", targetTemperature);
+    rpcSetValueDouble("SET_TEMPERATURE", targetTemperature);
+}
 
+bool HomematicChannel::rpcSetValueDouble(const char * paramName, double value)
+{
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
     requestAddParamDeviceSerial(request);
-    requestAddParamString(request, "SET_TEMPERATURE");
-    requestAddParamDouble(request, targetTemperature);
+    requestAddParamString(request, paramName);
+    requestAddParamDouble(request, value);
     request += "</params>";
     request += "</methodCall>";
 
-    logDebugP("Set Device %s Temperature to %.3g", ParamHMG_dDeviceSerial, targetTemperature);
+    logDebugP("XML-RPC call: setValue(%s, %s, %.3f)", ParamHMG_dDeviceSerial, paramName, value);
 
-    sendRequestCheckResponseOk(request);
+    return sendRequestCheckResponseOk(request);
 }
 
 void HomematicChannel::sendBoost(bool boost)
 {
     logDebugP("sendBoost(%s)", boost ? "true" : "false");
+    rpcSetValueBool("BOOST_MODE", boost);
+}
 
+bool HomematicChannel::rpcSetValueBool(const char * paramName, bool value)
+{
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
     requestAddParamDeviceSerial(request);
-    requestAddParamString(request, "BOOST_MODE");
-    requestAddParamBoolean(request, boost);
+    requestAddParamString(request, paramName);
+    requestAddParamBoolean(request, value);
     request += "</params>";
     request += "</methodCall>";
 
-    logDebugP("Set Device %s Boost to %s", ParamHMG_dDeviceSerial, boost ? "true" : "false");
+    logDebugP("XML-RPC call: setValue(%s, %s, %s)", ParamHMG_dDeviceSerial, paramName, value ? "true" : "false");
 
-    sendRequestCheckResponseOk(request);
+    return sendRequestCheckResponseOk(request);
 }
 
 void HomematicChannel::requestAddParamString(arduino::String &request, const char *str)

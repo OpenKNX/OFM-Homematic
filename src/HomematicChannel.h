@@ -29,8 +29,11 @@ class HomematicChannel : public OpenKNX::Channel
     tinyxml2::XMLElement* getMethodResponseMember(tinyxml2::XMLDocument &doc);
     bool updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc);
     bool processRssiInfoResponse(tinyxml2::XMLDocument &doc);
+
     void sendSetTemperature(double targetTemperature);
+    bool rpcSetValueDouble(const char * paramName, double value);
     void sendBoost(bool boost);
+    bool rpcSetValueBool(const char * paramName, bool value);
 
     void requestAddParamDeviceSerial(arduino::String &request);
     void requestAddParamString(arduino::String &request, const char *str);
