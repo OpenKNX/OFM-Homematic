@@ -159,7 +159,7 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
             else if (strcmp(pName, "BATTERY_STATE") == 0)
             {
                 logDebugP("=> BATTERY_STATE=%f", value);
-                KoHMG_KOdBatteryVultage.valueCompare(value * 1000, DPT_Value_Volt);
+                KoHMG_KOdBatteryVoltage.valueCompare(value * 1000, DPT_Value_Volt);
             }
             else if (strcmp(pName, "SET_TEMPERATURE") == 0)
             {
@@ -458,6 +458,7 @@ bool HomematicChannel::sendRequestGetResponseDoc(arduino::String &request, tinyx
 
     logDebugP("[DONE] duration request %d ms", millis() - tStart);
 
+    const uint32_t tStart2 = millis();
     debugLogResponse(http);
 
     const uint32_t tStart3 = millis();
