@@ -92,7 +92,14 @@
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
-                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" IndentLevel="1" /><!-- HelpContext="TODO" -->
+
+                    <!-- HelpContext="TODO" -->
+                    <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceType" Inline="true" Layout="Grid">
+                      <Rows><Row Id="%AID%_PB-nnn_R-1" Name="Row1" /></Rows>
+                      <Columns><Column Id="%AID%_PB-nnn_C-1" Name="Col1" Width="100%" /></Columns>
+                      <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" Cell="1,1"/><!-- HelpContext="TODO" -->
+                    </ParameterBlock>
+
                     <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
 
 
