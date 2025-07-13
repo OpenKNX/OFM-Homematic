@@ -61,7 +61,7 @@
             <ChannelIndependentBlock> 
               <choose ParamRefId="%AID%_UP-%TT%00001_R-%TT%0000101">
                 <when test="&gt;=%C%">
-                  <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" Icon="thermostat" ShowInComObjectTree="true">
+                  <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" Icon="cast-connected" ShowInComObjectTree="true">
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräte-Definition" UIHint="Headline" />
                     <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" IndentLevel="1" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
