@@ -65,20 +65,32 @@ void HomematicChannel::loop()
 bool HomematicChannel::update()
 {
     logDebugP("update()");
+    logIndentUp();
 
     const uint8_t channel = getDeviceChannel();
 
-    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    request += "<methodCall>";
-    request += "<methodName>getParamset</methodName>";
-    request += "<params>";
-    requestAddParamAddress(request, channel);
-    requestAddParamString(request, "VALUES");
-    request += "</params>";
-    request += "</methodCall>";
+    // Process channels 0 and current channel
+    const uint8_t channels[] = {0, channel};
+    const uint8_t numChannels = (channel == 0) ? 1 : 2;
 
-    tinyxml2::XMLDocument doc;
-    return sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc, channel);
+    bool success = true;
+    for (uint8_t i = 0; (i < numChannels) && success; i++)
+    {
+        logDebugP("getParamset('%s:%u', VALUES)", (const char *)ParamHMG_dDeviceSerial, channels[i]);
+        String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        request += "<methodCall>";
+        request += "<methodName>getParamset</methodName>";
+        request += "<params>";
+        requestAddParamAddress(request, channels[i]);
+        requestAddParamString(request, "VALUES");
+        request += "</params>";
+        request += "</methodCall>";
+
+        tinyxml2::XMLDocument doc;
+        success = sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc, channels[i]);
+    }
+    logIndentDown();
+    return success;
 }
 
 bool HomematicChannel::updateRssi()
