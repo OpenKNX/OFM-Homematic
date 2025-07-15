@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024 Cornelius Koepp
+// Copyright (C) 2024-2025 Cornelius Koepp
 
 #pragma once
-#include "HomematicChannel.h"
+#include "HomematicChannelThermostat.h"
+#include "HomematicChannelSwitchActuator.h"
+#include "HomematicChannelInactive.h"
 #include "OpenKNX.h"
 // always include for RUNTIME_MEASURE_{BEGIN,END}
 #include "OpenKNX/Stat/RuntimeStat.h"
@@ -15,6 +17,9 @@ class HomematicModule : public OpenKNX::Module
     OpenKNX::Stat::RuntimeStat _channelLoopRuntimes[HMG_ChannelCount];
     OpenKNX::Stat::RuntimeStat _channelInputRuntimes[HMG_ChannelCount];
 #endif
+
+    // Factory method for creating channels
+    HomematicChannel* createChannel(uint8_t _channelIndex);
 
   public:
     HomematicModule();

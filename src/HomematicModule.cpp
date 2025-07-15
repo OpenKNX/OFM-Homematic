@@ -17,13 +17,32 @@ const std::string HomematicModule::version()
     return MODULE_Homematic_Version;
 }
 
+HomematicChannel* HomematicModule::createChannel(uint8_t _channelIndex)
+{
+    switch (ParamHMG_dDeviceType)
+    {
+        case HMG_DEVTYPE__HM_CC_RT_DN__THERMOSTAT: // =1
+            return new HomematicChannelThermostat(_channelIndex);
+            
+        case HMG_DEVTYPE__HM_LC_Sw1_Pl_DN_R1__SWITCH_ACTUATOR: // =6
+            return new HomematicChannelSwitchActuator(_channelIndex);
+            
+        case 0: // Disabled/inactive channel
+            return new HomematicChannelInactive(_channelIndex);
+            
+        default:
+            logErrorP("Unsupported device type: %d for channel %d - creating inactive channel", ParamHMG_dDeviceType, _channelIndex);
+            return new HomematicChannelInactive(_channelIndex);
+    }
+}
+
 void HomematicModule::setup()
 {
     logDebugP("setup");
     logIndentUp();
     for (uint8_t i = 0; i < HMG_ChannelCount; i++)
     {
-        _channels[i] = new HomematicChannel(i);
+        _channels[i] = createChannel(i);
         _channels[i]->setup();
     }
     logIndentDown();

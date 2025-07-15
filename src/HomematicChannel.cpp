@@ -4,21 +4,11 @@
 #include "HomematicChannel.h"
 
 
-#define CHECK_RETURN(element, name, result) \
-    if (element == nullptr) { \
-        logErrorP("Element %s is missing!", name); \
-        return result; \
-    }
-
-#define CHECK_NULL(element, name) CHECK_RETURN(element, name, nullptr);
-#define CHECK_FALSE(element, name) CHECK_RETURN(element, name, false);
-
-
 HomematicChannel::HomematicChannel(uint8_t index)
 {
     _channelIndex = index;
     // do not request all at the same time
-    
+
     _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
     // TODO cleanup based on channel
     _lastRequest_millis = 2000 * _channelIndex;
@@ -76,17 +66,19 @@ bool HomematicChannel::update()
 {
     logDebugP("update()");
 
+    const uint8_t channel = getDeviceChannel();
+
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>getParamset</methodName>";
     request += "<params>";
-    requestAddParamDeviceSerial(request);
+    requestAddParamAddress(request, channel);
     requestAddParamString(request, "VALUES");
     request += "</params>";
     request += "</methodCall>";
 
     tinyxml2::XMLDocument doc;
-    return sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc);
+    return sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc, channel);
 }
 
 bool HomematicChannel::updateRssi()
@@ -127,7 +119,7 @@ tinyxml2::XMLElement* HomematicChannel::getMethodResponseMember(tinyxml2::XMLDoc
     return elem;
 }
 
-bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
+bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc, const uint8_t channel)
 {
     const uint32_t tStart = millis();
 
@@ -147,99 +139,36 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc)
         CHECK_FALSE(memberValue, "/methodResponse/params/param/value/struct[]/member/value")
 
         // => <name> and <value> are present
+        const char *pName = memberName->GetText();
         if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
         {
-            const char *pName = memberName->GetText();
             const double value = doubleElement->DoubleText();
-
-            // TODO limit to device-type 1
-            if (strcmp(pName, "ACTUAL_TEMPERATURE") == 0)
-            {
-                logDebugP("=> ACTUAL_TEMPERATURE=%f", value);
-                KoHMG_KOdTempCurrent.valueCompare(value, DPT_Value_Temp);
-            }
-            else if (strcmp(pName, "BATTERY_STATE") == 0)
-            {
-                logDebugP("=> BATTERY_STATE=%f", value);
-                KoHMG_KOdBatteryVoltage.valueCompare(value * 1000, DPT_Value_Volt);
-            }
-            else if (strcmp(pName, "SET_TEMPERATURE") == 0)
-            {
-                logDebugP("=> SET_TEMPERATURE=%f", value);
-                KoHMG_KOdTempSetCurrent.valueCompare(value, DPT_Value_Temp);
-            }
-            else
-            {
-                logTraceP("[IGNORE] double-value: %f", value);
-            }
+            const bool processed = processResponseParamDouble(channel, pName, value);
+            logDebugP("%s @%d %24s(d)=%f", (processed ? "=>" : "//"), channel, pName, value);
         }
         else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
         {
-            const char *pName = memberName->GetText();
             const int32_t value = i4Element->IntText();
-
-            // TODO limit to device-type 1
-            if (strcmp(pName, "BOOST_STATE") == 0)
-            {
-                logDebugP("=> BOOST_STATE=%d", value);
-                KoHMG_KOdBoostState.valueCompare(value, DPT_State);
-            }
-            else if (strcmp(pName, "FAULT_REPORTING") == 0)
-            {
-                logDebugP("=> FAULT_REPORTING=%d", value);
-                KoHMG_KOdError.valueCompare(value, DPT_Alarm);
-            }
-            else if (strcmp(pName, "VALVE_STATE") == 0)
-            {
-                logDebugP("=> VALVE_STATE=%d", value);
-                KoHMG_KOdValveState.valueCompare(value, DPT_Scaling);
-            }
-            else
-            {
-                logTraceP("[IGNORE] i4-value: %d", value);
-            }
+            const bool processed = processResponseParamInt32(channel, pName, value);
+            logDebugP("%s @%d %24s(i)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
         else if (tinyxml2::XMLElement *boolElement = memberValue->FirstChildElement("boolean"))
         {
-            const char *pName = memberName->GetText();
             const bool value = boolElement->IntText();
-
-            // TODO limit to device-type 6
-            if (strcmp(pName, "INHIBIT") == 0)
-            {
-                logDebugP("=> INHIBIT=%d", value);
-                // TODO KO: create and define output type!
-                KoHMG_KOdLockState.valueCompare(value, DPT_State);
-            }
-            else if (strcmp(pName, "STATE") == 0)
-            {
-                logDebugP("=> STATE=%d", value);
-                // TODO KO: create and define output type!
-                KoHMG_KOdSwitchState.valueCompare(value, DPT_Switch);
-            }
-            else if (strcmp(pName, "WORKING") == 0)
-            {
-                logDebugP("=> WORKING=%d", value);
-                // TODO KO: create and define output type!
-                // KoHMG_KOdWorking.valueCompare(value, DPT_Scaling);
-            }
-            else
-            {
-                logTraceP("[IGNORE] bool-value: %d", value);
-            }
-        }        /*
-        else if (tinyxml2::XMLElement *elem = memberValue->FirstChildElement())
-        {
-            logTraceP("[IGNORE] other value: %s", elem->GetText());
+            const bool processed = processResponseParamBool(channel, pName, value);
+            logDebugP("%s @%d %24s(b)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
-        */
+        else
+        {
+            logDebugP("// @%d %24s(other ignored)", channel, pName);
+        }
     }
 
     logDebugP("[DONE] updateKOsFromMethodResponse() %d ms", millis() - tStart);
     return true;
 }
 
-// TODO check moving to module
+// TODO check moving to module OR replace with getParametSet for Channel :0
 bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 {
     const uint32_t tStart = millis();
@@ -281,7 +210,7 @@ bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
             tinyxml2::XMLElement *elemValue2 = elemMember2->FirstChildElement("value");
             CHECK_FALSE(elemValue2, "../value/struct[]/member/value")
 
-            // => level2: <name> and <value> are present 
+            // => level2: <name> and <value> are present
             const char *serial2 = elemNameSerial2->GetText();
             if (true /*strcmp(serial2, (const char *)ParamHMG_dDeviceSerial) == 0*/)
             {
@@ -337,116 +266,28 @@ void HomematicChannel::processInputKo(GroupObject &ko)
     if (!_channelActive)
         return; // ignore inactive channel
 
-    // TODO refactor for multiple device types
-    switch (ParamHMG_dDeviceType)
+    // Common KOs for all device types
+    if (HMG_KoCalcIndex(ko.asap()) == HMG_KoKOdTriggerRequest)
     {
-        case HMG_DEVTYPE_1:
-            processInputKo_DevType1(ko);
-            break;
-        case HMG_DEVTYPE_6:
-            processInputKo_DevType6(ko);
-            break;
-        default:
-            break;
-    }
-       
-}
-
-void HomematicChannel::processInputKo_DevType1(GroupObject &ko)
-{
-    switch (HMG_KoCalcIndex(ko.asap()))
-    {
-        case HMG_KoKOdTempSet:
-        {
-            if (_allowedWriting)
-            {
-                const double temperature = KoHMG_KOdTempSet.value(DPT_Value_Temp);
-                sendSetTemperature(temperature);
-            }
-            break;
-        }
-        case HMG_KoKOdBoostTrigger:
-        {
-            if (_allowedWriting)
-            {
-                sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
-                _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
-                _lastRequest_millis = millis();
-            }
-            break;
-        }        
-        // TODO remove dumplicate >>>
-        case HMG_KoKOdTriggerRequest:
-        {
             if (KoHMG_KOdTriggerRequest.value(DPT_Trigger))
             {
                 const bool success = update();
                 KoHMG_KOdReachable.value(success, DPT_Switch);
-                _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
-                _lastRequest_millis = millis();
+                updateRequestTiming(ParamHMG_RequestIntervall);
             }
-            break;
-        }  
-        // <<<
+    }
+    else
+    {
+        // Delegate to device-specific implementation
+        processDeviceSpecificInputKo(ko);
     }
 }
 
-void HomematicChannel::processInputKo_DevType6(GroupObject &ko)
+// Helper method to update request timing
+inline void HomematicChannel::updateRequestTiming(uint16_t intervalInSeconds)
 {
-    switch (HMG_KoCalcIndex(ko.asap()))
-    {
-        case HMG_KoKOdSwitch:
-        {
-            if (_allowedWriting)
-            {
-                 rpcSetValueBool("STATE", KoHMG_KOdSwitch.value(DPT_Switch));
-                _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
-                _lastRequest_millis = millis();
-            }
-            break;
-        }
-        case HMG_KoKOdSwitchStair:
-        {
-            if (_allowedWriting)
-            {
-                const bool switchStair = KoHMG_KOdSwitchStair.value(DPT_Switch);
-                if (switchStair)
-                {
-                    rpcSetValueDouble("ON_TIME", 30.0);
-                }
-                if (switchStair || true /* allow switch off */)
-                {
-                    rpcSetValueBool("STATE", switchStair);
-                    _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
-                    _lastRequest_millis = millis();
-                }
-            }
-            break;
-        }
-        case HMG_KoKOdLock:
-        {
-            if (_allowedWriting)
-            {
-                 rpcSetValueBool("INHIBIT", KoHMG_KOdLock.value(DPT_Switch));
-                _requestInterval_millis = ParamHMG_RequestIntervallShort * 1000;
-                _lastRequest_millis = millis();
-            }
-            break;
-        }
-        // TODO remove dumplicate >>>
-        case HMG_KoKOdTriggerRequest:
-        {
-            if (KoHMG_KOdTriggerRequest.value(DPT_Trigger))
-            {
-                const bool success = update();
-                KoHMG_KOdReachable.value(success, DPT_Switch);
-                _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
-                _lastRequest_millis = millis();
-            }
-            break;
-        }  
-        // <<<
-    }
+    _requestInterval_millis = intervalInSeconds * 1000;
+    _lastRequest_millis = millis();
 }
 
 bool HomematicChannel::processCommandOverview()
@@ -454,19 +295,13 @@ bool HomematicChannel::processCommandOverview()
     return false;
 }
 
-void HomematicChannel::sendSetTemperature(double targetTemperature)
-{
-    logDebugP("sendSetTemperature(%.3g)", targetTemperature);
-    rpcSetValueDouble("SET_TEMPERATURE", targetTemperature);
-}
-
-bool HomematicChannel::rpcSetValueDouble(const char * paramName, double value)
+bool HomematicChannel::rpcSetValueDouble(uint8_t channel, const char * paramName, double value)
 {
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
-    requestAddParamDeviceSerial(request);
+    requestAddParamAddress(request, channel);
     requestAddParamString(request, paramName);
     requestAddParamDouble(request, value);
     request += "</params>";
@@ -477,19 +312,13 @@ bool HomematicChannel::rpcSetValueDouble(const char * paramName, double value)
     return sendRequestCheckResponseOk(request);
 }
 
-void HomematicChannel::sendBoost(bool boost)
-{
-    logDebugP("sendBoost(%s)", boost ? "true" : "false");
-    rpcSetValueBool("BOOST_MODE", boost);
-}
-
-bool HomematicChannel::rpcSetValueBool(const char * paramName, bool value)
+bool HomematicChannel::rpcSetValueBool(uint8_t channel, const char * paramName, bool value)
 {
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
-    requestAddParamDeviceSerial(request);
+    requestAddParamAddress(request, channel);
     requestAddParamString(request, paramName);
     requestAddParamBoolean(request, value);
     request += "</params>";
@@ -507,22 +336,12 @@ void HomematicChannel::requestAddParamString(arduino::String &request, const cha
     request += "</string></value></param>";
 }
 
-void HomematicChannel::requestAddParamDeviceSerial(arduino::String &request)
+void HomematicChannel::requestAddParamAddress(arduino::String &request, uint8_t channel)
 {
     request += "<param><value><string>";
     request += (const char *)ParamHMG_dDeviceSerial; //"OEQ1234567";
-    if (ParamHMG_dDeviceType == HMG_DEVTYPE_1)
-    {
-        request += ":4";
-    }
-    else if (ParamHMG_dDeviceType == HMG_DEVTYPE_6)
-    {
-        request += ":1";
-    }
-    else 
-    {
-        request += ":0";
-    }
+    request += ":";
+    request += String(channel);
     request += "</string></value></param>";
 }
 
@@ -633,7 +452,7 @@ bool HomematicChannel::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
     tinyxml2::XMLElement *root = doc.FirstChildElement("methodResponse");
     CHECK_FALSE(root, "/methodResponse")
 
-    if (tinyxml2::XMLElement *fault = root->FirstChildElement("fault"))
+    if (/*tinyxml2::XMLElement *fault =*/ root->FirstChildElement("fault"))
     {
         // FAIL path in xml: //methodResponse/fault/value/struct/member[]/{name,value/$type}
         // TODO extract error-code!
