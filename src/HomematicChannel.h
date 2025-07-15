@@ -64,6 +64,7 @@ class HomematicChannel : public OpenKNX::Channel
     // XML-RPC RPC value setting
     bool rpcSetValueDouble(const uint8_t channel, const char * paramName, double value);
     bool rpcSetValueBool(const uint8_t channel, const char * paramName, bool value);
+    bool rpcSetValueInteger4(const uint8_t channel, const char * paramName, int32_t value);
 
     // handler-methods by value-type
     virtual bool processResponseParamDouble(uint8_t channel, const char* pName, double value) { return false; }

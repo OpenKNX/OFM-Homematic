@@ -307,7 +307,7 @@ bool HomematicChannel::processCommandOverview()
     return false;
 }
 
-bool HomematicChannel::rpcSetValueDouble(uint8_t channel, const char * paramName, double value)
+bool HomematicChannel::rpcSetValueDouble(const uint8_t channel, const char * paramName, double value)
 {
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
@@ -324,7 +324,7 @@ bool HomematicChannel::rpcSetValueDouble(uint8_t channel, const char * paramName
     return sendRequestCheckResponseOk(request);
 }
 
-bool HomematicChannel::rpcSetValueBool(uint8_t channel, const char * paramName, bool value)
+bool HomematicChannel::rpcSetValueBool(const uint8_t channel, const char * paramName, bool value)
 {
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
@@ -337,6 +337,23 @@ bool HomematicChannel::rpcSetValueBool(uint8_t channel, const char * paramName, 
     request += "</methodCall>";
 
     logDebugP("XML-RPC call: setValue(%s, %s, %s)", ParamHMG_dDeviceSerial, paramName, value ? "true" : "false");
+
+    return sendRequestCheckResponseOk(request);
+}
+
+bool HomematicChannel::rpcSetValueInteger4(const uint8_t channel, const char * paramName, int32_t value)
+{
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>setValue</methodName>";
+    request += "<params>";
+    requestAddParamAddress(request, channel);
+    requestAddParamString(request, paramName);
+    requestAddParamInteger4(request, value);
+    request += "</params>";
+    request += "</methodCall>";
+
+    logDebugP("XML-RPC call: setValue(%s, %s, %d)", ParamHMG_dDeviceSerial, paramName, value);
 
     return sendRequestCheckResponseOk(request);
 }
