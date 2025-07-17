@@ -155,19 +155,19 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc, c
         if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
         {
             const double value = doubleElement->DoubleText();
-            const bool processed = processResponseParamDouble(channel, pName, value);
+            const bool processed = _processResponseParamDouble(channel, pName, value);
             logDebugP("%s @%d %24s(d)=%f", (processed ? "=>" : "//"), channel, pName, value);
         }
         else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
         {
             const int32_t value = i4Element->IntText();
-            const bool processed = processResponseParamInt32(channel, pName, value);
+            const bool processed = _processResponseParamInt32(channel, pName, value);
             logDebugP("%s @%d %24s(i)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
         else if (tinyxml2::XMLElement *boolElement = memberValue->FirstChildElement("boolean"))
         {
             const bool value = boolElement->IntText();
-            const bool processed = processResponseParamBool(channel, pName, value);
+            const bool processed = _processResponseParamBool(channel, pName, value);
             logDebugP("%s @%d %24s(b)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
         else
@@ -249,8 +249,9 @@ bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
                 const int32_t rssi2 = elemInt2->IntText();
 
                 logDebugP("RSSI: %s <-> %s", serial1, serial2);
+                /*
+                // TODO REMOVE // check moving to module OR replace with getParametSet for Channel :0
                 logIndentUp();
-
                 if (rssi1 == 65536 || rssi2 == 65536)
                 {
                     KoHMG_KOdSignalQuality.valueCompare((int32_t)0x7F, DPT_Value_2_Count);
@@ -262,7 +263,7 @@ bool HomematicChannel::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
                 }
 
                 logIndentDown();
-
+                */
             }
 
         }
@@ -522,4 +523,119 @@ void HomematicChannel::debugLogResponse(HTTPClient &http)
         logDebugP("[DONE] duration log response %d ms", millis() - tStart2);
     }
 #endif
+}
+
+// Channel :0 parameter handlers (device-level parameters)
+bool HomematicChannel::_processResponseParamDouble(uint8_t channel, const char* pName, double value)
+{
+    if (processResponseParamDouble(channel, pName, value))
+    {
+        return true; // processed by device-type
+    }
+    if (channel != 0)
+    {
+        return false; // not in :0
+    }
+
+    // Currently no double parameters known for Channel :0
+    // Placeholder for future use
+    return false;
+}
+
+bool HomematicChannel::_processResponseParamInt32(uint8_t channel, const char* pName, int32_t value)
+{
+    if (processResponseParamInt32(channel, pName, value))
+    {
+        return true; // processed by device-type
+    }
+    bool processed = false;
+    if (channel != 0)
+    {
+        return false; // not in :0
+    }
+    else if (strcmp(pName, "RSSI_DEVICE") == 0)
+    {
+        _rssiDeviceFound = true;
+        _rssiDeviceValue = value;
+        processed = true; // return true;
+    }
+    else if (strcmp(pName, "RSSI_PEER") == 0)
+    {
+        _rssiPeerFound = true;
+        _rssiPeerValue = value;
+        processed = true; // return true;
+    }
+    /*
+    else if (strcmp(pName, "AES_KEY") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    */
+
+    // update signal quality when BOTH values were found
+    if (_rssiDeviceFound && _rssiPeerFound)
+    {
+        const int32_t worst_rssi = min(_rssiDeviceValue, _rssiPeerValue);
+        // Linear mapping: -30dBm=100%, -90dBm=0%
+        const int32_t quality_percent = max(0, min(100, (worst_rssi + 90) * 100 / 60));
+
+        logDebugP("RSSI_DEVICE=%d, RSSI_PEER=%d => %d%%", _rssiDeviceValue, _rssiPeerValue, quality_percent);
+
+        if (_rssiDeviceValue == -65535 || _rssiPeerValue == -65535)
+        {
+            KoHMG_KOdSignalQuality.valueCompare((int32_t)0x7F, DPT_Value_2_Count);
+        }
+        else
+        {
+            KoHMG_KOdSignalQuality.valueCompare(worst_rssi, DPT_Value_2_Count);
+        }
+
+        // TODO reset before start
+        _rssiDeviceFound = false;
+        _rssiPeerFound = false;
+        return true;
+    }
+
+    return processed;
+}
+
+bool HomematicChannel::_processResponseParamBool(uint8_t channel, const char* pName, bool value)
+{
+    if (processResponseParamBool(channel, pName, value))
+    {
+        return true; // processed by device-type
+    }
+    if (channel != 0)
+    {
+        return false; // not in :0
+    }
+    else if (strcmp(pName, "CONFIG_PENDING") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (strcmp(pName, "DEVICE_IN_BOOTLOADER") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (strcmp(pName, "INHIBIT") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (strcmp(pName, "LOWBAT") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (strcmp(pName, "STICKY_UNREACH") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (strcmp(pName, "UNREACH") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (strcmp(pName, "UPDATE_PENDING") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    return false;
 }
