@@ -5,6 +5,13 @@
     <Manufacturer RefId="M-00FA">
       <ApplicationPrograms>
         <ApplicationProgram Id="M-00FA_CS-OpenKNX" ApplicationNumber="0" ApplicationVersion="0" ProgramType="ApplicationProgram" MaskVersion="MV-07B0" Name="" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="de" DynamicTableManagement="false" Linkable="false">
+          <!-- Part Definition für User Defined Datapoints -->
+          <op:part name="HMDATAPOINT" href="HomematicDatapoint.part.xml" instances="5">
+            <op:param name="%HMDP%" value="1" increment="1" />
+            <op:param name="%MEMOFFSET%" value="14" increment="33" />
+            <op:param name="%KOREAD%" value="12" increment="2" />
+            <op:param name="%KOWRITE%" value="13" increment="2" />
+          </op:part>
           <Static>
             <Parameters>
               <Parameter Id="%AID%_P-%TT%%CC%001" Name="d%C%Name"            ParameterType="%AID%_PT-Text40Byte"   Text="Name / Beschreibung"           Value="" />
@@ -19,6 +26,17 @@
                 <!-- 1 byte free after string -->
               </Union>
 
+              <!-- User Defined Device Basic Parameters (Type 7) -->
+              <Union SizeInBit="16"><Memory CodeSegment="%MID%" Offset="12" BitOffset="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%101" Name="d%C%UDBatteryPowered"     ParameterType="%AID%_PT-UDBatteryPowered"      Offset="0" BitOffset="0" Text="Batteriebetrieben"                    Value="0" />
+                <!-- 7 bit free -->
+                <Parameter Id="%AID%_UP-%TT%%CC%102" Name="d%C%UDChannelNumber"      ParameterType="%AID%_PT-UDChannelNumber"       Offset="1" BitOffset="0" Text="Homematic-Geräte-Kanalnummer"         Value="1" />
+              </Union>
+
+              <!-- User Defined Datapoints via Parts -->
+              <!-- Offset must be defined in %MEMOFFSET% -->
+              <op:usePart name="HMDATAPOINT" xpath="//Parameters/*" />
+
             </Parameters>
             <ParameterRefs>
               <ParameterRef Id="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" RefId="%AID%_P-%TT%%CC%001" />
@@ -27,6 +45,13 @@
               <ParameterRef Id="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" RefId="%AID%_UP-%TT%%CC%004" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" RefId="%AID%_UP-%TT%%CC%005" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" RefId="%AID%_UP-%TT%%CC%006" />
+              
+              <!-- User Defined Parameters -->
+              <ParameterRef Id="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101" RefId="%AID%_UP-%TT%%CC%101" />
+              <ParameterRef Id="%AID%_UP-%TT%%CC%102_R-%TT%%CC%10201" RefId="%AID%_UP-%TT%%CC%102" />
+              
+              <!-- User Defined Datapoints via Parts -->
+              <op:usePart name="HMDATAPOINT" xpath="//ParameterRefs/*" />
             </ParameterRefs>
             <ComObjectTable>
               <ComObject Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"                 Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
@@ -42,6 +67,10 @@
               <ComObject Id="%AID%_O-%TT%%CC%004" Name="KOd%C%__KO__9"         Text="%K9%"                       Number="%K9%"  FunctionText="Gerät %C%"                                 DatapointType="DPST-1-11"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
               <ComObject Id="%AID%_O-%TT%%CC%005" Name="KOd%C%__KO__10"        Text="%K10%"                      Number="%K10%" FunctionText="Gerät %C%"                                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
               <ComObject Id="%AID%_O-%TT%%CC%009" Name="KOd%C%__KO__11"        Text="%K11%"                      Number="%K11%" FunctionText="Gerät %C%"                                 DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Disabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              
+              <!-- User Defined Device ComObjects via Parts -->
+              <op:usePart name="HMDATAPOINT" xpath="//ComObjectTable/*" />
+
             </ComObjectTable>
             <ComObjectRefs>
               <ComObjectRef Id="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" RefId="%AID%_O-%TT%%CC%000" />
@@ -71,7 +100,9 @@
               <ComObjectRef Id="%AID%_O-%TT%%CC%005_R-%TT%%CC%00506" RefId="%AID%_O-%TT%%CC%005" Text="Sperren"                    FunctionText="Gerät %C%, Eingang Sperre"                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            />
               <!--          Id="%AID%_O-%TT%%CC%009_R-%TT%%CC%00906" RefId="%AID%_O-%TT%%CC%009" Text=""                           FunctionText="Gerät %C%, "                               DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                          -->
 
-              <!-- NEXT 012 -->
+              <!-- User Defined Device ComObjectRefs via Parts -->
+              <op:usePart name="HMDATAPOINT" xpath="//ComObjectRefs/*" />
+
             </ComObjectRefs>
           </Static>
           <Dynamic>
@@ -108,20 +139,23 @@
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" IndentLevel="2" /><!-- HelpContext="TODO" -->
                         <!-- Serial -->
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" /><!-- HelpContext="TODO" -->
-                      </when>
 
-
-                      <when test="1"><!-- 1 = HM-CC-RT-DN (Funk-Thermostat) -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
-
-                        <!-- BEGIN possible DUPLICATION -->
+                        <!-- KOs -->
                         <!-- generic -->
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" /><!-- Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             -->
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" /><!-- Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                -->
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" /><!-- Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               -->
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" /><!-- Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 -->
-                        <!-- generic/radio -->
+                        <!-- generic with radio -->
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" /><!-- Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        -->
+                      </when>
+
+
+                      <when test="1"><!-- HM-CC-RT-DN (Funk-Thermostat) -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
+
+                        <!-- KOs -->
+                        <!-- BEGIN possible DUPLICATION -->
                         <!-- generic/battery -->
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" /><!-- Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVoltage"  Text="Batteriestatus"      Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         -->
                         <!-- END possible DUPLICATION -->
@@ -152,14 +186,8 @@
 
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
 
+                        <!-- KOs -->
                         <!-- BEGIN possible DUPLICATION -->
-                        <!-- generic -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" /><!-- Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" /><!-- Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" /><!-- Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" /><!-- Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 -->
-                        <!-- generic/radio -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" /><!-- Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        -->
                         <!-- generic/battery
                         <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" />
                          --><!-- Id="%AID%_O-%TT%%CC%003" Name="KOd%C%BatteryVoltage"  Text="Batteriestatus"      Number="%K3%"  FunctionText="Gerät %C%, Ausgabe Batteriestatus"         -->
@@ -175,6 +203,28 @@
                             <ComObjectRefRef RefId="%AID%_O-%TT%%CC%005_R-%TT%%CC%00506" /><!--                          Text="Sperren"                    FunctionText="Gerät %C%, Eingang Sperre"                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
                           </when>
                         </choose>
+                        
+                      </when>
+
+
+                      
+                      <when test="7"><!-- User Defined Device Type -->
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="Benutzerdefiniertes Gerät" UIHint="Headline" />
+                        
+                        <!-- Basic Settings -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101" IndentLevel="1" /><!-- Battery Powered -->
+                        <choose ParamRefId="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101">
+                          <when test="1">
+                            <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" /><!-- Battery Voltage -->
+                          </when>
+                        </choose>
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%102_R-%TT%%CC%10201" IndentLevel="1" /><!-- HM Device Channel Number -->
+                        
+                        <!-- User Defined Datapoint Configuration -->
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="Datenpunkt-Konfiguration" UIHint="Headline" />
+                        
+                        <!-- User Defined Datapoints via Parts -->
+                        <op:usePart name="HMDATAPOINT" xpath="//Dynamic/ChannelIndependentBlock/*" />
                         
                       </when>
 

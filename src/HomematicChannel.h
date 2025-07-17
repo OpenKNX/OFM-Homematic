@@ -10,6 +10,7 @@
 
 #define HMG_DEVTYPE__HM_CC_RT_DN__THERMOSTAT (1)
 #define HMG_DEVTYPE__HM_LC_Sw1_Pl_DN_R1__SWITCH_ACTUATOR (6)
+#define HMG_DEVTYPE__USER_DEFINED (7)
 
 
 // Helper macros for XML element checking

@@ -27,6 +27,9 @@ HomematicChannel* HomematicModule::createChannel(uint8_t _channelIndex)
         case HMG_DEVTYPE__HM_LC_Sw1_Pl_DN_R1__SWITCH_ACTUATOR: // =6
             return new HomematicChannelSwitchActuator(_channelIndex);
             
+        case HMG_DEVTYPE__USER_DEFINED: // =7
+            return new HomematicChannelUserDefined(_channelIndex);
+            
         case 0: // Disabled/inactive channel
             return new HomematicChannelInactive(_channelIndex);
             

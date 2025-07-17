@@ -4,6 +4,7 @@
 #pragma once
 #include "HomematicChannelThermostat.h"
 #include "HomematicChannelSwitchActuator.h"
+#include "HomematicChannelUserDefined.h"
 #include "HomematicChannelInactive.h"
 #include "OpenKNX.h"
 // always include for RUNTIME_MEASURE_{BEGIN,END}

@@ -39,15 +39,74 @@
               <ParameterType Id="%AID%_PT-HmDevType" Name="HmDevType">
                 <TypeRestriction Base="Value" SizeInBit="5">
                   <Enumeration Id="%ENID%" Value="0" Text="inaktiv"                                           />
+                  <Enumeration Id="%ENID%" Value="7" Text="Benutzerdefiniertes ParamSet (für nicht aufgeführte Geräte)" />
                   <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN             (Funk-Thermostat)"         />
                   <!-- ... other ... sort by HM-Product Id? ... -->
                   <Enumeration Id="%ENID%" Value="6" Text="HM-LC-Sw1-Pl-DN-R1 (Funk-Zwischenstecker-Schaltaktor 1fach)"      />
                 </TypeRestriction>
               </ParameterType>
 
+              <!-- User Defined Device Parameters -->
+              <ParameterType Id="%AID%_PT-UDBatteryPowered" Name="UDBatteryPowered">
+                <TypeRestriction Base="Value" SizeInBit="1">
+                  <Enumeration Id="%ENID%" Value="0" Text="nein" />
+                  <Enumeration Id="%ENID%" Value="1" Text="ja" />
+                </TypeRestriction>
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDChannelNumber" Name="UDChannelNumber">
+                <TypeNumber SizeInBit="8" Type="unsignedInt" minInclusive="0" maxInclusive="255" />
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDDatapointType" Name="UDDatapointType">
+                <TypeRestriction Base="Value" SizeInBit="3">
+                  <Enumeration Id="%ENID%" Value="0" Text="-" />
+                  <Enumeration Id="%ENID%" Value="1" Text="action" />
+                  <Enumeration Id="%ENID%" Value="2" Text="boolean" />
+                  <Enumeration Id="%ENID%" Value="3" Text="float" />
+                  <Enumeration Id="%ENID%" Value="4" Text="integer" />
+                  <Enumeration Id="%ENID%" Value="5" Text="option" />
+                </TypeRestriction>
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDAccess" Name="UDAccess">
+                <TypeRestriction Base="Value" SizeInBit="3">
+                  <Enumeration Id="%ENID%" Value="0" Text="-" />
+                  <Enumeration Id="%ENID%" Value="1" Text="lesend" />
+                  <Enumeration Id="%ENID%" Value="2" Text="schreibend" />
+                  <Enumeration Id="%ENID%" Value="3" Text="lesend + schreibend" />
+                  <Enumeration Id="%ENID%" Value="4" Text="über Ereignisse" />
+                  <Enumeration Id="%ENID%" Value="5" Text="lesend + über Ereignisse" />
+                  <Enumeration Id="%ENID%" Value="6" Text="schreibend + über Ereignisse" />
+                  <Enumeration Id="%ENID%" Value="7" Text="lesend + schreibend + über Ereignisse" />
+                </TypeRestriction>
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDParamName" Name="UDParamName">
+                <TypeText SizeInBit="248" /><!-- 31 Zeichen = 31*8 = 248 Bit -->
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDComment" Name="UDComment">
+                <TypeText SizeInBit="320" /><!-- 40 Zeichen für Kommentar -->
+              </ParameterType>
+
+              <!-- 
+              <ParameterType Id="%AID%_PT-UDUnit" Name="UDUnit">
+                <TypeText SizeInBit="80" /><!- - 10 Zeichen für Einheit - ->
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDMinValue" Name="UDMinValue">
+                <TypeNumber SizeInBit="32" Type="signedInt" minInclusive="-2147483648" maxInclusive="2147483647" />
+              </ParameterType>
+
+              <ParameterType Id="%AID%_PT-UDMaxValue" Name="UDMaxValue">
+                <TypeNumber SizeInBit="32" Type="signedInt" minInclusive="-2147483648" maxInclusive="2147483647" />
+              </ParameterType>
+
               <ParameterType Id="%AID%_PT-DocText255" Name="DocumentationText255Char">
                 <TypeText SizeInBit="2040" />
               </ParameterType>              
+              -->
 
             </ParameterTypes>
             <Parameters>
