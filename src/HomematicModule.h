@@ -22,6 +22,9 @@ class HomematicModule : public OpenKNX::Module
     // Factory method for creating channels
     HomematicChannel* createChannel(uint8_t _channelIndex);
 
+    bool updateRssi();
+    bool processRssiInfoResponse(tinyxml2::XMLDocument &doc);
+
   public:
     HomematicModule();
     const std::string name() override;
