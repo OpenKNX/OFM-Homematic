@@ -1,5 +1,19 @@
 # (geplant) v0.3
 
+* Feature
+  * (Draf) Support for additional device type: HM-LC-Sw1-Pl-DN-R1
+    * Reading and writing `STATE`
+    * Trigger Stairlight with writing `ON_TIME` before `STATE`
+    * Reading and writing `INHIBIT`
+  * (Draft) Custom device type with user defined params
+* ETS-UI Improvements
+  * New icon for channels (replace thermostat with generic radio device)
+  * Special layout for device selection
+* Add Application Description 
+* Refactoring
+  * Generic handling of read and write commands to device 
+  * Split implementation into base and device-type child classes
+  * Allow requesting multiple device-channels
 
 # 2025-01 Alpha2
 
