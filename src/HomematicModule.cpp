@@ -47,9 +47,85 @@ void HomematicModule::setup()
     for (uint8_t i = 0; i < HMG_ChannelCount; i++)
     {
         _channels[i] = createChannel(i);
+    }
+    for (uint8_t _channelIndex = 0; _channelIndex < HMG_ChannelCount; _channelIndex++)
+    {
+        // TODO ensure channel is active (but inactive channels should not create errors or warnings)
+        bool _channelActive;
+        _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable;
+        if (!_channelActive)
+            continue;
+
+        // init group-assignments by config params
+        _devicesUnknown |= ((uint64_t)1 << _channelIndex);
+        _groups[0] |= ((uint64_t)1 << _channelIndex);
+        _groups[1] |= ((uint64_t)ParamHMG_dGroup1 << _channelIndex);
+        _groups[2] |= ((uint64_t)ParamHMG_dGroup2 << _channelIndex);
+        _groups[3] |= ((uint64_t)ParamHMG_dGroup3 << _channelIndex);
+        _groups[4] |= ((uint64_t)ParamHMG_dGroup4 << _channelIndex);
+        _groups[5] |= ((uint64_t)ParamHMG_dGroup5 << _channelIndex);
+    }
+    for (uint8_t i = 0; i < HMG_ChannelCount; i++)
+    {
         _channels[i]->setup();
     }
     logIndentDown();
+}
+
+void HomematicModule::updateDeviceStates(const uint8_t i, const bool unreach, const bool batteryWarn, const bool error)
+{
+    logDebugP("updateDeviceStates(%d, unreach=%d, batteryWarn=%d, error=%d)", i, unreach, batteryWarn, error);
+
+    const uint64_t maskClear = ~(1ULL << i);
+
+    logDebugP("  _devicesUnknown : %016llX", _devicesUnknown);
+    logDebugP("  _devicesUnreach : %016llX", _devicesUnreach);
+    logDebugP("  _devicesBattWarn: %016llX", _devicesBatteryWarning);
+    logDebugP("  _devicesError   : %016llX", _devicesError);
+
+    _devicesUnreach = (_devicesUnreach & maskClear) | ((uint64_t)unreach << i);
+    _devicesBatteryWarning = (_devicesBatteryWarning & maskClear) | ((uint64_t)batteryWarn << i);
+    _devicesError = (_devicesError & maskClear) | ((uint64_t)error << i);
+
+    // this device has a known state
+    _devicesUnknown &= maskClear;
+    
+    logDebugP("  bit             : %016llX", ~maskClear);
+    logDebugP("  _devicesUnknown : %016llX", _devicesUnknown);
+    logDebugP("  _devicesUnreach : %016llX", _devicesUnreach);
+    logDebugP("  _devicesBattWarn: %016llX", _devicesBatteryWarning);
+    logDebugP("  _devicesError   : %016llX", _devicesError);
+
+    // Update group states for all groups that have all devices known
+    for (uint8_t groupIdx = 0; groupIdx < 6; groupIdx++)
+    {
+        if (_groups[groupIdx])
+        {
+            bool allDevicesKnown = (_devicesUnknown & _groups[groupIdx]) == 0;
+            const bool groupUnreach = (_devicesUnreach & _groups[groupIdx]) != 0;
+            const bool groupBatteryWarn = (_devicesBatteryWarning & _groups[groupIdx]) != 0;
+            const bool groupError = (_devicesError & _groups[groupIdx]) != 0;
+            logDebugP("> Group %d (allKnown=%d): Unreach=%d, BatteryWarn=%d, Error=%d", 
+                groupIdx, allDevicesKnown, groupUnreach, groupBatteryWarn, groupError
+            );
+
+            // send all negative results as soon as present. positive results when all results are available
+            // TODO: Ensure KO-calculation!
+            if (allDevicesKnown || groupUnreach)
+            {
+                knx.getGroupObject(3 * groupIdx + HMG_KoKOGroup0Unreachable).valueCompare(groupUnreach, DPT_Alarm);
+            }
+            if (allDevicesKnown || groupBatteryWarn)
+            {
+                knx.getGroupObject(3 * groupIdx + HMG_KoKOGroup0BatteryWarn).valueCompare(groupBatteryWarn, DPT_Alarm);
+            }
+            if (allDevicesKnown || groupError)
+            {
+                knx.getGroupObject(3 * groupIdx + HMG_KoKOGroup0Error).valueCompare(groupError, DPT_Alarm);
+            }
+        }
+    }
+    
 }
 
 void HomematicModule::processAfterStartupDelay()

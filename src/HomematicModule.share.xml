@@ -131,9 +131,52 @@
               <ParameterRef Id="%AID%_UP-%TT%00007_R-%TT%0000701" RefId="%AID%_UP-%TT%00007" />
             </ParameterRefs>
             <ComObjectTable>
-              <!-- TODO ko for connection state -->
+              <!-- TODO ko for connection state to CCU -->
+
+              <ComObject Id="%AID%_O-%TT%00100" Name="KOGroup0Unreachable"   Text="Kommunikationsstörung"      Number="0"     FunctionText="Global, Ausgabe Unerreichbar"              DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00101" Name="KOGroup0BatteryWarn"   Text="Batteriewarnung"            Number="1"     FunctionText="Global, Ausgabe Batteriewarnung"           DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00102" Name="KOGroup0Error"         Text="Fehler"                     Number="2"     FunctionText="Global, Ausgabe Fehler"                    DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+
+              <ComObject Id="%AID%_O-%TT%00110" Name="KOGroup1Unreachable"   Text="Kommunikationsstörung"      Number="3"     FunctionText="Gruppe 1, Ausgabe Unerreichbar"            DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00111" Name="KOGroup1BatteryWarn"   Text="Batteriewarnung"            Number="4"     FunctionText="Gruppe 1, Ausgabe Batteriewarnung"         DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00112" Name="KOGroup1Error"         Text="Fehler"                     Number="5"     FunctionText="Gruppe 1, Ausgabe Fehler"                  DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+
+              <ComObject Id="%AID%_O-%TT%00120" Name="KOGroup2Unreachable"   Text="Kommunikationsstörung"      Number="6"     FunctionText="Gruppe 2, Ausgabe Unerreichbar"            DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00121" Name="KOGroup2BatteryWarn"   Text="Batteriewarnung"            Number="7"     FunctionText="Gruppe 2, Ausgabe Batteriewarnung"         DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00122" Name="KOGroup2Error"         Text="Fehler"                     Number="8"     FunctionText="Gruppe 2, Ausgabe Fehler"                  DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+
+              <ComObject Id="%AID%_O-%TT%00130" Name="KOGroup3Unreachable"   Text="Kommunikationsstörung"      Number="9"     FunctionText="Gruppe 3, Ausgabe Unerreichbar"            DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00131" Name="KOGroup3BatteryWarn"   Text="Batteriewarnung"            Number="10"    FunctionText="Gruppe 3, Ausgabe Batteriewarnung"         DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00132" Name="KOGroup3Error"         Text="Fehler"                     Number="11"    FunctionText="Gruppe 3, Ausgabe Fehler"                  DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+
+              <ComObject Id="%AID%_O-%TT%00140" Name="KOGroup4Unreachable"   Text="Kommunikationsstörung"      Number="12"    FunctionText="Gruppe 4, Ausgabe Unerreichbar"            DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00141" Name="KOGroup4BatteryWarn"   Text="Batteriewarnung"            Number="13"    FunctionText="Gruppe 4, Ausgabe Batteriewarnung"         DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00142" Name="KOGroup4Error"         Text="Fehler"                     Number="14"    FunctionText="Gruppe 4, Ausgabe Fehler"                  DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+
+              <ComObject Id="%AID%_O-%TT%00150" Name="KOGroup5Unreachable"   Text="Kommunikationsstörung"      Number="15"    FunctionText="Gruppe 5, Ausgabe Unerreichbar"            DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00151" Name="KOGroup5BatteryWarn"   Text="Batteriewarnung"            Number="16"    FunctionText="Gruppe 5, Ausgabe Batteriewarnung"         DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+              <ComObject Id="%AID%_O-%TT%00152" Name="KOGroup5Error"         Text="Fehler"                     Number="17"    FunctionText="Gruppe 5, Ausgabe Fehler"                  DatapointType="DPST-1-5"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
+
             </ComObjectTable>
             <ComObjectRefs>
+              <ComObjectRef Id="%AID%_O-%TT%00100_R-%TT%0010001" RefId="%AID%_O-%TT%00100" />
+              <ComObjectRef Id="%AID%_O-%TT%00101_R-%TT%0010101" RefId="%AID%_O-%TT%00101" />
+              <ComObjectRef Id="%AID%_O-%TT%00102_R-%TT%0010201" RefId="%AID%_O-%TT%00102" />
+              <ComObjectRef Id="%AID%_O-%TT%00110_R-%TT%0011001" RefId="%AID%_O-%TT%00110" />
+              <ComObjectRef Id="%AID%_O-%TT%00111_R-%TT%0011101" RefId="%AID%_O-%TT%00111" />
+              <ComObjectRef Id="%AID%_O-%TT%00112_R-%TT%0011201" RefId="%AID%_O-%TT%00112" />
+              <ComObjectRef Id="%AID%_O-%TT%00120_R-%TT%0012001" RefId="%AID%_O-%TT%00120" />
+              <ComObjectRef Id="%AID%_O-%TT%00121_R-%TT%0012101" RefId="%AID%_O-%TT%00121" />
+              <ComObjectRef Id="%AID%_O-%TT%00122_R-%TT%0012201" RefId="%AID%_O-%TT%00122" />
+              <ComObjectRef Id="%AID%_O-%TT%00130_R-%TT%0013001" RefId="%AID%_O-%TT%00130" />
+              <ComObjectRef Id="%AID%_O-%TT%00131_R-%TT%0013101" RefId="%AID%_O-%TT%00131" />
+              <ComObjectRef Id="%AID%_O-%TT%00132_R-%TT%0013201" RefId="%AID%_O-%TT%00132" />
+              <ComObjectRef Id="%AID%_O-%TT%00140_R-%TT%0014001" RefId="%AID%_O-%TT%00140" />
+              <ComObjectRef Id="%AID%_O-%TT%00141_R-%TT%0014101" RefId="%AID%_O-%TT%00141" />
+              <ComObjectRef Id="%AID%_O-%TT%00142_R-%TT%0014201" RefId="%AID%_O-%TT%00142" />
+              <ComObjectRef Id="%AID%_O-%TT%00150_R-%TT%0015001" RefId="%AID%_O-%TT%00150" />
+              <ComObjectRef Id="%AID%_O-%TT%00151_R-%TT%0015101" RefId="%AID%_O-%TT%00151" />
+              <ComObjectRef Id="%AID%_O-%TT%00152_R-%TT%0015201" RefId="%AID%_O-%TT%00152" />
             </ComObjectRefs>
           </Static>
           <Dynamic>
@@ -173,6 +216,25 @@
                 <ParameterRefRef RefId="%AID%_UP-%TT%00006_R-%TT%0000601" IndentLevel="1" /><!-- HelpContext="TODO"  -->
                 <ParameterRefRef RefId="%AID%_UP-%TT%00007_R-%TT%0000701" IndentLevel="1" /><!-- HelpContext="TODO"  -->
               </ParameterBlock>
+
+              <ComObjectRefRef RefId="%AID%_O-%TT%00100_R-%TT%0010001" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00101_R-%TT%0010101" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00102_R-%TT%0010201" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00110_R-%TT%0011001" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00111_R-%TT%0011101" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00112_R-%TT%0011201" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00120_R-%TT%0012001" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00121_R-%TT%0012101" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00122_R-%TT%0012201" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00130_R-%TT%0013001" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00131_R-%TT%0013101" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00132_R-%TT%0013201" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00140_R-%TT%0014001" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00141_R-%TT%0014101" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00142_R-%TT%0014201" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00150_R-%TT%0015001" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00151_R-%TT%0015101" />
+              <ComObjectRefRef RefId="%AID%_O-%TT%00152_R-%TT%0015201" />
 
               <!-- all channels: -->
               <!--

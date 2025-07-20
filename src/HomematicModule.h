@@ -19,6 +19,15 @@ class HomematicModule : public OpenKNX::Module
     OpenKNX::Stat::RuntimeStat _channelInputRuntimes[HMG_ChannelCount];
 #endif
 
+    // aggregatet device state
+    static_assert(HMG_ChannelCount <= 64, "HMG_ChannelCount must not exceed 64");
+    // uint64_t _groups[6] = {~0ULL, 0ULL, 0ULL, 0ULL, 0ULL, 0ULL}; 
+    uint64_t _groups[6] = {0ULL, 0ULL, 0ULL, 0ULL, 0ULL, 0ULL}; 
+    uint64_t _devicesUnknown = 0;
+    uint64_t _devicesUnreach = 0;
+    uint64_t _devicesBatteryWarning = 0;
+    uint64_t _devicesError = 0;
+
     // Factory method for creating channels
     HomematicChannel* createChannel(uint8_t _channelIndex);
 
@@ -42,6 +51,8 @@ class HomematicModule : public OpenKNX::Module
 
     void showHelp() override;
     bool processCommand(const std::string cmd, bool diagnoseKo);
+
+    void updateDeviceStates(const uint8_t i, const bool unreach, const bool batteryWarn, const bool error);
 };
 
 extern HomematicModule openknxHomematicModule;

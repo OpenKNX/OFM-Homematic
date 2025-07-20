@@ -2,6 +2,7 @@
 // Copyright (C) 2024-2025 Cornelius Koepp
 
 #include "HomematicChannel.h"
+#include "HomematicModule.h"
 #include "RpcUtil.h"
 
 
@@ -86,6 +87,7 @@ bool HomematicChannel::update()
         tinyxml2::XMLDocument doc;
         success = hmgClient.sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc, channels[i]);
     }
+    openknxHomematicModule.updateDeviceStates(_channelIndex, _unreach, _batteryWarn, !success);
     logIndentDown();
     return success;
 }
@@ -286,7 +288,8 @@ bool HomematicChannel::_processResponseParamBool(uint8_t channel, const char* pN
     }
     else if (strcmp(pName, "LOWBAT") == 0)
     {
-        return false; // TODO check implementation
+        _batteryWarn = value;
+        return true;
     }
     else if (strcmp(pName, "STICKY_UNREACH") == 0)
     {
@@ -294,7 +297,8 @@ bool HomematicChannel::_processResponseParamBool(uint8_t channel, const char* pN
     }
     else if (strcmp(pName, "UNREACH") == 0)
     {
-        return false; // TODO check implementation
+        _unreach = value;
+        return true;
     }
     else if (strcmp(pName, "UPDATE_PENDING") == 0)
     {

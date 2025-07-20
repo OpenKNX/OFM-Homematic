@@ -25,6 +25,9 @@ class HomematicChannel : public OpenKNX::Channel
     bool _rssiPeerFound = false;
     int32_t _rssiPeerValue = 0;
 
+    bool _unreach = false;
+    bool _batteryWarn = false;
+
     // handler-methods by value-type: first delegate to device-type, when not processed check :0
     bool _processResponseParamDouble(uint8_t channel, const char* pName, double value);
     bool _processResponseParamInt32(uint8_t channel, const char* pName, int32_t value);
