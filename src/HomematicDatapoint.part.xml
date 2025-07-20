@@ -36,12 +36,14 @@
               <ComObjectRef Id="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%03" RefId="%AID%_O-%TT%%CC%10%HMDP%" Text="{{0:Par1}} (Wert)"          FunctionText="Gerät %C%, UD%HMDP% Wert lesen"                DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%04" RefId="%AID%_O-%TT%%CC%10%HMDP%" Text="{{0:Par1}} (Wert)"          FunctionText="Gerät %C%, UD%HMDP% Wert lesen"                DatapointType="DPST-13-1"  ObjectSize="4 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%05" RefId="%AID%_O-%TT%%CC%10%HMDP%" Text="{{0:Par1}} (Wert)"          FunctionText="Gerät %C%, UD%HMDP% Wert lesen"                DatapointType="DPST-13-1"  ObjectSize="4 Bytes"   ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%06" RefId="%AID%_O-%TT%%CC%10%HMDP%" Text="{{0:Par1}} (Wert)"          FunctionText="Gerät %C%, UD%HMDP% Wert lesen"                DatapointType="DPST-5-1"   ObjectSize="1 Byte"    ReadFlag="Enabled"  WriteFlag="Disabled"                             TransmitFlag="Enabled"  UpdateFlag="Disabled"                           TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <!-- Write ComObjects basierend auf Type -->
               <ComObjectRef Id="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%01" RefId="%AID%_O-%TT%%CC%20%HMDP%" Text="{{0:Par1}} (schreiben)"     FunctionText="Gerät %C%, UD%HMDP% Wert schreiben"            DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%02" RefId="%AID%_O-%TT%%CC%20%HMDP%" Text="{{0:Par1}} (schreiben)"     FunctionText="Gerät %C%, UD%HMDP% Wert schreiben"            DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%03" RefId="%AID%_O-%TT%%CC%20%HMDP%" Text="{{0:Par1}} (schreiben)"     FunctionText="Gerät %C%, UD%HMDP% Wert schreiben"            DatapointType="DPST-9-1"   ObjectSize="2 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%04" RefId="%AID%_O-%TT%%CC%20%HMDP%" Text="{{0:Par1}} (schreiben)"     FunctionText="Gerät %C%, UD%HMDP% Wert schreiben"            DatapointType="DPST-13-1"  ObjectSize="4 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
               <ComObjectRef Id="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%05" RefId="%AID%_O-%TT%%CC%20%HMDP%" Text="{{0:Par1}} (schreiben)"     FunctionText="Gerät %C%, UD%HMDP% Wert schreiben"            DatapointType="DPST-13-1"  ObjectSize="4 Bytes"   ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
+              <ComObjectRef Id="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%06" RefId="%AID%_O-%TT%%CC%20%HMDP%" Text="{{0:Par1}} (schreiben)"     FunctionText="Gerät %C%, UD%HMDP% Wert schreiben"            DatapointType="DPST-1-1"   ObjectSize="1 Byte"    ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            TextParameterRefId="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" />
             </ComObjectRefs>
 
           </Static>
@@ -58,42 +60,24 @@
               <choose ParamRefId="%AID%_UP-%TT%%CC%1%HMDP%3_R-%TT%%CC%1%HMDP%301"><!-- Access -->
                 <when test="1 3 5 7"><!-- Lesen erlaubt -->
                   <choose ParamRefId="%AID%_UP-%TT%%CC%1%HMDP%2_R-%TT%%CC%1%HMDP%201"><!-- Type -->
-                    <when test="1">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%01" />
-                    </when>
-                    <when test="2">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%02" />
-                    </when>
-                    <when test="3">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%03" />
-                    </when>
-                    <when test="4">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%04" />
-                    </when>
-                    <when test="5">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%05" />
-                    </when>
+                    <when test="1"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%01" /></when>
+                    <when test="2"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%02" /></when>
+                    <when test="3"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%03" /></when>
+                    <when test="4"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%04" /></when>
+                    <when test="5"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%05" /></when>
+                    <when test="6 7"><ComObjectRefRef RefId="%AID%_O-%TT%%CC%10%HMDP%_R-%TT%%CC%10%HMDP%06" /></when>
                   </choose>
                 </when>
               </choose>
               <choose ParamRefId="%AID%_UP-%TT%%CC%1%HMDP%3_R-%TT%%CC%1%HMDP%301"><!-- Access -->
                 <when test="2 3 6 7"><!-- Schreiben erlaubt -->
                   <choose ParamRefId="%AID%_UP-%TT%%CC%1%HMDP%2_R-%TT%%CC%1%HMDP%201"><!-- Type -->
-                    <when test="1">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%01" />
-                    </when>
-                    <when test="2">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%02" />
-                    </when>
-                    <when test="3">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%03" />
-                    </when>
-                    <when test="4">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%04" />
-                    </when>
-                    <when test="5">
-                      <ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%05" />
-                    </when>
+                    <when test="1"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%01" /></when>
+                    <when test="2"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%02" /></when>
+                    <when test="3"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%03" /></when>
+                    <when test="4"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%04" /></when>
+                    <when test="5"  ><ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%05" /></when>
+                    <when test="6 7"><ComObjectRefRef RefId="%AID%_O-%TT%%CC%20%HMDP%_R-%TT%%CC%20%HMDP%06" /></when>
                   </choose>
                 </when>
               </choose>
