@@ -11,6 +11,8 @@
 #include "OpenKNX/Base.h"
 
 
+#define ADDRESS_CHANNEL_NONE (0xff)
+
 // Helper macros for XML element checking
 #define CHECK_RETURN(element, name, result) \
     if (element == nullptr) { \
@@ -43,6 +45,10 @@ public:
     
     // XML Request parameter builders
     void requestAddParamString(arduino::String &request, const char *str);
+    /**
+     * Add an address as parameter to request. Channel will be excluded for `channel==ADDRESS_CHANNEL_NONE`.
+     * @returns <param><value><string>{serial}[:{ch}]</string></value></param>
+     */
     void requestAddParamAddress(arduino::String &request, const char* deviceSerial, uint8_t channel);
     void requestAddParamDouble(arduino::String &request, double value);
     void requestAddParamInteger4(arduino::String &request, int32_t value);

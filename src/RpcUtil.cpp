@@ -105,8 +105,11 @@ void RpcUtil::requestAddParamAddress(arduino::String &request, const char* devic
 {
     request += "<param><value><string>";
     request += deviceSerial;
-    request += ":";
-    request += String(channel);
+    if (channel != ADDRESS_CHANNEL_NONE)
+    {
+        request += ":";
+        request += String(channel);
+    }
     request += "</string></value></param>";
 }
 
