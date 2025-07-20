@@ -79,10 +79,13 @@ void HomematicChannelSwitchActuator::sendSwitchStairlight(bool switchStair)
 {
     if (switchStair)
     {
-        rpcSetValueDouble(getDeviceChannel(), "ON_TIME", 30.0);
+        // 1. set the on-time (for switching on)
+        const double onTime_s = ParamHMG_dOnTimeTimeMS / 1000.0;
+        rpcSetValueDouble(getDeviceChannel(), "ON_TIME", onTime_s);
     }
     if (switchStair || true /* allow switch off */)
     {
+        // 2. switch on/off
         rpcSetValueBool(getDeviceChannel(), "STATE", switchStair);
         updateRequestTiming(ParamHMG_RequestIntervallShort);
     }

@@ -26,8 +26,12 @@
                 <!-- 1 byte free after string -->
               </Union>
 
-              <!-- User Defined Device Basic Parameters (Type 7) -->
               <Union SizeInBit="16"><Memory CodeSegment="%MID%" Offset="12" BitOffset="0" />
+                <!-- Staircase (Type 6) AND NOT 7-->
+                <Parameter Id="%AID%_UP-%TT%%CC%007" Name="d%C%OnTimeBase"           ParameterType="%AID%_PT-DelayBase"             Offset="0" BitOffset="0" Text="Einschaltdauer Zeitbasis"             Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%008" Name="d%C%OnTimeTime"           ParameterType="%AID%_PT-DelayTime"             Offset="0" BitOffset="2" Text="Einschaltdauer Zeit"                  Value="1" />
+
+                <!-- User Defined Device Basic Parameters (Type 7) AND NOT 6 -->
                 <Parameter Id="%AID%_UP-%TT%%CC%101" Name="d%C%UDBatteryPowered"     ParameterType="%AID%_PT-UDBatteryPowered"      Offset="0" BitOffset="0" Text="Batteriebetrieben"                    Value="0" />
                 <!-- 7 bit free -->
                 <Parameter Id="%AID%_UP-%TT%%CC%102" Name="d%C%UDChannelNumber"      ParameterType="%AID%_PT-UDChannelNumber"       Offset="1" BitOffset="0" Text="Homematic-Geräte-Kanalnummer"         Value="1" />
@@ -45,6 +49,9 @@
               <ParameterRef Id="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" RefId="%AID%_UP-%TT%%CC%004" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" RefId="%AID%_UP-%TT%%CC%005" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" RefId="%AID%_UP-%TT%%CC%006" />
+              
+              <ParameterRef Id="%AID%_UP-%TT%%CC%007_R-%TT%%CC%00701" RefId="%AID%_UP-%TT%%CC%007" />
+              <ParameterRef Id="%AID%_UP-%TT%%CC%008_R-%TT%%CC%00801" RefId="%AID%_UP-%TT%%CC%008" />
               
               <!-- User Defined Parameters -->
               <ParameterRef Id="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101" RefId="%AID%_UP-%TT%%CC%101" />
@@ -202,6 +209,21 @@
 
                         <choose ParamRefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601">
                           <when test="1"><!-- == Steuerung über KNX erlauben -->
+
+                            <ParameterBlock Id="%AID%_PB-nnn" Name="d%C%StaircaseSwitch" Inline="true" Layout="Grid" ><!-- HelpContext="HMG-Verzoegerung-nach-Neustart" -->
+                              <Rows>
+                                <Row Id="%AID%_PB-nnn_R-1" Name="Row1" />
+                              </Rows>
+                              <Columns>
+                                <Column Id="%AID%_PB-nnn_C-1" Name="Col1" Width="45%" />
+                                <Column Id="%AID%_PB-nnn_C-2" Name="Col2" Width="15%" />
+                                <Column Id="%AID%_PB-nnn_C-3" Name="Col3" Width="20%" />
+                              </Columns>
+                              <ParameterSeparator Id="%AID%_PS-nnn" Text="  Einschaltdauer" Cell="1,1" />
+                              <ParameterRefRef RefId="%AID%_UP-%TT%%CC%008_R-%TT%%CC%00801" Cell="1,2" />
+                              <ParameterRefRef RefId="%AID%_UP-%TT%%CC%007_R-%TT%%CC%00701" Cell="1,3" />
+                            </ParameterBlock>
+
                             <ComObjectRefRef RefId="%AID%_O-%TT%%CC%010_R-%TT%%CC%01006" /><!--                          Text="Schalt-Befehl"              FunctionText="Gerät %C%, Eingang Schalten"               DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
                             <ComObjectRefRef RefId="%AID%_O-%TT%%CC%008_R-%TT%%CC%00806" /><!--                          Text="Treppenhaus-Schalt-Befehl"  FunctionText="Gerät %C%, Eingang Schalten (Treppenhaus)" DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
                             <ComObjectRefRef RefId="%AID%_O-%TT%%CC%005_R-%TT%%CC%00506" /><!--                          Text="Sperren"                    FunctionText="Gerät %C%, Eingang Sperre"                 DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"                              TransmitFlag="Disabled" UpdateFlag="Enabled"                            /-->
