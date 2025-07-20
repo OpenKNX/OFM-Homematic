@@ -55,6 +55,7 @@ void HomematicModule::setup()
 void HomematicModule::processAfterStartupDelay()
 {
     logDebugP("processAfterStartupDelay");
+    // updateRssi();
     logIndentUp();
     for (uint8_t i = 0; i < HMG_ChannelCount; i++)
     {
@@ -107,6 +108,9 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
         return false;
     }
 
+    uint32_t count = 0;
+    logDebugP("Known RF-Devices:");
+    logIndentUp();
     for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
     {
         // structure:
@@ -121,7 +125,13 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 
         // => <name> and <value> are present
         const char *serial1 = elemNameSerial1->GetText();
-        if (false /*strcmp(serial1, (const char *)ParamHMG_dDeviceSerial) == 0*/)
+        logDebugP("Serial: %s", serial1);
+        getDeviceDescription(serial1);
+        count++;
+
+        /* ignore details, as list of serial is the only relevant information
+
+        if (false) //* strcmp(serial1, (const char *)ParamHMG_dDeviceSerial) == 0
         {
             // => this is the device of current channel!
 
@@ -140,7 +150,7 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 
             // => level2: <name> and <value> are present
             const char *serial2 = elemNameSerial2->GetText();
-            if (true /*strcmp(serial2, (const char *)ParamHMG_dDeviceSerial) == 0*/)
+            if (true) // //* strcmp(serial2, (const char *)ParamHMG_dDeviceSerial) == 0
             {
 
                 tinyxml2::XMLElement *elemArray = elemValue2->FirstChildElement("array");
@@ -165,8 +175,6 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
                 const int32_t rssi2 = elemInt2->IntText();
 
                 logDebugP("RSSI: %s <-> %s", serial1, serial2);
-                /*
-                // TODO REMOVE // check moving to module OR replace with getParametSet for Channel :0
                 logIndentUp();
                 if (rssi1 == 65536 || rssi2 == 65536)
                 {
@@ -179,20 +187,100 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
                 }
 
                 logIndentDown();
-                */
             }
 
         }
+        */
 
     }
+    logIndentDown();
+    logDebugP("found %u device", count);
 
     logDebugP("[DONE] processRssiInfoResponse() %d ms", millis() - tStart);
+    return true;
+}
+
+bool HomematicModule::getDeviceDescription(const char *serial)
+{
+    logDebugP("getDeviceDescription(%s)", serial);
+
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>getDeviceDescription</methodName>";
+    request += "<params>";
+    hmgClient.requestAddParamAddress(request, serial, ADDRESS_CHANNEL_NONE);
+    request += "</params>";
+    request += "</methodCall>";
+
+    tinyxml2::XMLDocument doc;
+    return hmgClient.sendRequestGetResponseDoc(request, doc) && process_getDeviceDescription(doc);
+}
+
+bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc)
+{
+    const uint32_t channel = 0xff;
+
+    const uint32_t tStart = millis();
+
+    tinyxml2::XMLElement *member = hmgClient.getMethodResponseMember(doc);
+    if (member == nullptr)
+    {
+        return false;
+    }
+
+    for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
+    {
+        // structure:
+        //   <member><name>$NAME</name><value><$TYPE>$VALUE</$TYPE></value></member>
+        tinyxml2::XMLElement *memberName = member->FirstChildElement("name");
+        tinyxml2::XMLElement *memberValue = member->FirstChildElement("value");
+        CHECK_FALSE(memberName, "/methodResponse/params/param/value/struct[]/member/name")
+        CHECK_FALSE(memberValue, "/methodResponse/params/param/value/struct[]/member/value")
+
+        // => <name> and <value> are present
+        const char *pName = memberName->GetText();
+        if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
+        {
+            const double value = doubleElement->DoubleText();
+            const bool processed = false;
+            // const bool processed = _processResponseParamDouble(channel, pName, value);
+            logDebugP("%s @%d %24s(d)=%f", (processed ? "=>" : "//"), channel, pName, value);
+        }
+        else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
+        {
+            const int32_t value = i4Element->IntText();
+            const bool processed = false;
+            // const bool processed = _processResponseParamInt32(channel, pName, value);
+            logDebugP("%s @%d %24s(i)=%d", (processed ? "=>" : "//"), channel, pName, value);
+        }
+        else if (tinyxml2::XMLElement *boolElement = memberValue->FirstChildElement("boolean"))
+        {
+            const bool value = boolElement->IntText();
+            const bool processed = false;
+            // const bool processed = _processResponseParamBool(channel, pName, value);
+            logDebugP("%s @%d %24s(b)=%d", (processed ? "=>" : "//"), channel, pName, value);
+        }
+        else if (memberValue->FirstChildElement() == nullptr && memberValue->GetText() != nullptr)
+        {
+            const char* value = memberValue->GetText();
+            const bool processed = false;
+            // const bool processed = _processResponseParamString(channel, pName, value);
+            logDebugP("%s @%d %23s(s)=%s", (processed ? "=>" : "//"), channel, pName, value);
+        }
+        else
+        {
+            logDebugP("// @%d %24s(other ignored)", channel, pName);
+        }
+    }
+
+    logDebugP("[DONE] updateKOsFromMethodResponse() %d ms", millis() - tStart);
     return true;
 }
 
 void HomematicModule::showHelp()
 {
     // TODO Check and refine command definitions after first tests and extension!
+    openknx.console.printHelpLine("hmg ccuscan",    "List devices known by CCU");
     openknx.console.printHelpLine("hmgNN",          "Device overview");
     openknx.console.printHelpLine("hmgNN update",   "Update device state");
     openknx.console.printHelpLine("hmgNN temp=CC",  "Set target temperature");
@@ -204,6 +292,12 @@ bool HomematicModule::processCommand(const std::string cmd, bool diagnoseKo)
     {
         if (cmd.length() >= 5)
         {
+            if (cmd == "hmg ccuscan")
+            {
+                updateRssi();
+                return true;
+            }
+
             if (!std::isdigit(cmd[3]) || !std::isdigit(cmd[4]))
             {
                 logErrorP("=> invalid channel-number '%s'!", cmd.substr(3, 2).c_str());

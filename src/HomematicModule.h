@@ -25,6 +25,9 @@ class HomematicModule : public OpenKNX::Module
     bool updateRssi();
     bool processRssiInfoResponse(tinyxml2::XMLDocument &doc);
 
+    bool getDeviceDescription(const char *serial);
+    bool process_getDeviceDescription(tinyxml2::XMLDocument &doc);
+
   public:
     HomematicModule();
     const std::string name() override;
