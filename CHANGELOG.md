@@ -1,11 +1,13 @@
-# (geplant) v0.3
+# v0.3.0-ALPHA 2025-07-21
 
 * Feature
-  * (Draf) Support for additional device type: HM-LC-Sw1-Pl-DN-R1
+  * (Draft) Support for additional device type: HM-LC-Sw1-Pl-DN-R1
     * Reading and writing `STATE`
-    * Trigger Stairlight with writing `ON_TIME` before `STATE`
+    * Trigger Stairlight with configured time with writing `ON_TIME` before `STATE`
     * Reading and writing `INHIBIT`
   * (Draft) Custom device type with user defined params
+  * (Draft/Preparation) List all RF devices known by CCU on console
+  * (Draft) Aggregated state output for global and 5 groups (unreachable, battery warning, error)
 * ETS-UI Improvements
   * New icon for channels (replace thermostat with generic radio device)
   * Special layout for device selection
@@ -14,6 +16,7 @@
   * Generic handling of read and write commands to device 
   * Split implementation into base and device-type child classes
   * Allow requesting multiple device-channels
+  * Use RSSI and device state from device-channel :0 
 
 # 2025-01 Alpha2
 
