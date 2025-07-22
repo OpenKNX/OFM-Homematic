@@ -11,7 +11,8 @@
               <!-- Parameter Id="%AID%_P-%TT%%CC%1%HMDP%1"    Name="d%C%UD%HMDP%Comment"       ParameterType="%AID%_PT-UDComment"                                      Text="Kommentar"                                 Value=""  /-->
               <Union SizeInBit="264"><Memory CodeSegment="%MID%" Offset="%MEMOFFSET%" BitOffset="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%2" Name="d%C%UD%HMDP%Type"          ParameterType="%AID%_PT-UDDatapointType"       Offset="0" BitOffset="0" Text="Typ"                                       Value="0" />
-                <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%3" Name="d%C%UD%HMDP%Access"        ParameterType="%AID%_PT-UDAccess"              Offset="0" BitOffset="3" Text="Zugriff"                                   Value="0" />
+                <!-- 1 bit unused -->
+                <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%3" Name="d%C%UD%HMDP%Access"        ParameterType="%AID%_PT-UDAccess"              Offset="0" BitOffset="5" Text="Zugriff"                                   Value="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%4" Name="d%C%UD%HMDP%ParamName"     ParameterType="%AID%_PT-UDParamName"           Offset="1" BitOffset="0" Text="Parameter-Name"                            Value=""  />
                 <!-- 1 byte free after ParamName -->
               </Union>

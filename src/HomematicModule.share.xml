@@ -59,7 +59,7 @@
               </ParameterType>
 
               <ParameterType Id="%AID%_PT-UDDatapointType" Name="UDDatapointType">
-                <TypeRestriction Base="Value" SizeInBit="3">
+                <TypeRestriction Base="Value" SizeInBit="4">
                   <Enumeration Id="%ENID%" Value="0" Text="-" />
                   <Enumeration Id="%ENID%" Value="1" Text="action" />
                   <Enumeration Id="%ENID%" Value="2" Text="boolean" />
