@@ -164,7 +164,7 @@ void HomematicChannel::processInputKo(GroupObject &ko)
 }
 
 // Helper method to update request timing
-inline void HomematicChannel::updateRequestTiming(uint16_t intervalInSeconds)
+void HomematicChannel::updateRequestTiming(uint16_t intervalInSeconds)
 {
     _requestInterval_millis = intervalInSeconds * 1000;
     _lastRequest_millis = millis();
