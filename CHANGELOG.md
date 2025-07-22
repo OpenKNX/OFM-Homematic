@@ -1,4 +1,4 @@
-# v0.3.0-ALPHA 2025-07-21
+# v0.3.1-ALPHA 2025-07-22
 
 * Feature
   * (Draft) Support for additional device type: HM-LC-Sw1-Pl-DN-R1

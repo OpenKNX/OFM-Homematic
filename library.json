@@ -1,6 +1,6 @@
 {
     "name": "OFM-Homematic",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Gateway-module for communication with Homematic RF devices, to embed in firmware and ETS-applications based on OpenKNX",
     "keywords": [
         "knx",

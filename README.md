@@ -38,11 +38,17 @@ Zur Konfiguration in der ETS siehe [Applikationsbeschreibung](doc/Applikationsbe
 
 # Unterstützte Geräte
 
-Bislang werden ausschließlich Funk-Thermostatventile des Types HM-CC-RT-DN unterstützt. 
+Bislang werden 
+Funk-Thermostatventile des Types HM-CC-RT-DN, 
+Schaltbare Zwischensteckdosen des Types HM-LC-Sw1-Pl-DN-R1
+sowie ergänzend
+benutzerdefinierte Geräte mit manuell konfigurierbaren Parametern
+unterstützt. 
 Die Anbindung anderer Gerätetypen ist bis auf Weiteres nicht geplant.
 Bei Interesse können *nach vorheriger Absprache* Pull-Request zur Funktionsweiterung erstellt werden.
 
-## HM-CC-RT-DN Funk Heizkörperthermostat
+
+## HM-CC-RT-DN: Funk-Heizkörperthermostat
 
 ### Gelesene Werte
 
@@ -61,6 +67,55 @@ Bei Interesse können *nach vorheriger Absprache* Pull-Request zur Funktionsweit
 * Sofortigen Werteabruf von CCU auslösen (sonst in regelmäßigem Intervall)
 * Boost-Modus auslösen 
 
+
+## HM-LC-Sw1-Pl-DN-R1: Funk-Zwischenstecker-Schaltaktor 1fach
+
+### Gelesene Werte
+
+| Wert    | Beschreibung            |
+|---------|-------------------------|
+| STATE   | Aktueller Schaltzustand |
+| INHIBIT | Handbedienung gesperrt? |
+
+### Aktionen
+
+* Ein-/Ausschalten des Geräts
+* Treppenlicht-Funktion (Einschalten mit automatischem Ausschalten nach eingestellter Einschaltdauer)
+* Sofortigen Werteabruf von CCU auslösen (sonst in regelmäßigem Intervall)
+* Ein-/Ausschalten der Bediensperre
+
+
+## Benutzerdefinierte Geräte
+
+Für die Integration beliebiger Homematic-Geräte mit flexibler Auswahl von bis zu 5 Parametern innerhalb eines Geräte-Kanals.
+
+**Anwendungsfälle:**
+
+* Integration nicht explizit unterstützter Gerätetypen
+* Zugriff auf spezielle Geräteparameter
+* Prototyping neuer Geräteintegrationen
+* Erweiterte Konfiguration bestehender Geräte
+
+### Unterstützte Datentypen
+
+| Typ         | KNX DPT                                                                                 |
+|-------------|-----------------------------------------------------------------------------------------|
+| **action**  | 1.017 (Trigger)                                                                         |
+| **boolean** | 1.001 (Schalten)                                                                        |
+| **float**   | DPT 9 (16Bit Float)<br />DPT 14 (32Bit Float)<br />DPT5.001 (Prozent)                   |
+| **integer** | DPT 13 (32Bit Ganzzahl mit Vorzeichen)<br />DPT 5.005 (0..255)<br />DPT 5.001 (Prozent) |
+| **option**  | DPT 13 (32Bit Ganzzahl mit Vorzeichen)<br />DPT 5.005 (0..255)                          |
+
+### Zugriff
+ 
+* Lesen
+* Schreiben
+* **Bislang nicht unterstützt:** Über Ereignisse
+
+### Aktionen
+
+* Auslösen von bis zu 5 Aktionen durch Schreiben des Parameters
+* Sofortigen Werteabruf von CCU auslösen (sonst in regelmäßigem Intervall)
 
 
 
