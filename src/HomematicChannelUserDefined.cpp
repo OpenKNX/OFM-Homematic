@@ -62,9 +62,15 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
             break;
         }
         case 3: // float (DPT 9)
-        case 6: // float as percent (DPT5.001)
+        case 6: // float as percent (DPT 5.001)
+        case 8: // float (DPT 14)
         {
-            const double value = (type == 3) ? (double)ko.value(DPT_Value_Tempd) : (((double)ko.value(DPT_Scaling)) / 100.0);
+            const double value = (type == 3) 
+                ? (double)ko.value(DPT_Value_Tempd) 
+                : (type == 8 
+                    ? (double)ko.value(DPT_Value_Amplitude) 
+                    : ((double)ko.value(DPT_Scaling)) / 100.0
+                );
             rpcSetValueDouble(getDeviceChannel(), paramName, value);
             logTraceP("Sent float value for %s: %f", paramName, value);
             break;
@@ -93,14 +99,20 @@ bool HomematicChannelUserDefined::processResponseParamDouble(uint8_t channel, co
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
                 uint8_t type = getDatapointType(i);
-                if (type == 3) { // float type
+                if (type == 3) { // float type DPT9
                     if (setDatapointValue(i, pName, value, DPT_Value_Tempd)) {
                         logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
                         return true;
                     }
                 }
-                else if (type == 6) { // float type
+                else if (type == 6) { // float type DPT5.001
                     if (setDatapointValue(i, pName, value * 100, DPT_Scaling)) {
+                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                        return true;
+                    }
+                }
+                else if (type == 8) { // float type DPT14
+                    if (setDatapointValue(i, pName, value, DPT_Value_Amplitude)) {
                         logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
                         return true;
                     }
