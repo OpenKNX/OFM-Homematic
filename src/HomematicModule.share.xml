@@ -60,15 +60,17 @@
 
               <ParameterType Id="%AID%_PT-UDDatapointType" Name="UDDatapointType">
                 <TypeRestriction Base="Value" SizeInBit="4">
-                  <Enumeration Id="%ENID%" Value="0" Text="-" />
-                  <Enumeration Id="%ENID%" Value="1" Text="action" />
-                  <Enumeration Id="%ENID%" Value="2" Text="boolean" />
-                  <Enumeration Id="%ENID%" Value="3" Text="float (als DPT9)" />
-                  <Enumeration Id="%ENID%" Value="8" Text="float (als DPT14)" />
-                  <Enumeration Id="%ENID%" Value="6" Text="float (0..1 als 0..100%)" />
-                  <Enumeration Id="%ENID%" Value="4" Text="integer (als DPT13)" />
-                  <Enumeration Id="%ENID%" Value="7" Text="integer (0..100 als 0..100%)" />
-                  <Enumeration Id="%ENID%" Value="5" Text="option (als DPT13)" />
+                  <Enumeration Id="%ENID%"  Value="0" Text="-" />
+                  <Enumeration Id="%ENID%"  Value="1" Text="action" />
+                  <Enumeration Id="%ENID%"  Value="2" Text="boolean" />
+                  <Enumeration Id="%ENID%"  Value="3" Text="float (als DPT9)" />
+                  <Enumeration Id="%ENID%"  Value="8" Text="float (als DPT14)" />
+                  <Enumeration Id="%ENID%"  Value="6" Text="float (0..1 als 0..100%)" />
+                  <Enumeration Id="%ENID%"  Value="4" Text="integer (als DPT13)" />
+                  <Enumeration Id="%ENID%"  Value="7" Text="integer (0..100 als 0..100%)" />
+                  <Enumeration Id="%ENID%"  Value="9" Text="integer (als DPT5.005)" />
+                  <Enumeration Id="%ENID%"  Value="5" Text="option (als DPT13)" />
+                  <Enumeration Id="%ENID%" Value="10" Text="option (als DPT5.005)" />
                 </TypeRestriction>
               </ParameterType>
 

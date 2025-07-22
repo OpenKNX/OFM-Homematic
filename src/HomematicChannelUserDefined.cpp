@@ -77,9 +77,17 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
         }
         case 4: // integer (DPT 13)
         case 7: // integer as percent (DPT5.001)
-        case 5: // option (mapped to integer)
+        case 5: // option (mapped to integer / DPT 13)
+        case 9: // integer as decimal factor (DPT 5.005)
+        case 10: // integer as decimal factor (DPT 5.005)
         {
-            const int32_t value = (type != 7) ? ko.value(DPT_Value_4_Count) : ko.value(DPT_Scaling);
+            const int32_t value = (type == 7)
+                ? ko.value(DPT_Scaling)
+                : (
+                    (type == 4 || type == 5) 
+                        ? ko.value(DPT_Value_4_Count) 
+                        : ko.value(DPT_DecimalFactor)
+                );
             rpcSetValueInteger4(getDeviceChannel(), paramName, value);
             logTraceP("Sent integer value for %s: %d", paramName, value);
             break;
@@ -131,8 +139,20 @@ bool HomematicChannelUserDefined::processResponseParamInt32(uint8_t channel, con
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
                 uint8_t type = getDatapointType(i);
-                if (type == 4 || type == 5 || type == 7) { // integer or option type
-                    if (setDatapointValue(i, pName, value, (type != 7) ? DPT_Value_4_Count : DPT_Scaling)) {
+                if (type == 4 || type == 5) { // integer or option type (DPT13)
+                    if (setDatapointValue(i, pName, value, DPT_Value_4_Count)) {
+                        logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
+                        return true;
+                    }
+                }
+                else if (type == 7) { // integer or option type (DPT 5.001)
+                    if (setDatapointValue(i, pName, value, DPT_Scaling)) {
+                        logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
+                        return true;
+                    }
+                }
+                else if (type == 9 || type == 10) { // integer or option type (DPT 5.005)
+                    if (setDatapointValue(i, pName, value, DPT_DecimalFactor)) {
                         logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
                         return true;
                     }
