@@ -3,7 +3,7 @@
 # Copyright (C) 2024-2025 Cornelius Koepp
 
 name: DFA-check
-run-name: Check OFM-DFA Build
+run-name: Check OFM-Homematic Build
 
 on: [push]
 
@@ -14,9 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - oam: OAM-StateEngine
-            # knxprod_xml: StateEngine-DFA16-Release
-            target: DFA16-Release
+          - oam: OAM-Homematic
+            # knxprod_xml: HomematicGW-Release
+            target: Release
 
         # # [BUILD]: all build targets
         # target:
@@ -30,7 +30,7 @@ jobs:
 
     uses: ./.github/workflows/openknx-ofm-check.yml
     with:
-      KNXPROD_PREFIX: StateEngine
+      KNXPROD_PREFIX: HomematicGW
       oam: ${{ matrix.oam }}
       target: ${{ matrix.target }}
       # restore_branch: ${{ matrix.restore_branch }}
