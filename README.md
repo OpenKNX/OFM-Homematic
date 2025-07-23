@@ -36,6 +36,23 @@ Zur Konfiguration in der ETS siehe [Applikationsbeschreibung](doc/Applikationsbe
 | ESP32                                                                         | ungetestet |                                               |
 
 
+## Kommunikationsstruktur
+
+Die Kommunikation mit den Homematic-Geräten ist, mit der aktuellen Implementierung, 
+ausschließlich über eine CCU2 oder andere Zentrale mit kompatibler XML-RPC-Schnittstelle möglich:
+```
+                                                                           ┌─────────────────┐
+                                                                           │ Homematic-Gerät │
+┌─────────┐    ┌───────────────┐  XML-RPC  ┌─────────────────┐   BidCoS    └─────────────────┘
+│ KNX-Bus │<──>│ OFM-Homematic │<─────────>│  Homematic/CCU2 │< ─ ─ ─ ─ >  : ...             : 
+└─────────┘    └───────────────┘   LAN/IP  └─────────────────┘   868Mhz    ┌─────────────────┐
+                                                                           │ Homematic-Gerät │
+                                                                           └─────────────────┘
+                                           
+               \____OpenKnx____/           \____________________Homematic____________________/
+```
+
+
 # Unterstützte Geräte
 
 Bislang werden 
