@@ -1,0 +1,26 @@
+@startuml
+' !theme plain
+
+rectangle "KNX-Bus" as knx
+rectangle "KNX-Stack" as stack
+rectangle "OFM-Homematic" as ofm
+rectangle "Homematic/CCU2" as ccu
+rectangle "Homematic-Gerät" as hm1
+rectangle "Homematic-Gerät" as hm2
+rectangle "   .   .   .   " as dots
+
+knx <--> stack : TP (alternative KNX-IP)
+stack <--> ofm : ""
+ofm <--> ccu : "XML-RPC\nLAN/IP"
+ccu <..> hm1 : "BidCoS\n868MHz"
+ccu <..> dots : "BidCoS\n868MHz"
+ccu <..> hm2 : "BidCoS\n868MHz"
+hm1 -[hidden]r-> dots
+dots -[hidden]r-> hm2
+
+' note bottom of ofm : OpenKNX
+' note bottom of ccu : Homematic
+' note bottom of hm1 : Homematic
+' note bottom of hm2 : Homematic
+
+@enduml
