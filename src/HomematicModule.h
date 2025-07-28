@@ -34,8 +34,26 @@ class HomematicModule : public OpenKNX::Module
     bool updateRssi();
     bool processRssiInfoResponse(tinyxml2::XMLDocument &doc);
 
-    bool getDeviceDescription(const char *serial);
-    bool process_getDeviceDescription(tinyxml2::XMLDocument &doc);
+    bool getDeviceDescription(const uint8_t scannedIndex);
+    bool process_getDeviceDescription(tinyxml2::XMLDocument &doc, const uint8_t scannedIndex);
+
+    // Device scan for Function Property
+    struct DeviceSerial {
+        char serial[12];  // max 10 chars + null terminator + padding
+        char type[32];  // max 30 chars + null terminator + padding
+        char firmware[6];  // max 5 chars + null terminator
+        uint8_t encoded[5]; // encoded format: 1-2 byte prefix + 3 byte number
+    };
+    static const uint8_t MAX_SCANNED_DEVICES = 32;
+    DeviceSerial _scannedDevices[MAX_SCANNED_DEVICES];
+    uint32_t _scannedDeviceCount = 0;
+    uint32_t _invalidSerialCount = 0;
+    
+    /*
+    bool scanDevices();
+    bool processRssiInfoResponseForScan(tinyxml2::XMLDocument &doc);
+    bool encodeSerial(const char* serial, uint8_t* encoded, uint8_t& encodedLength);
+    */
 
   public:
     HomematicModule();
@@ -51,6 +69,7 @@ class HomematicModule : public OpenKNX::Module
 
     void showHelp() override;
     bool processCommand(const std::string cmd, bool diagnoseKo);
+    bool processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength) override;
 
     void updateDeviceStates(const uint8_t i, const bool unreach, const bool batteryWarn, const bool error);
 };

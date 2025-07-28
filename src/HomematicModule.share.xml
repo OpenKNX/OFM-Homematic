@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="../../Organization/knxprod-support/knx_project_20/knx-editor.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <KNX xmlns:op="http://github.com/OpenKNX/OpenKNXproducer" xmlns="http://knx.org/xml/project/20" CreatedBy="KNX MT" ToolVersion="5.1.255.16695">
+  <op:nowarn id="3" regex="HMG_getDeviceSerials" />
+  <op:nowarn id="3" regex="HMG_invokeFunctionProperty" />
+  <op:nowarn id="3" regex="HMG_invokeDeviceCount" />
+  <op:nowarn id="3" regex="HMG_invokeDeviceDetails" />
+
   <op:config name="%HMG_NumChannelsDefault%" value="2" />
 
   <ManufacturerData>
@@ -130,7 +135,9 @@
                 <Parameter Id="%AID%_UP-%TT%00005"   Name="Port"                     ParameterType="%AID%_PT-HostPort"         Offset="84" BitOffset="0"  Text="Port"                                  Value="2001"                                              />
                 <Parameter Id="%AID%_UP-%TT%00006"   Name="RequestIntervall"         ParameterType="%AID%_PT-RequestIntervallSeconds"         Offset="86" BitOffset="2"  Text="Update-Intervall"       Value="60"                          SuffixText="s"        />
                 <Parameter Id="%AID%_UP-%TT%00007"   Name="RequestIntervallShort"    ParameterType="%AID%_PT-RequestIntervallSecondsShort"    Offset="88" BitOffset="0"  Text="Update-Intervall kurz (nach Scheiben)"  Value="10"          SuffixText="s"        />
-             </Union>
+              </Union>
+              <Parameter Id="%AID%_P-%TT%00008"    Name="CcuDevices"         ParameterType="%AID%_PT-Text512Byte"  Text="Bekannte Geräte"                     Value="" />
+
             </Parameters>
             <ParameterRefs>
               <ParameterRef Id="%AID%_UP-%TT%00001_R-%TT%0000101" RefId="%AID%_UP-%TT%00001" />
@@ -140,6 +147,7 @@
               <ParameterRef Id="%AID%_UP-%TT%00005_R-%TT%0000501" RefId="%AID%_UP-%TT%00005" />
               <ParameterRef Id="%AID%_UP-%TT%00006_R-%TT%0000601" RefId="%AID%_UP-%TT%00006" />
               <ParameterRef Id="%AID%_UP-%TT%00007_R-%TT%0000701" RefId="%AID%_UP-%TT%00007" />
+              <ParameterRef  Id="%AID%_P-%TT%00008_R-%TT%0000801"  RefId="%AID%_P-%TT%00008" />
             </ParameterRefs>
             <ComObjectTable>
               <!-- TODO ko for connection state to CCU -->
@@ -189,6 +197,9 @@
               <ComObjectRef Id="%AID%_O-%TT%00151_R-%TT%0015101" RefId="%AID%_O-%TT%00151" />
               <ComObjectRef Id="%AID%_O-%TT%00152_R-%TT%0015201" RefId="%AID%_O-%TT%00152" />
             </ComObjectRefs>
+            <Script>
+              <op:include href="HomematicModule.script.js" type="script" />
+            </Script>
           </Static>
           <Dynamic>
             <Channel Name="HmgChannel" Text="HomeMatic" Number="%PREFIX%" Id="%AID%_CH-%PREFIX%" Icon="crop-square--square-medium" >
@@ -248,6 +259,10 @@
               </ParameterBlock>
 
               <ParameterBlock Id="%AID%_PB-nnn" Name="MmDevices" Text="Geräteübersicht" Icon="view-list-outline" HelpContext="Empty" ShowInComObjectTree="false">
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräteübersicht" UIHint="Headline" />
+                <Button Id="%AID%_B-%TT%00001" Text="Bekannte Geräte ermitteln" EventHandler="HMG_ccuKnownDevices" EventHandlerOnline="ConnectionOriented" />
+                <ParameterRefRef RefId="%AID%_P-%TT%00008_R-%TT%0000801" IndentLevel="1" />
+
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräteübersicht" UIHint="Headline" />
 
                 <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceTable" Inline="true" Layout="Table">

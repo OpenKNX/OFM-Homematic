@@ -183,7 +183,7 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
     }
 
     uint32_t count = 0;
-    logDebugP("Known RF-Devices:");
+    logDebugP("RF-Devices:");
     logIndentUp();
     for (/* init before*/; member != nullptr; member = member->NextSiblingElement("member"))
     {
@@ -200,7 +200,13 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
         // => <name> and <value> are present
         const char *serial1 = elemNameSerial1->GetText();
         logDebugP("Serial: %s", serial1);
-        getDeviceDescription(serial1);
+        
+        // Copy serial to _scannedDevices if there's space
+        if (count < MAX_SCANNED_DEVICES) {
+            strncpy(_scannedDevices[count].serial, serial1, 10);
+            _scannedDevices[count].serial[10] = '\0';
+        }
+        // getDeviceDescription(serial1);
         count++;
 
         /* ignore details, as list of serial is the only relevant information
@@ -268,15 +274,16 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 
     }
     logIndentDown();
-    logDebugP("found %u device", count);
+    _scannedDeviceCount = count;
 
-    logDebugP("[DONE] processRssiInfoResponse() %d ms", millis() - tStart);
+    logDebugP("[DONE] processRssiInfoResponse() %d ms => found %d", millis() - tStart, count);
     return true;
 }
 
-bool HomematicModule::getDeviceDescription(const char *serial)
+bool HomematicModule::getDeviceDescription(const uint8_t scannedIndex)
 {
-    logDebugP("getDeviceDescription(%s)", serial);
+    const char* serial = _scannedDevices[scannedIndex].serial;
+    logDebugP("getDeviceDescription(%d) -> %s", scannedIndex, serial);
 
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     request += "<methodCall>";
@@ -287,10 +294,10 @@ bool HomematicModule::getDeviceDescription(const char *serial)
     request += "</methodCall>";
 
     tinyxml2::XMLDocument doc;
-    return hmgClient.sendRequestGetResponseDoc(request, doc) && process_getDeviceDescription(doc);
+    return hmgClient.sendRequestGetResponseDoc(request, doc) && process_getDeviceDescription(doc, scannedIndex);
 }
 
-bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc)
+bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc, const uint8_t scannedIndex)
 {
     const uint32_t channel = 0xff;
 
@@ -313,6 +320,7 @@ bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc)
 
         // => <name> and <value> are present
         const char *pName = memberName->GetText();
+        /*
         if (tinyxml2::XMLElement *doubleElement = memberValue->FirstChildElement("double"))
         {
             const double value = doubleElement->DoubleText();
@@ -334,12 +342,30 @@ bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc)
             // const bool processed = _processResponseParamBool(channel, pName, value);
             logDebugP("%s @%d %24s(b)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
-        else if (memberValue->FirstChildElement() == nullptr && memberValue->GetText() != nullptr)
+        else 
+        */
+        if (memberValue->FirstChildElement() == nullptr && memberValue->GetText() != nullptr)
         {
             const char* value = memberValue->GetText();
             const bool processed = false;
+
             // const bool processed = _processResponseParamString(channel, pName, value);
+            if (strcmp(pName, "TYPE") == 0)
+            {
+                // Store device type
+                const size_t len = sizeof(_scannedDevices[scannedIndex].type) - 1;
+                strncpy(_scannedDevices[scannedIndex].type, value, len);
+                _scannedDevices[scannedIndex].type[len] = '\0';
+            }
+            else if (strcmp(pName, "FIRMWARE") == 0)
+            {
+                // Store firmware version
+                const size_t len = sizeof(_scannedDevices[scannedIndex].firmware) - 1;
+                strncpy(_scannedDevices[scannedIndex].firmware, value, len);
+                _scannedDevices[scannedIndex].firmware[len] = '\0';
+            }
             logDebugP("%s @%d %23s(s)=%s", (processed ? "=>" : "//"), channel, pName, value);
+            // TODO collect here: "$TYPE ($FIRMWARE)""
         }
         else
         {
@@ -349,6 +375,94 @@ bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc)
 
     logDebugP("[DONE] updateKOsFromMethodResponse() %d ms", millis() - tStart);
     return true;
+}
+
+#define HMG_FUNCPROP_OBJECT_INDEX (160)
+#define HMG_FUNCPROP_ID (7)
+#define HMG_FUNCPROP_F_SCAN_RESULT (0)
+#define HMG_FUNCPROP_F_DEV_INFO (1)
+
+bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength)
+{
+    logDebugP("processFunctionProperty(..)");
+    if (!knx.configured() || objectIndex != HMG_FUNCPROP_OBJECT_INDEX || propertyId != HMG_FUNCPROP_ID || length < 1 || data == nullptr || resultData == nullptr)
+        return false;
+
+    logDebugP("processFunctionProperty(..) ... // data:");
+    logHexDebugP(data, length);
+
+    switch (data[0])
+    {
+        case HMG_FUNCPROP_F_SCAN_RESULT:
+        {
+            logDebugP("FuncProp1");
+            updateRssi(); // Ensure list of known devices
+
+            const uint8_t resultCode = 0; // OK
+            const uint16_t found = constrain(_scannedDeviceCount, 0, 0xffff);
+            const uint8_t ignored = constrain(_invalidSerialCount, 0, 0xff);
+
+            uint8_t i = 0;
+            resultData[i++] = resultCode;
+            resultData[i++] = (found >> 8) & 0xFF;
+            resultData[i++] = found & 0xFF;
+            resultData[i++] = ignored;
+
+            resultLength = i;
+            return true;        
+        }
+        case HMG_FUNCPROP_F_DEV_INFO:
+        {
+            if (length < 2)
+            {
+                logErrorP("FuncProp2");
+                return false;
+            }
+
+            const uint8_t devIndex = data[1];
+            logDebugP("FuncProp2(%d)", devIndex);
+            
+            uint8_t i = 0;
+            if (devIndex < MAX_SCANNED_DEVICES)
+            {
+                const uint8_t resultCode = 0; // OK
+                resultData[i++] = resultCode;
+                // use stored serial
+                for (uint8_t j = 0; j < 10; j++)
+                {
+                    resultData[i++] = _scannedDevices[devIndex].serial[j];
+                }
+                resultData[i++] = '\0';
+
+                getDeviceDescription(devIndex);
+                for (uint8_t j = 0; (j < 30) && (_scannedDevices[devIndex].type[j] != '\0') ; j++)
+                {
+                    resultData[i++] = _scannedDevices[devIndex].type[j];
+                }
+                resultData[i++] = '\0';                
+            }
+            else
+            {
+                const uint8_t resultCode = 0; // FAIL
+                resultData[i++] = resultCode;
+                resultData[i++] = 'X';
+                resultData[i++] = 'X';
+                resultData[i++] = 'X';
+                resultData[i++] = '9';
+                resultData[i++] = '9';
+                resultData[i++] = '9';
+                resultData[i++] = '9';
+                resultData[i++] = '9';
+                resultData[i++] = '9';
+                resultData[i++] = '9';
+                resultData[i++] = '\0';
+            }
+
+            resultLength = i;
+            return (resultData[0] == 0); // TODO check other transfer of this flag
+        }
+    }
+    return false; // No valid function property handled
 }
 
 void HomematicModule::showHelp()
