@@ -7,6 +7,12 @@
     <Manufacturer>
       <ApplicationPrograms>
         <ApplicationProgram>
+
+          <op:part name="DEVICE" href="HomematicDevicesOverview.part.xml" instances="32">
+            <op:param name="%D%"  value="1" increment="1" digits="1" />
+            <op:param name="%DD%" value="1" increment="1" digits="2" />
+          </op:part>
+          
           <Static>
             <ParameterTypes>
               <!-- Number of channels (module specific) -->
@@ -241,6 +247,31 @@
                 <ComObjectRefRef RefId="%AID%_O-%TT%00152_R-%TT%0015201" />
               </ParameterBlock>
 
+              <ParameterBlock Id="%AID%_PB-nnn" Name="MmDevices" Text="Geräteübersicht" Icon="view-list-outline" HelpContext="Empty" ShowInComObjectTree="false">
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräteübersicht" UIHint="Headline" />
+
+                <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceTable" Inline="true" Layout="Table">
+                  <Rows>
+
+                    <op:usePart name="DEVICE" xpath="//ParameterBlock[@Name='DEVICE_ROW']/Rows/*" />
+
+                  </Rows>
+                  <Columns>
+                    <Column Id="%AID%_PB-nnn_C-1" Name="Col1" Width="24%" Text="Name"                    />
+                    <Column Id="%AID%_PB-nnn_C-2" Name="Col2" Width="81%" Text="Geräte-Typ"              />
+                    <Column Id="%AID%_PB-nnn_C-3" Name="Col3" Width="6%"  Text="!"                       />
+                    <Column Id="%AID%_PB-nnn_C-4" Name="Col4" Width="17%" Text="Seriennr."               />
+                    <Column Id="%AID%_PB-nnn_C-5" Name="Col5" Width="6%"  Text="1"                       />
+                    <Column Id="%AID%_PB-nnn_C-6" Name="Col6" Width="6%"  Text="2"                       />
+                    <Column Id="%AID%_PB-nnn_C-7" Name="Col7" Width="6%"  Text="3"                       />
+                    <Column Id="%AID%_PB-nnn_C-8" Name="Col8" Width="6%"  Text="4"                       />
+                    <Column Id="%AID%_PB-nnn_C-9" Name="Col9" Width="6%"  Text="5"                       />
+                  </Columns>
+                  <op:usePart name="DEVICE" xpath="//ParameterBlock[@Name='DEVICE_TABLE']/*" />
+                </ParameterBlock>
+
+              </ParameterBlock>
+              
               <!-- all channels: -->
               <!--
               -->
