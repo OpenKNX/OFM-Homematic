@@ -149,6 +149,11 @@ bool RpcUtil::sendRequestGetResponseDoc(arduino::String &request, tinyxml2::XMLD
     // logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
 
     HTTPClient http;
+
+    // reduce timeout
+    http.setTimeout(2000);
+    // http.setConnectTimeout(500);
+
     /*
     String url = "http://";
     url += (const char *)ParamHMG_Host;
