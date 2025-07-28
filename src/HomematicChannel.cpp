@@ -74,15 +74,19 @@ bool HomematicChannel::update()
     bool success = true;
     for (uint8_t i = 0; (i < numChannels) && success; i++)
     {
+        // TODO split http requests
+
         logDebugP("getParamset('%s:%u', VALUES)", (const char *)ParamHMG_dDeviceSerial, channels[i]);
-        String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        request += "<methodCall>";
-        request += "<methodName>getParamset</methodName>";
-        request += "<params>";
-        hmgClient.requestAddParamAddress(request, (const char *)ParamHMG_dDeviceSerial, channels[i]);
-        hmgClient.requestAddParamString(request, "VALUES");
-        request += "</params>";
-        request += "</methodCall>";
+        String request;
+        request.reserve(200); // >=192+1
+        request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        request += "<methodCall>"; // 12 chars
+        request += "<methodName>getParamset</methodName>"; // 36 chars
+        request += "<params>"; // 8 chars
+        hmgClient.requestAddParamAddress(request, (const char *)ParamHMG_dDeviceSerial, channels[i]); // 61 chars
+        hmgClient.requestAddParamString(request, "VALUES"); // 53 chars
+        request += "</params>"; // 9 chars
+        request += "</methodCall>"; // 13 chars
 
         tinyxml2::XMLDocument doc;
         success = hmgClient.sendRequestGetResponseDoc(request, doc) && updateKOsFromMethodResponse(doc, channels[i]);

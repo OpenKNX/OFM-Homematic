@@ -80,6 +80,7 @@ bool RpcUtil::rpcSetValueBool(const char* deviceSerial, const uint8_t channel, c
 bool RpcUtil::rpcSetValueInteger4(const char* deviceSerial, const uint8_t channel, const char * paramName, int32_t value)
 {
     String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    // TODO reserve expected length
     request += "<methodCall>";
     request += "<methodName>setValue</methodName>";
     request += "<params>";
