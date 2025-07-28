@@ -220,26 +220,26 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="  Zyklischer Datenabruf" />
                 <ParameterRefRef RefId="%AID%_UP-%TT%00006_R-%TT%0000601" IndentLevel="1" /><!-- HelpContext="TODO"  -->
                 <ParameterRefRef RefId="%AID%_UP-%TT%00007_R-%TT%0000701" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+  
+                <ComObjectRefRef RefId="%AID%_O-%TT%00100_R-%TT%0010001" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00101_R-%TT%0010101" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00102_R-%TT%0010201" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00110_R-%TT%0011001" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00111_R-%TT%0011101" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00112_R-%TT%0011201" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00120_R-%TT%0012001" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00121_R-%TT%0012101" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00122_R-%TT%0012201" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00130_R-%TT%0013001" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00131_R-%TT%0013101" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00132_R-%TT%0013201" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00140_R-%TT%0014001" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00141_R-%TT%0014101" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00142_R-%TT%0014201" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00150_R-%TT%0015001" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00151_R-%TT%0015101" />
+                <ComObjectRefRef RefId="%AID%_O-%TT%00152_R-%TT%0015201" />
               </ParameterBlock>
-
-              <ComObjectRefRef RefId="%AID%_O-%TT%00100_R-%TT%0010001" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00101_R-%TT%0010101" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00102_R-%TT%0010201" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00110_R-%TT%0011001" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00111_R-%TT%0011101" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00112_R-%TT%0011201" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00120_R-%TT%0012001" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00121_R-%TT%0012101" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00122_R-%TT%0012201" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00130_R-%TT%0013001" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00131_R-%TT%0013101" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00132_R-%TT%0013201" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00140_R-%TT%0014001" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00141_R-%TT%0014101" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00142_R-%TT%0014201" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00150_R-%TT%0015001" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00151_R-%TT%0015101" />
-              <ComObjectRefRef RefId="%AID%_O-%TT%00152_R-%TT%0015201" />
 
               <!-- all channels: -->
               <!--
