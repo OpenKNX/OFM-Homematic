@@ -23,7 +23,7 @@ const std::string HomematicChannel::name()
 
 void HomematicChannel::setup()
 {
-    _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable;
+    _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable && (ParamHMG_dDeviceSerial[0] != '\0');
     if (_channelActive)
     {
         _allowedWriting = ParamHMG_dWrite;
