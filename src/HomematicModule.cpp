@@ -50,20 +50,18 @@ void HomematicModule::setup()
     }
     for (uint8_t _channelIndex = 0; _channelIndex < HMG_ChannelCount; _channelIndex++)
     {
-        // TODO ensure channel is active (but inactive channels should not create errors or warnings)
-        bool _channelActive;
-        _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable;
-        if (!_channelActive)
-            continue;
-
-        // init group-assignments by config params
-        _devicesUnknown |= ((uint64_t)1 << _channelIndex);
-        _groups[0] |= ((uint64_t)1 << _channelIndex);
-        _groups[1] |= ((uint64_t)ParamHMG_dGroup1 << _channelIndex);
-        _groups[2] |= ((uint64_t)ParamHMG_dGroup2 << _channelIndex);
-        _groups[3] |= ((uint64_t)ParamHMG_dGroup3 << _channelIndex);
-        _groups[4] |= ((uint64_t)ParamHMG_dGroup4 << _channelIndex);
-        _groups[5] |= ((uint64_t)ParamHMG_dGroup5 << _channelIndex);
+        // TODO ensure channel is active (but inactive channels should not create errors or warnings) and include in Channel Implementation
+        if ((ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable)
+        {
+            // init group-assignments by config params
+            _devicesUnknown |= ((uint64_t)1 << _channelIndex);
+            _groups[0] |= ((uint64_t)1 << _channelIndex);
+            _groups[1] |= ((uint64_t)ParamHMG_dGroup1 << _channelIndex);
+            _groups[2] |= ((uint64_t)ParamHMG_dGroup2 << _channelIndex);
+            _groups[3] |= ((uint64_t)ParamHMG_dGroup3 << _channelIndex);
+            _groups[4] |= ((uint64_t)ParamHMG_dGroup4 << _channelIndex);
+            _groups[5] |= ((uint64_t)ParamHMG_dGroup5 << _channelIndex);
+        }
     }
     for (uint8_t i = 0; i < HMG_ChannelCount; i++)
     {
