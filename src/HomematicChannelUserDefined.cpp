@@ -14,6 +14,20 @@ const std::string HomematicChannelUserDefined::name()
     return "HMG-UserDefined";
 }
 
+void HomematicChannelUserDefined::setup()
+{
+    _datapointType[0] = ParamHMG_dUD1Type;
+    _datapointType[1] = ParamHMG_dUD2Type;
+    _datapointType[2] = ParamHMG_dUD3Type;
+    _datapointType[3] = ParamHMG_dUD4Type;
+    _datapointType[4] = ParamHMG_dUD5Type;
+    _datapointAccess[0] = ParamHMG_dUD1Access;
+    _datapointAccess[1] = ParamHMG_dUD2Access;
+    _datapointAccess[2] = ParamHMG_dUD3Access;
+    _datapointAccess[3] = ParamHMG_dUD4Access;
+    _datapointAccess[4] = ParamHMG_dUD5Access;
+}
+
 void HomematicChannelUserDefined::processDeviceSpecificInputKo(GroupObject &ko)
 {
     uint8_t koIndex = HMG_KoCalcIndex(ko.asap());
@@ -106,24 +120,27 @@ bool HomematicChannelUserDefined::processResponseParamDouble(uint8_t channel, co
         if (isDatapointConfigured(i) && isDatapointReadable(i)) {
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
-                uint8_t type = getDatapointType(i);
-                if (type == 3) { // float type DPT9
-                    if (setDatapointValue(i, pName, value, DPT_Value_Tempd)) {
-                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
-                        return true;
-                    }
-                }
-                else if (type == 6) { // float type DPT5.001
-                    if (setDatapointValue(i, pName, value * 100, DPT_Scaling)) {
-                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
-                        return true;
-                    }
-                }
-                else if (type == 8) { // float type DPT14
-                    if (setDatapointValue(i, pName, value, DPT_Value_Amplitude)) {
-                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
-                        return true;
-                    }
+                uint8_t type = _datapointType[i];
+                switch (type)
+                {
+                    case 3: // float type DPT9
+                        if (setDatapointValue(i, pName, value, DPT_Value_Tempd)) {
+                            logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                            return true;
+                        }
+                        break;
+                    case 6: // float type DPT5.001
+                        if (setDatapointValue(i, pName, value * 100, DPT_Scaling)) {
+                            logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                            return true;
+                        }
+                        break;
+                    case 8: // float type DPT14
+                        if (setDatapointValue(i, pName, value, DPT_Value_Amplitude)) {
+                            logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                            return true;
+                        }
+                        break;
                 }
             }
         }
@@ -138,24 +155,32 @@ bool HomematicChannelUserDefined::processResponseParamInt32(uint8_t channel, con
         if (isDatapointConfigured(i) && isDatapointReadable(i)) {
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
-                uint8_t type = getDatapointType(i);
-                if (type == 4 || type == 5) { // integer or option type (DPT13)
-                    if (setDatapointValue(i, pName, value, DPT_Value_4_Count)) {
-                        logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
-                        return true;
-                    }
+                uint8_t type = _datapointType[i];
+                
+                // Set datapoint value based on type and log if successful
+                bool success = false;
+                switch (type) {
+                    case 4:
+                    case 5:
+                        // integer or option type (DPT13)
+                        success = setDatapointValue(i, pName, value, DPT_Value_4_Count);
+                        break;
+                    case 7:
+                        // integer or option type (DPT 5.001)
+                        success = setDatapointValue(i, pName, value, DPT_Scaling);
+                        break;
+                    case 9:
+                    case 10:
+                        // integer or option type (DPT 5.005)
+                        success = setDatapointValue(i, pName, value, DPT_DecimalFactor);
+                        break;
+                    default:
+                        continue; // Skip unsupported types
                 }
-                else if (type == 7) { // integer or option type (DPT 5.001)
-                    if (setDatapointValue(i, pName, value, DPT_Scaling)) {
-                        logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
-                        return true;
-                    }
-                }
-                else if (type == 9 || type == 10) { // integer or option type (DPT 5.005)
-                    if (setDatapointValue(i, pName, value, DPT_DecimalFactor)) {
-                        logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
-                        return true;
-                    }
+                
+                if (success) {
+                    logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
+                    return true;
                 }
             }
         }
@@ -167,15 +192,18 @@ bool HomematicChannelUserDefined::processResponseParamBool(uint8_t channel, cons
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < 5; i++) {
+        const uint8_t type = _datapointType[i]; // TODO used in isDatapointConfigured
         if (isDatapointConfigured(i) && isDatapointReadable(i)) {
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
-                uint8_t type = getDatapointType(i);
-                if (type == 1 || type == 2) { // action or boolean type
-                    if (setDatapointValue(i, pName, value, DPT_Switch)) {
-                        logTraceP("Updated bool datapoint %d (%s) with value: %s", i + 1, pName, value ? "true" : "false");
-                        return true;
-                    }
+                switch (type) {
+                    case 1: // action type (DPT 1.017)
+                    case 2: // boolean type (DPT 1)
+                        if (setDatapointValue(i, pName, value, DPT_Switch)) {
+                            logTraceP("Updated bool datapoint %d (%s) with value: %s", i + 1, pName, value ? "true" : "false");
+                            return true;
+                        }
+                        break;
                 }
             }
         }
@@ -186,84 +214,52 @@ bool HomematicChannelUserDefined::processResponseParamBool(uint8_t channel, cons
 // Helper methods using parameter macros
 bool HomematicChannelUserDefined::isDatapointConfigured(uint8_t index) const
 {
-    return (index < 5) && (getDatapointType(index) != 0);
-}
-
-uint8_t HomematicChannelUserDefined::getDatapointType(uint8_t index) const
-{
-    switch (index) {
-        case 0: return ParamHMG_dUD1Type;
-        case 1: return ParamHMG_dUD2Type;
-        case 2: return ParamHMG_dUD3Type;
-        case 3: return ParamHMG_dUD4Type;
-        case 4: return ParamHMG_dUD5Type;
-        default: return 0;
-    }
-}
-
-// Helper method to get access parameter for datapoint
-uint8_t HomematicChannelUserDefined::getDatapointAccess(uint8_t index) const
-{
-    switch (index) {
-        case 0: return ParamHMG_dUD1Access;
-        case 1: return ParamHMG_dUD2Access;
-        case 2: return ParamHMG_dUD3Access;
-        case 3: return ParamHMG_dUD4Access;
-        case 4: return ParamHMG_dUD5Access;
-        default: return 0;
-    }
+    return (index < 5) && (_datapointType[index] != 0);
 }
 
 bool HomematicChannelUserDefined::isDatapointReadable(uint8_t index) const
 {
-    uint8_t access = getDatapointAccess(index);
-    return access != 0 && (access & 0x01) != 0; // L bit (lesen)
+    return (index < 5) && (_datapointAccess[index] & 0x01); // L bit (lesen)
 }
 
 bool HomematicChannelUserDefined::isDatapointWritable(uint8_t index) const
 {
-    uint8_t access = getDatapointAccess(index);
-    return access != 0 && (access & 0x02) != 0; // W bit (schreiben)
+    return (index < 5) && (_datapointAccess[index] & 0x02); // W bit (schreiben)
 }
 
 bool HomematicChannelUserDefined::isDatapointEventBased(uint8_t index) const
 {
-    uint8_t access = getDatapointAccess(index);
-    return access != 0 && (access & 0x04) != 0; // E bit (ereignisse)
+    return (index < 5) && (_datapointAccess[index] & 0x04); // E bit (ereignisse)
 }
 
-const char*  HomematicChannelUserDefined::getDatapointParamName(uint8_t index) const
+const char* HomematicChannelUserDefined::getDatapointParamName(uint8_t index) const
 {
-    switch (index) {
-        case 0: return (const char*)ParamHMG_dUD1ParamName;
-        case 1: return (const char*)ParamHMG_dUD2ParamName;
-        case 2: return (const char*)ParamHMG_dUD3ParamName;
-        case 3: return (const char*)ParamHMG_dUD4ParamName;
-        case 4: return (const char*)ParamHMG_dUD5ParamName;
-        default: return "";
-    }
-}
+    #define HMG_dUD_ParamName_Distance (HMG_dUD2ParamName - HMG_dUD1ParamName)
+    static_assert(HMG_dUD2ParamName == HMG_dUD1ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 1 and 2");
+    static_assert(HMG_dUD3ParamName == HMG_dUD2ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 2 and 3");
+    static_assert(HMG_dUD4ParamName == HMG_dUD3ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 3 and 4");
+    static_assert(HMG_dUD5ParamName == HMG_dUD4ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 4 and 5");
 
-// Helper method to get KO index for datapoint
-uint8_t HomematicChannelUserDefined::getDatapointKoIndex(uint8_t datapointIndex) const
-{
-    switch (datapointIndex) {
-        case 0: return HMG_KoKOdUD1Val;
-        case 1: return HMG_KoKOdUD2Val;
-        case 2: return HMG_KoKOdUD3Val;
-        case 3: return HMG_KoKOdUD4Val;
-        case 4: return HMG_KoKOdUD5Val;
-        default: return 0; // Invalid index
-    }
+    return (index < 5) ? (const char*)(knx.paramData(HMG_ParamCalcIndex(HMG_dUD1ParamName + index * HMG_dUD_ParamName_Distance))) : "";
 }
 
 // Helper to set GroupObject value with DPT
 bool HomematicChannelUserDefined::setDatapointValue(uint8_t datapointIndex, const char* paramName, const KNXValue& value, const Dpt& dpt)
 {
-    uint8_t koIndex = getDatapointKoIndex(datapointIndex);
-    if (koIndex == 0) return false;
-    
-    GroupObject& koObj = knx.getGroupObject(HMG_KoCalcNumber(koIndex));
-    koObj.valueCompare(value, dpt);
-    return true;
+    if (datapointIndex < 5)
+    {
+        #define HMG_KoKOdUD_Val_Distance (HMG_KoKOdUD2Val - HMG_KoKOdUD1Val)
+        static_assert(HMG_KoKOdUD2Val ==  HMG_KoKOdUD1Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 1 and 2");
+        static_assert(HMG_KoKOdUD3Val ==  HMG_KoKOdUD2Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 2 and 3");
+        static_assert(HMG_KoKOdUD4Val ==  HMG_KoKOdUD3Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 3 and 4");
+        static_assert(HMG_KoKOdUD5Val ==  HMG_KoKOdUD4Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 4 and 5");
+
+        GroupObject& koObj = knx.getGroupObject(HMG_KoCalcNumber(HMG_KoKOdUD1Val + datapointIndex * HMG_KoKOdUD_Val_Distance));
+        koObj.valueCompare(value, dpt);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

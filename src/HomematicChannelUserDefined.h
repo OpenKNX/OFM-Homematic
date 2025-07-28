@@ -13,19 +13,18 @@
 class HomematicChannelUserDefined : public HomematicChannel
 {
   private:
+    uint8_t _datapointType[5];
+    uint8_t _datapointAccess[5];
+
     // Helper methods for datapoint configuration
     bool isDatapointConfigured(uint8_t index) const;
     bool isDatapointReadable(uint8_t index) const;
     bool isDatapointWritable(uint8_t index) const;
     bool isDatapointEventBased(uint8_t index) const;
-    uint8_t getDatapointType(uint8_t index) const;
     const char* getDatapointParamName(uint8_t index) const;
     
     // Helper method for processing individual datapoint KOs
     void processInputKo(uint8_t access, uint8_t type, const uint32_t posParamName, GroupObject &ko);
-    
-    // Helper method to get KO index for datapoint
-    uint8_t getDatapointKoIndex(uint8_t datapointIndex) const;
     
     // Helper method to get access parameter for datapoint
     uint8_t getDatapointAccess(uint8_t index) const;
@@ -38,6 +37,7 @@ class HomematicChannelUserDefined : public HomematicChannel
     virtual ~HomematicChannelUserDefined() = default;
 
     const std::string name() override;
+    void setup() override;
     
     // Device-specific implementations
     void processDeviceSpecificInputKo(GroupObject &ko) override;
