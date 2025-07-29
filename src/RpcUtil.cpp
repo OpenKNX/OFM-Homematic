@@ -178,7 +178,7 @@ bool RpcUtil::sendRequestGetResponseDoc(arduino::String &request, tinyxml2::XMLD
     if (httpStatus != 200)
     {
         http.end();
-        logErrorP("POST request with status-code %d", httpStatus);
+        logErrorP("POST returned http %d", httpStatus);
         return false;
     }
 

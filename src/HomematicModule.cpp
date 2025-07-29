@@ -517,7 +517,7 @@ bool HomematicModule::processCommand(const std::string cmd, bool diagnoseKo)
 
         if (!std::isdigit(cmd[3]) || !std::isdigit(cmd[4]))
         {
-            logErrorP("=> invalid channel-number '%s'!", cmd.substr(3, 2).c_str());
+            logErrorP("=> invalid channel '%s'!", cmd.substr(3, 2).c_str());
             return false;
         }
 
@@ -532,7 +532,7 @@ bool HomematicModule::processCommand(const std::string cmd, bool diagnoseKo)
         }
         else
         {
-            logInfoP("=> unused channel-number %u!", channelIdx + 1);
+            logInfoP("=> unused channel %u!", channelIdx + 1);
         }
     }
     return false;

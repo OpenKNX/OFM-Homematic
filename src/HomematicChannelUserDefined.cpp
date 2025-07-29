@@ -54,7 +54,7 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
 
     const char* paramName = (const char*)knx.paramData(HMG_ParamCalcIndex(posParamName));
     if ((access & 0x02) == 0) { // W bit (schreiben) not set
-        logDebugP("Datapoint (%s) is not writable", paramName);
+        logTraceP("Datapoint (%s) is not writable", paramName);
         return;
     }
     
@@ -72,7 +72,7 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
         {
             const bool value = ko.value(DPT_Switch);
             rpcSetValueBool(getDeviceChannel(), paramName, value);
-            logTraceP("Sent boolean value for %s: %s", paramName, value ? "true" : "false");
+            logTraceP("Sent boolean value for %s: %d", paramName, value);
             break;
         }
         case 3: // float (DPT 9)

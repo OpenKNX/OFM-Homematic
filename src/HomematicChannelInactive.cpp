@@ -17,7 +17,7 @@ void HomematicChannelInactive::setup()
 {
     // => _channelActive = false;
     // => _running = false;
-    logDebugP("NO device configured");
+    logDebugP("NO device");
 }
 
 void HomematicChannelInactive::loop()

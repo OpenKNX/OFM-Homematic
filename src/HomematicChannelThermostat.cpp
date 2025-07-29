@@ -83,10 +83,12 @@ void HomematicChannelThermostat::processDeviceSpecificInputKo(GroupObject &ko)
             }
             break;
         }
+        /*
         default:
             // Unknown KO for this device type
             logTraceP("Unknown KO index for device type 1: %d", HMG_KoCalcIndex(ko.asap()));
             break;
+        */
     }
 }
 

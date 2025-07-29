@@ -68,10 +68,12 @@ void HomematicChannelSwitchActuator::processDeviceSpecificInputKo(GroupObject &k
             }
             break;
         }
+        /*
         default:
             // Unknown KO for this device type
             logTraceP("Unknown KO index for device type 6: %d", HMG_KoCalcIndex(ko.asap()));
             break;
+        */
     }
 }
 
