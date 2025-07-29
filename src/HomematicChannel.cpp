@@ -54,8 +54,7 @@ void HomematicChannel::loop()
             {
                 KoHMG_KOdReachable.objectWritten();
             }
-            _requestInterval_millis = ParamHMG_RequestIntervall * 1000;
-            _lastRequest_millis = millis();
+            updateRequestTiming();
         }
     }
 }
@@ -157,7 +156,7 @@ void HomematicChannel::processInputKo(GroupObject &ko)
             {
                 const bool success = update();
                 KoHMG_KOdReachable.value(success, DPT_Switch);
-                updateRequestTiming(ParamHMG_RequestIntervall);
+                updateRequestTiming(false);
             }
     }
     else
@@ -168,9 +167,9 @@ void HomematicChannel::processInputKo(GroupObject &ko)
 }
 
 // Helper method to update request timing
-void HomematicChannel::updateRequestTiming(uint16_t intervalInSeconds)
+void HomematicChannel::updateRequestTiming(bool useShortInterval)
 {
-    _requestInterval_millis = intervalInSeconds * 1000;
+    _requestInterval_millis = (useShortInterval ? ParamHMG_RequestIntervallShort : ParamHMG_RequestIntervall) * 1000;
     _lastRequest_millis = millis();
 }
 

@@ -45,7 +45,7 @@ class HomematicChannel : public OpenKNX::Channel
 
     // Common device operations
     bool update();
-    void updateRequestTiming(uint16_t intervalInSeconds);
+    void updateRequestTiming(bool useShortInterval = false);
     
     // XML-RPC communication
     bool updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc, const uint8_t channel);

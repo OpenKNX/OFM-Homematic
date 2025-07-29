@@ -47,7 +47,7 @@ void HomematicChannelSwitchActuator::processDeviceSpecificInputKo(GroupObject &k
             if (_allowedWriting)
             {
                 rpcSetValueBool(getDeviceChannel(), "STATE", KoHMG_KOdSwitch.value(DPT_Switch));
-                updateRequestTiming(ParamHMG_RequestIntervallShort);
+                updateRequestTiming(true);
             }
             break;
         }
@@ -64,7 +64,7 @@ void HomematicChannelSwitchActuator::processDeviceSpecificInputKo(GroupObject &k
             if (_allowedWriting)
             {
                 rpcSetValueBool(getDeviceChannel(), "INHIBIT", KoHMG_KOdLock.value(DPT_Switch));
-                updateRequestTiming(ParamHMG_RequestIntervallShort);
+                updateRequestTiming(true);
             }
             break;
         }
@@ -89,6 +89,6 @@ void HomematicChannelSwitchActuator::sendSwitchStairlight(bool switchStair)
     {
         // 2. switch on/off
         rpcSetValueBool(getDeviceChannel(), "STATE", switchStair);
-        updateRequestTiming(ParamHMG_RequestIntervallShort);
+        updateRequestTiming(true); // use short interval
     }
 }

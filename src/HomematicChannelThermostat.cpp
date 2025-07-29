@@ -79,7 +79,7 @@ void HomematicChannelThermostat::processDeviceSpecificInputKo(GroupObject &ko)
             if (_allowedWriting)
             {
                 sendBoost(KoHMG_KOdBoostTrigger.value(DPT_Trigger));
-                updateRequestTiming(ParamHMG_RequestIntervallShort);
+                updateRequestTiming(true);
             }
             break;
         }
