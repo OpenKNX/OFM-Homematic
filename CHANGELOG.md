@@ -1,3 +1,9 @@
+# upcoming (v0.3.2 or later)
+
+* Diagnose-Kommandos im Modul wurden auch angezeigt und verarbeitet, auch wenn das Gerät nicht konfiguriert ist
+* OpenKNX Update: Anpassungen für neue Producer-Versionen
+
+
 # v0.3.1-ALPHA 2025-07-22
 
 * Feature
