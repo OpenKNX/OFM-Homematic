@@ -76,10 +76,10 @@ void HomematicModule::updateDeviceStates(const uint8_t i, const bool unreach, co
 
     const uint64_t maskClear = ~(1ULL << i);
 
-    logDebugP("  _devicesUnknown : %016llX", _devicesUnknown);
-    logDebugP("  _devicesUnreach : %016llX", _devicesUnreach);
-    logDebugP("  _devicesBattWarn: %016llX", _devicesBatteryWarning);
-    logDebugP("  _devicesError   : %016llX", _devicesError);
+    logTraceP("  _devicesUnknown : %016llX", _devicesUnknown);
+    logTraceP("  _devicesUnreach : %016llX", _devicesUnreach);
+    logTraceP("  _devicesBattWarn: %016llX", _devicesBatteryWarning);
+    logTraceP("  _devicesError   : %016llX", _devicesError);
 
     _devicesUnreach = (_devicesUnreach & maskClear) | ((uint64_t)unreach << i);
     _devicesBatteryWarning = (_devicesBatteryWarning & maskClear) | ((uint64_t)batteryWarn << i);
@@ -88,11 +88,11 @@ void HomematicModule::updateDeviceStates(const uint8_t i, const bool unreach, co
     // this device has a known state
     _devicesUnknown &= maskClear;
     
-    logDebugP("  bit             : %016llX", ~maskClear);
-    logDebugP("  _devicesUnknown : %016llX", _devicesUnknown);
-    logDebugP("  _devicesUnreach : %016llX", _devicesUnreach);
-    logDebugP("  _devicesBattWarn: %016llX", _devicesBatteryWarning);
-    logDebugP("  _devicesError   : %016llX", _devicesError);
+    logTraceP("  bit             : %016llX", ~maskClear);
+    logTraceP("  _devicesUnknown : %016llX", _devicesUnknown);
+    logTraceP("  _devicesUnreach : %016llX", _devicesUnreach);
+    logTraceP("  _devicesBattWarn: %016llX", _devicesBatteryWarning);
+    logTraceP("  _devicesError   : %016llX", _devicesError);
 
     // Update group states for all groups that have all devices known
     for (uint8_t groupIdx = 0; groupIdx < 6; groupIdx++)
