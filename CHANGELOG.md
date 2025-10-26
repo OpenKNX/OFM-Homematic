@@ -1,7 +1,21 @@
-# upcoming (v0.3.2 or later)
+# (upcoming) v0.4-ALPHA
 
-* Diagnose-Kommandos im Modul wurden auch angezeigt und verarbeitet, auch wenn das Gerät nicht konfiguriert ist
-* OpenKNX Update: Anpassungen für neue Producer-Versionen
+* Feature (Entwurf): Abruf der Geräteliste von der CCU
+* ETS-App:
+  * Feature: zusätzliche Seite mit Übersichtstabelle
+  * Fix: Verschiebung KOs auf die Seite "Allgemein"
+* Fix: Kanäle ohne Seriennummer deaktivieren
+* Fix: Diagnose-Kommandos im Modul wurden auch angezeigt und verarbeitet, auch wenn das Gerät nicht konfiguriert ist
+* HTTP-Requests:
+  * Explizites Setzen von 2s Timeout
+  * Entwurf mit reservierten String-Länge
+* Refactor: Benutzerdefinierte Geräte
+* Refactor: Zustandsaggregation mit Gruppenzuordnung
+* Refactor: Behandlung von Update-Verzögerung (`updateRequestTiming()`)
+* Optimierung: Reduzierung Flash-Speicherbedarf
+* OpenKNX Updates: Anpassungen für neue Producer-Versionen
+* OFM Build-Test-Action
+* Erweiterung Dokumentation
 
 
 # v0.3.1-ALPHA 2025-07-22
