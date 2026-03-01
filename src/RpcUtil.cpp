@@ -95,14 +95,14 @@ bool RpcUtil::rpcSetValueInteger4(const char* deviceSerial, const uint8_t channe
     return sendRequestCheckResponseOk(request);
 }
 
-void RpcUtil::requestAddParamString(arduino::String &request, const char *str)
+void RpcUtil::requestAddParamString(String &request, const char *str)
 {
     request += "<param><value><string>";
     request += str;
     request += "</string></value></param>";
 }
 
-void RpcUtil::requestAddParamAddress(arduino::String &request, const char* deviceSerial, uint8_t channel)
+void RpcUtil::requestAddParamAddress(String &request, const char* deviceSerial, uint8_t channel)
 {
     request += "<param><value><string>";
     request += deviceSerial;
@@ -114,21 +114,21 @@ void RpcUtil::requestAddParamAddress(arduino::String &request, const char* devic
     request += "</string></value></param>";
 }
 
-void RpcUtil::requestAddParamDouble(arduino::String &request, double value)
+void RpcUtil::requestAddParamDouble(String &request, double value)
 {
     request += "<param><value><double>";
     request += value;
     request += "</double></value></param>";
 }
 
-void RpcUtil::requestAddParamInteger4(arduino::String &request, int32_t value)
+void RpcUtil::requestAddParamInteger4(String &request, int32_t value)
 {
     request += "<param><value><i4>";
     request += value;
     request += "</i4></value></param>";
 }
 
-void RpcUtil::requestAddParamBoolean(arduino::String &request, boolean value)
+void RpcUtil::requestAddParamBoolean(String &request, boolean value)
 {
     request += "<param><value><boolean>";
     request += value ? 1 : 0;
@@ -142,7 +142,7 @@ void RpcUtil::requestAddParamBoolean(arduino::String &request, boolean value)
  * @param doc - Reference to a tinyxml2::XMLDocument where the response will be parsed.
  * @return true - if the request was successful and the response was parsed without errors, false otherwise.
  */
-bool RpcUtil::sendRequestGetResponseDoc(arduino::String &request, tinyxml2::XMLDocument &doc)
+bool RpcUtil::sendRequestGetResponseDoc(String &request, tinyxml2::XMLDocument &doc)
 {
     const uint32_t tStart = millis();
 
@@ -202,7 +202,7 @@ bool RpcUtil::sendRequestGetResponseDoc(arduino::String &request, tinyxml2::XMLD
     return true;
 }
 
-bool RpcUtil::sendRequestCheckResponseOk(arduino::String &request)
+bool RpcUtil::sendRequestCheckResponseOk(String &request)
 {
     tinyxml2::XMLDocument doc;
     return sendRequestGetResponseDoc(request, doc) && checkSendRequestResponse(doc);

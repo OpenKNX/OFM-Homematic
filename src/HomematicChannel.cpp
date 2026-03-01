@@ -243,9 +243,9 @@ bool HomematicChannel::_processResponseParamInt32(uint8_t channel, const char* p
     // update signal quality when BOTH values were found
     if (_rssiDeviceFound && _rssiPeerFound)
     {
-        const int32_t worst_rssi = min(_rssiDeviceValue, _rssiPeerValue);
+        const int32_t worst_rssi = min((int32_t)_rssiDeviceValue, (int32_t)_rssiPeerValue);
         // Linear mapping: -30dBm=100%, -90dBm=0%
-        const int32_t quality_percent = max(0, min(100, (worst_rssi + 90) * 100 / 60));
+        const int32_t quality_percent = max(0L, min(100L, (worst_rssi + 90) * 100L / 60));
 
         logDebugP("RSSI_DEVICE=%d, RSSI_PEER=%d => %d%%", _rssiDeviceValue, _rssiPeerValue, quality_percent);
 

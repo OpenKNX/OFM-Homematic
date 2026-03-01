@@ -37,22 +37,22 @@ public:
     const std::string name() override;
 
     // HTTP & XML Response handling
-    bool sendRequestGetResponseDoc(arduino::String &request, tinyxml2::XMLDocument &doc);
-    bool sendRequestCheckResponseOk(arduino::String &request);
+    bool sendRequestGetResponseDoc(String &request, tinyxml2::XMLDocument &doc);
+    bool sendRequestCheckResponseOk(String &request);
     bool checkSendRequestResponse(tinyxml2::XMLDocument &doc);
     tinyxml2::XMLElement* getMethodResponseMember(tinyxml2::XMLDocument &doc);
     void debugLogResponse(HTTPClient &http, bool logResponse = false);
     
     // XML Request parameter builders
-    void requestAddParamString(arduino::String &request, const char *str);
+    void requestAddParamString(String &request, const char *str);
     /**
      * Add an address as parameter to request. Channel will be excluded for `channel==ADDRESS_CHANNEL_NONE`.
      * @returns <param><value><string>{serial}[:{ch}]</string></value></param>
      */
-    void requestAddParamAddress(arduino::String &request, const char* deviceSerial, uint8_t channel);
-    void requestAddParamDouble(arduino::String &request, double value);
-    void requestAddParamInteger4(arduino::String &request, int32_t value);
-    void requestAddParamBoolean(arduino::String &request, boolean value);
+    void requestAddParamAddress(String &request, const char* deviceSerial, uint8_t channel);
+    void requestAddParamDouble(String &request, double value);
+    void requestAddParamInteger4(String &request, int32_t value);
+    void requestAddParamBoolean(String &request, boolean value);
 
     // XML-RPC RPC value setting
     bool rpcSetValueDouble(const char* deviceSerial, const uint8_t channel, const char * paramName, double value);
