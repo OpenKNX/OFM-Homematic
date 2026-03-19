@@ -142,8 +142,6 @@
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
-                    <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
-
                     <!-- HelpContext="TODO" -->
                     <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceType" Inline="true" Layout="Grid">
                       <Rows><Row Id="%AID%_PB-nnn_R-1" Name="Row1" /></Rows>
@@ -176,6 +174,9 @@
 
 
                       <when test="1"><!-- HM-CC-RT-DN (Funk-Thermostat) -->
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
+
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
 
                         <!-- KOs -->
@@ -207,6 +208,9 @@
 
                       <when test="6"><!-- verschiedene Zwischensteckdosen -->
                         <!-- 6 = HM-LC-Sw1-Pl-DN-R1 (Funk-Zwischenstecker-Schaltaktor 1fach) -->
+
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
 
                         <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
 
@@ -248,6 +252,7 @@
 
                       
                       <when test="7"><!-- User Defined Device Type -->
+                        <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="Benutzerdefiniertes Gerät" UIHint="Headline" />
                         
                         <!-- Basic Settings -->
