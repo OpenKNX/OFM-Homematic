@@ -132,25 +132,25 @@
                   <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" Icon="cast-connected" ShowInComObjectTree="true">
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräte-Definition" UIHint="Headline" />
-                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" IndentLevel="1" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" IndentLevel="1" HelpContext="HMG-Name-Beschreibung" />
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                     <!-- Documentation --><!-- Multi-Line Comment (not the Module from Common) -->
-                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%002_R-%TT%%CC%00201" IndentLevel="1" /><!-- HelpContext="DFA-Kommentar" -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%%CC%002_R-%TT%%CC%00201" IndentLevel="1" HelpContext="HMG-Kommentar" />
                     <Button Id="%AID%_B-%TT%%CC%002" Text="Alle '\n' im Text durch Zeilenumbruch ersetzen" EventHandler="newline" EventHandlerParameters="{ &quot;textbox&quot;:&quot;%PREFIX%_d%C%Comment&quot; }" />
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                     <!-- HelpContext="TODO" -->
-                    <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceType" Inline="true" Layout="Grid">
+                    <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceType" Inline="true" Layout="Grid" HelpContext="HMG-Geraete-Typ" >
                       <Rows><Row Id="%AID%_PB-nnn_R-1" Name="Row1" /></Rows>
                       <Columns>
                         <Column Id="%AID%_PB-nnn_C-1" Name="Col1" Width="20%" />
                         <Column Id="%AID%_PB-nnn_C-2" Name="Col2" Width="81%" />
                       </Columns>
                       <ParameterSeparator Id="%AID%_PS-nnn" Text="Gerätetyp" Cell="1,1" />
-                      <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" Cell="1,2"/><!-- HelpContext="TODO" -->
+                      <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" Cell="1,2" HelpContext="HMG-Geraete-Typ" />
                     </ParameterBlock>
 
                     <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
@@ -158,9 +158,9 @@
 
                       <when test="!=0"><!-- ALLE Aktiven -->
                         <!-- Temporary Disable -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" IndentLevel="1" /><!-- HelpContext="TODO" -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" IndentLevel="1" HelpContext="HMG-Kanal-deaktivieren-zu-Testzwecken" />
                         <!-- Serial -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" /><!-- HelpContext="TODO" -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" HelpContext="HMG-Seriennummer" />
 
                         <!-- KOs -->
                         <!-- generic -->
@@ -177,7 +177,7 @@
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
 
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" HelpContext="HMG-Steuerung-ueber-KNX-erlauben" />
 
                         <!-- KOs -->
                         <!-- BEGIN possible DUPLICATION -->
@@ -212,7 +212,7 @@
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="Konfiguration" UIHint="Headline" />
 
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" /><!-- HelpContext="TODO" -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601" IndentLevel="1" HelpContext="HMG-Steuerung-ueber-KNX-erlauben" />
 
                         <!-- KOs -->
                         <!-- BEGIN possible DUPLICATION -->
@@ -227,7 +227,7 @@
                         <choose ParamRefId="%AID%_UP-%TT%%CC%006_R-%TT%%CC%00601">
                           <when test="1"><!-- == Steuerung über KNX erlauben -->
 
-                            <ParameterBlock Id="%AID%_PB-nnn" Name="d%C%StaircaseSwitch" Inline="true" Layout="Grid" ><!-- HelpContext="HMG-Verzoegerung-nach-Neustart" -->
+                            <ParameterBlock Id="%AID%_PB-nnn" Name="d%C%StaircaseSwitch" Inline="true" Layout="Grid" HelpContext="HMG-Einschaltdauer" >
                               <Rows>
                                 <Row Id="%AID%_PB-nnn_R-1" Name="Row1" />
                               </Rows>
@@ -256,13 +256,13 @@
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="Benutzerdefiniertes Gerät" UIHint="Headline" />
                         
                         <!-- Basic Settings -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101" IndentLevel="1" /><!-- Battery Powered -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101" IndentLevel="1" HelpContext="HMG-Batteriebetrieben" />
                         <choose ParamRefId="%AID%_UP-%TT%%CC%101_R-%TT%%CC%10101">
                           <when test="1">
                             <ComObjectRefRef RefId="%AID%_O-%TT%%CC%003_R-%TT%%CC%00301" /><!-- Battery Voltage -->
                           </when>
                         </choose>
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%102_R-%TT%%CC%10201" IndentLevel="1" /><!-- HM Device Channel Number -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%102_R-%TT%%CC%10201" IndentLevel="1" HelpContext="HMG-Homematic-Geraete-Kanalnummer" />
                         
                         <!-- User Defined Datapoint Configuration -->
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="Datenpunkt-Konfiguration" UIHint="Headline" />
@@ -278,11 +278,11 @@
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                         <ParameterSeparator Id="%AID%_PS-nnn" Text="Zuordnung zu Aggregationsgruppen" UIHint="Headline" />
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%011_R-%TT%%CC%01101" IndentLevel="1" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%012_R-%TT%%CC%01201" IndentLevel="1" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%013_R-%TT%%CC%01301" IndentLevel="1" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%014_R-%TT%%CC%01401" IndentLevel="1" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%015_R-%TT%%CC%01501" IndentLevel="1" /><!-- HelpContext="TODO" -->
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%011_R-%TT%%CC%01101" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%012_R-%TT%%CC%01201" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%013_R-%TT%%CC%01301" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%014_R-%TT%%CC%01401" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%015_R-%TT%%CC%01501" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
                       </when>
 
 

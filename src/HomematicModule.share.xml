@@ -211,11 +211,11 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl" UIHint="Headline" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" HelpContext="HMG-Kanalauswahl" />
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Startverhalten" UIHint="Headline" />
                 <!-- ChannelDelay Delay pattern, as used in LOG or VPM -->
-                <ParameterBlock Id="%AID%_PB-nnn" Name="a%C%ChannelDelayCycle" Inline="true" Layout="Grid" ><!-- HelpContext="HMG-Verzoegerung-nach-Neustart" -->
+                <ParameterBlock Id="%AID%_PB-nnn" Name="a%C%ChannelDelayCycle" Inline="true" Layout="Grid" HelpContext="HMG-Verzoegerung-nach-Neustart" >
                   <Rows>
                     <Row Id="%AID%_PB-nnn_R-1" Name="Row1" />
                   </Rows>
@@ -230,13 +230,13 @@
                 </ParameterBlock>
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="CCU" UIHint="Headline" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00004_R-%TT%0000401" IndentLevel="1" /><!-- HelpContext="TODO"  -->
-                <ParameterRefRef RefId="%AID%_UP-%TT%00005_R-%TT%0000501" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00004_R-%TT%0000401" IndentLevel="1" HelpContext="HMG-Host" />
+                <ParameterRefRef RefId="%AID%_UP-%TT%00005_R-%TT%0000501" IndentLevel="1" HelpContext="HMG-Port" />
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräte-Kommunikation" UIHint="Headline" />
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="  Zyklischer Datenabruf" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00006_R-%TT%0000601" IndentLevel="1" /><!-- HelpContext="TODO"  -->
-                <ParameterRefRef RefId="%AID%_UP-%TT%00007_R-%TT%0000701" IndentLevel="1" /><!-- HelpContext="TODO"  -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%00006_R-%TT%0000601" IndentLevel="1" HelpContext="HMG-Update-Intervall" />
+                <ParameterRefRef RefId="%AID%_UP-%TT%00007_R-%TT%0000701" IndentLevel="1" HelpContext="HMG-Update-Intervall-kurz-nach-Schreiben" />
   
                 <ComObjectRefRef RefId="%AID%_O-%TT%00100_R-%TT%0010001" />
                 <ComObjectRefRef RefId="%AID%_O-%TT%00101_R-%TT%0010101" />
@@ -258,7 +258,7 @@
                 <ComObjectRefRef RefId="%AID%_O-%TT%00152_R-%TT%0015201" />
               </ParameterBlock>
 
-              <ParameterBlock Id="%AID%_PB-nnn" Name="MmDevices" Text="Geräteübersicht" Icon="view-list-outline" HelpContext="Empty" ShowInComObjectTree="false">
+              <ParameterBlock Id="%AID%_PB-nnn" Name="MmDevices" Text="Geräteübersicht" Icon="view-list-outline" HelpContext="HMG-Geraeteuebersicht" ShowInComObjectTree="false">
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräteübersicht" UIHint="Headline" />
                 <Button Id="%AID%_B-%TT%00001" Text="Bekannte Geräte ermitteln" EventHandler="HMG_ccuKnownDevices" EventHandlerOnline="ConnectionOriented" />
                 <ParameterRefRef RefId="%AID%_P-%TT%00008_R-%TT%0000801" IndentLevel="1" />
@@ -297,7 +297,7 @@
                 <when test="&lt;%N%">
                   <ParameterBlock Id="%AID%_PB-nnn" Name="aAdditionalChannels" Text="(mehr)" Icon="dots-horizontal"><!-- HelpContext="Empty" -->
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl" UIHint="Headline" />
-                    <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" /><!-- HelpContext="BASE-Verfuegbare-Kanaele" IndentLevel="1" /-->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" HelpContext="BASE-Verfuegbare-Kanaele" />
                   </ParameterBlock>
                 </when>
               </choose>
