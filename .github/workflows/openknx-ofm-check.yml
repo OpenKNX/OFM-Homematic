@@ -1,6 +1,6 @@
 # Check build of OpenKNX OFM with Reference OAM (merging/building of OpenKNX knxprod + build of full releases)
 # SPDX-License-Identifier: AGPL-3.0-only
-# Copyright (C) 2024-2025 Cornelius Koepp
+# Copyright (C) 2024-2026 Cornelius Koepp
 
 name: openknx-ofm-check
 run-name: Check OpenKNX OFM Build in Reference OAM

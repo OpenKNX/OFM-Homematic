@@ -1,7 +1,7 @@
 # OFM-Homematic: Gateway Modul zur Integration in OpenKNX
 
 
-Von Cornelius Köpp 2024-2025
+Von Cornelius Köpp 2024-2026
 
 
 

@@ -1,4 +1,4 @@
-# (upcoming) v0.4-ALPHA
+# v0.4.0-ALPHA 2026-03-20
 
 * Feature (Entwurf): Abruf der Geräteliste von der CCU
 * ETS-App:
@@ -16,6 +16,7 @@
 * OpenKNX Updates: Anpassungen für neue Producer-Versionen
 * OFM Build-Test-Action
 * Erweiterung Dokumentation
+* Integration Kontext-Hilfe
 
 
 # v0.3.1-ALPHA 2025-07-22
