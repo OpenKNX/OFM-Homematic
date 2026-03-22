@@ -1,3 +1,10 @@
+# (upcoming) v0.4.1-ALPHA
+
+* Fix: User defined channels were not set to active in setup
+* Fix: Show channel overview on Command `hmgXX`
+* Optimize: Reduce log level for response processing from Debug to Trace
+
+
 # v0.4.0-ALPHA 2026-03-20
 
 * Feature (Entwurf): Abruf der Geräteliste von der CCU
