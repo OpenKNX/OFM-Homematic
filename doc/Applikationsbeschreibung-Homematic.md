@@ -285,7 +285,6 @@ Für jede dieser Gruppen werden folgende Status-Werte (auf Basis aller enthalten
 *Hinweis:* Zusätzlich erfolgt auch eine globale Aggregation mit allen Geräten unabhängig von einer Gruppenzuordnung. 
 
 
-<!-- DOC -->
 ## (mehr)
 
 Dieser Bereich wird sichtbar, wenn mehr Kanäle verfügbar sind als aktuell ausgewählt.
