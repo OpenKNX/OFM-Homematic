@@ -120,23 +120,23 @@ bool HomematicChannel::updateKOsFromMethodResponse(tinyxml2::XMLDocument &doc, c
         {
             const double value = doubleElement->DoubleText();
             const bool processed = _processResponseParamDouble(channel, pName, value);
-            logDebugP("%s @%d %24s(d)=%f", (processed ? "=>" : "//"), channel, pName, value);
+            logTraceP("%s @%d %24s(d)=%f", (processed ? "=>" : "//"), channel, pName, value);
         }
         else if (tinyxml2::XMLElement *i4Element = memberValue->FirstChildElement("i4"))
         {
             const int32_t value = i4Element->IntText();
             const bool processed = _processResponseParamInt32(channel, pName, value);
-            logDebugP("%s @%d %24s(i)=%d", (processed ? "=>" : "//"), channel, pName, value);
+            logTraceP("%s @%d %24s(i)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
         else if (tinyxml2::XMLElement *boolElement = memberValue->FirstChildElement("boolean"))
         {
             const bool value = boolElement->IntText();
             const bool processed = _processResponseParamBool(channel, pName, value);
-            logDebugP("%s @%d %24s(b)=%d", (processed ? "=>" : "//"), channel, pName, value);
+            logTraceP("%s @%d %24s(b)=%d", (processed ? "=>" : "//"), channel, pName, value);
         }
         else
         {
-            logDebugP("// @%d %24s(other ignored)", channel, pName);
+            logTraceP("// @%d %24s(other ignored)", channel, pName);
         }
     }
 
