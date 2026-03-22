@@ -13,7 +13,7 @@
       * [Geräte-Kommunikation](#geräte-kommunikation)
     * [**Geräteübersicht**](#geräteübersicht)
     * [**Gerät n: ...**](#gerät-n-)
-    * [**... (mehr)**](#-mehr)
+    * [**(mehr)**](#mehr)
 
 * [Kommunikationsobjekte](#kommunikationsobjekte)
 
@@ -286,7 +286,7 @@ Für jede dieser Gruppen werden folgende Status-Werte (auf Basis aller enthalten
 
 
 <!-- DOC -->
-## ... (mehr)
+## (mehr)
 
 Dieser Bereich wird sichtbar, wenn mehr Kanäle verfügbar sind als aktuell ausgewählt.
 Hiermit können zusätzliche HomeMatic-Kanäle zur Konfiguration hinzugefügt werden.
