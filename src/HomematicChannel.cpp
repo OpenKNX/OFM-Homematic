@@ -175,7 +175,16 @@ void HomematicChannel::updateRequestTiming(bool useShortInterval)
 
 bool HomematicChannel::processCommandOverview()
 {
-    return false;
+    logInfoP("active=%u running=%u writing=%u serial='%s' type=%u",
+        _channelActive, _running, _allowedWriting, ParamHMG_dDeviceSerialStr.c_str(), ParamHMG_dDeviceType
+    );
+    if (_channelActive)
+    {
+        logInfoP("unreach=%u batteryWarn=%u", _unreach, _batteryWarn);
+        logInfoP("last Request (ms): %u", _lastRequest_millis);
+        logInfoP("RSSI: device[found=%u]=%d, peer[found=%u]=%d", _rssiDeviceFound, _rssiDeviceValue, _rssiPeerFound, _rssiPeerValue);
+    }
+    return true;
 }
 
 bool HomematicChannel::rpcSetValueDouble(const uint8_t channel, const char * paramName, double value)
