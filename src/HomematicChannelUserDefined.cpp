@@ -16,6 +16,7 @@ const std::string HomematicChannelUserDefined::name()
 
 void HomematicChannelUserDefined::setup()
 {
+    HomematicChannel::setup();
     _datapointType[0] = ParamHMG_dUD1Type;
     _datapointType[1] = ParamHMG_dUD2Type;
     _datapointType[2] = ParamHMG_dUD3Type;
