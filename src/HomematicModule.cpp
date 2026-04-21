@@ -395,7 +395,7 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
     {
         case HMG_FUNCPROP_F_SCAN_RESULT:
         {
-            logDebugP("FuncProp1");
+            logDebugP("FuncProp[0]: SCAN_RESULT");
             updateRssi(); // Ensure list of known devices
 
             const uint8_t resultCode = 0; // OK
@@ -415,12 +415,12 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
         {
             if (length < 2)
             {
-                logErrorP("FuncProp2");
+                logErrorP("FuncProp[1]: DEV_INFO(missing)");
                 return false;
             }
 
             const uint8_t devIndex = data[1];
-            logDebugP("FuncProp2(%d)", devIndex);
+            logDebugP("FuncProp[1]: DEV_INFO(%d)", devIndex);
             
             uint8_t i = 0;
             if (devIndex < MAX_SCANNED_DEVICES)
