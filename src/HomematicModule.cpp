@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #include "HomematicModule.h"
 #include "RpcUtil.h"
@@ -443,8 +443,9 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
             }
             else
             {
-                const uint8_t resultCode = 0; // FAIL
+                const uint8_t resultCode = 1; // FAIL ">= MAX_SCANNED_DEVICES" // TODO define error-code-list/system and constants
                 resultData[i++] = resultCode;
+                // TODO remove dummy-structure after checking for side-effects
                 resultData[i++] = 'X';
                 resultData[i++] = 'X';
                 resultData[i++] = 'X';
