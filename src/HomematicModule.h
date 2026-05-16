@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #pragma once
 #include "HomematicChannelThermostat.h"
@@ -72,6 +72,8 @@ class HomematicModule : public OpenKNX::Module
     void showHelp() override;
     bool processCommand(const std::string cmd, bool diagnoseKo);
     bool processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength) override;
+    bool processFunctionProperty_ScanResult(uint8_t *resultData, uint8_t &resultLength);
+    bool processFunctionProperty_DevInfo(uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength);
 
     void updateDeviceStates(const uint8_t i, const bool unreach, const bool batteryWarn, const bool error);
 };

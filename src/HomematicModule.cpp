@@ -393,8 +393,14 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
 
     switch (data[0])
     {
-        case HMG_FUNCPROP_F_SCAN_RESULT:
-        {
+        case HMG_FUNCPROP_F_SCAN_RESULT: return processFunctionProperty_ScanResult(*resultData, &resultLength);
+        case HMG_FUNCPROP_F_DEV_INFO: return processFunctionProperty_DevInfo(length, *data, *resultData, &resultLength);
+    }
+    return false; // No valid function property handled
+}
+
+bool HomematicModule::processFunctionProperty_ScanResult(uint8_t *resultData, uint8_t &resultLength)
+{
             logDebugP("FuncProp[0]: SCAN_RESULT");
             updateRssi(); // Ensure list of known devices
 
@@ -409,10 +415,11 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
             resultData[i++] = ignored;
 
             resultLength = i;
-            return true;        
-        }
-        case HMG_FUNCPROP_F_DEV_INFO:
-        {
+            return true;
+}
+
+bool HomematicModule::processFunctionProperty_DevInfo(uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength)
+{
             if (length < 2)
             {
                 logErrorP("FuncProp[1]: DEV_INFO(missing)");
@@ -421,7 +428,7 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
 
             const uint8_t devIndex = data[1];
             logDebugP("FuncProp[1]: DEV_INFO(%d)", devIndex);
-            
+
             uint8_t i = 0;
             if (devIndex < MAX_SCANNED_DEVICES)
             {
@@ -439,7 +446,7 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
                 {
                     resultData[i++] = _scannedDevices[devIndex].type[j];
                 }
-                resultData[i++] = '\0';                
+                resultData[i++] = '\0';
             }
             else
             {
@@ -450,9 +457,6 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
 
             resultLength = i;
             return (resultData[0] == 0); // TODO check other transfer of this flag
-        }
-    }
-    return false; // No valid function property handled
 }
 
 void HomematicModule::showHelp()
