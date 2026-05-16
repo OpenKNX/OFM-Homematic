@@ -1,4 +1,4 @@
-# (upcoming) v0.4.1-ALPHA
+# (upcoming) v0.5.0-ALPHA
 
 * Fix: User defined channels were not set to active in setup
 * Fix: Show channel overview on Command `hmgXX`
