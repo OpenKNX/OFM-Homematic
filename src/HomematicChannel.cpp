@@ -226,6 +226,8 @@ bool HomematicChannel::_processResponseParamInt32(uint8_t channel, const char* p
         return true; // processed by device-type
     }
     bool processed = false;
+    const bool isHM = true;
+    const bool isHmIP = true;
     if (channel != 0)
     {
         return false; // not in :0
@@ -248,6 +250,14 @@ bool HomematicChannel::_processResponseParamInt32(uint8_t channel, const char* p
         return false; // TODO check implementation
     }
     */
+    else if (isHmIP && strcmp(pName, "TIME_OF_OPERATION") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (isHmIP && strcmp(pName, "TIME_OF_OPERATION_STATUS") == 0)
+    {
+        return false; // TODO check implementation
+    }
 
     // update signal quality when BOTH values were found
     if (_rssiDeviceFound && _rssiPeerFound)
@@ -282,37 +292,47 @@ bool HomematicChannel::_processResponseParamBool(uint8_t channel, const char* pN
     {
         return true; // processed by device-type
     }
+    const bool isHM = true;
+    const bool isHmIP = true;
     if (channel != 0)
     {
         return false; // not in :0
     }
-    else if (strcmp(pName, "CONFIG_PENDING") == 0)
+    else if (isHmIP && strcmp(pName, "BOOTED") == 0)
     {
         return false; // TODO check implementation
     }
-    else if (strcmp(pName, "DEVICE_IN_BOOTLOADER") == 0)
+    else if (/* all && */ strcmp(pName, "CONFIG_PENDING") == 0)
     {
         return false; // TODO check implementation
     }
-    else if (strcmp(pName, "INHIBIT") == 0)
+    else if (isHM && strcmp(pName, "DEVICE_IN_BOOTLOADER") == 0)
     {
         return false; // TODO check implementation
     }
-    else if (strcmp(pName, "LOWBAT") == 0)
+    else if (isHmIP && strcmp(pName, "DUTY_CYCLE") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (isHM && strcmp(pName, "INHIBIT") == 0)
+    {
+        return false; // TODO check implementation
+    }
+    else if (isHM && strcmp(pName, "LOWBAT") == 0 || isHmIP && strcmp(pName, "LOW_BAT") == 0)
     {
         _batteryWarn = value;
         return true;
     }
-    else if (strcmp(pName, "STICKY_UNREACH") == 0)
+    else if (isHM && strcmp(pName, "STICKY_UNREACH") == 0)
     {
         return false; // TODO check implementation
     }
-    else if (strcmp(pName, "UNREACH") == 0)
+    else if (/* all && */strcmp(pName, "UNREACH") == 0)
     {
         _unreach = value;
         return true;
     }
-    else if (strcmp(pName, "UPDATE_PENDING") == 0)
+    else if (isHM && strcmp(pName, "UPDATE_PENDING") == 0)
     {
         return false; // TODO check implementation
     }
