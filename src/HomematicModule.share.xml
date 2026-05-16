@@ -42,9 +42,9 @@
               </ParameterType>
 
 
-              <!-- serialNumber AAA1234567 -->
+              <!-- serialNumber HM:AAA1234567 or HmIP with 14 hex chars -->
               <ParameterType Id="%AID%_PT-DeviceSerialNumber" Name="DeviceSerialNumber">
-                <TypeText SizeInBit="80" />
+                <TypeText SizeInBit="112" />
               </ParameterType>
 
               <ParameterType Id="%AID%_PT-HmDevType" Name="HmDevType">

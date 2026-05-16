@@ -38,9 +38,11 @@ class HomematicModule : public OpenKNX::Module
     bool process_getDeviceDescription(tinyxml2::XMLDocument &doc, const uint8_t scannedIndex);
 
     // Device scan for Function Property
+    #define HMG_MAX_SERIAL_LEN 14
+    #define HMG_MAX_DESCRIPTION_LEN 30
     struct DeviceSerial {
-        char serial[12];  // max 10 chars + null terminator + padding
-        char type[32];  // max 30 chars + null terminator + padding
+        char serial[HMG_MAX_SERIAL_LEN + 2];  // max 14 chars + null terminator + padding
+        char type[HMG_MAX_DESCRIPTION_LEN + 2];  // max 30 chars + null terminator + padding
         char firmware[6];  // max 5 chars + null terminator
         uint8_t encoded[5]; // encoded format: 1-2 byte prefix + 3 byte number
     };

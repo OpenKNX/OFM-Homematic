@@ -8,7 +8,7 @@
           <!-- Part Definition für User Defined Datapoints -->
           <op:part name="HMDATAPOINT" href="HomematicDatapoint.part.xml" instances="5">
             <op:param name="%HMDP%" value="1" increment="1" />
-            <op:param name="%MEMOFFSET%" value="15" increment="33" />
+            <op:param name="%MEMOFFSET%" value="19" increment="33" />
             <op:param name="%KOREAD%" value="12" increment="2" />
             <op:param name="%KOWRITE%" value="13" increment="2" />
           </op:part>
@@ -17,7 +17,7 @@
               <Parameter Id="%AID%_P-%TT%%CC%001" Name="d%C%Name"            ParameterType="%AID%_PT-Text40Byte"   Text="Name / Beschreibung"           Value="" />
               <Parameter Id="%AID%_P-%TT%%CC%002" Name="d%C%Comment"         ParameterType="%AID%_PT-Text512Byte"  Text="Kommentar"                     Value="" />
 
-              <Union SizeInBit="104"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
+              <Union SizeInBit="136"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%005" Name="d%C%Disable"              ParameterType="%AID%_PT-CheckBox"              Offset="0" BitOffset="0" Text="Kanal deaktivieren (zu Testzwecken)"   Value="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%006" Name="d%C%Write"                ParameterType="%AID%_PT-OnOffYesNo"            Offset="0" BitOffset="1" Text="Steuerung über KNX erlauben"           Value="1" />
                 <!-- 1 bit free -->
@@ -25,15 +25,15 @@
                 <Parameter Id="%AID%_UP-%TT%%CC%004" Name="d%C%DeviceSerial"         ParameterType="%AID%_PT-DeviceSerialNumber"    Offset="1" BitOffset="0" Text="Seriennummer"                          Value=""  />
                 <!-- 1 byte free after string --><!-- TODO remove 0-Byte after String to save space-->
                 <!-- 009 + 010 -->
-                <Parameter Id="%AID%_UP-%TT%%CC%011" Name="d%C%Group1"               ParameterType="%AID%_PT-CheckBox"              Offset="12" BitOffset="0" Text="Gruppe 1"                             Value="0" />
-                <Parameter Id="%AID%_UP-%TT%%CC%012" Name="d%C%Group2"               ParameterType="%AID%_PT-CheckBox"              Offset="12" BitOffset="1" Text="Gruppe 2"                             Value="0" />
-                <Parameter Id="%AID%_UP-%TT%%CC%013" Name="d%C%Group3"               ParameterType="%AID%_PT-CheckBox"              Offset="12" BitOffset="2" Text="Gruppe 3"                             Value="0" />
-                <Parameter Id="%AID%_UP-%TT%%CC%014" Name="d%C%Group4"               ParameterType="%AID%_PT-CheckBox"              Offset="12" BitOffset="3" Text="Gruppe 4"                             Value="0" />
-                <Parameter Id="%AID%_UP-%TT%%CC%015" Name="d%C%Group5"               ParameterType="%AID%_PT-CheckBox"              Offset="12" BitOffset="4" Text="Gruppe 5"                             Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%011" Name="d%C%Group1"               ParameterType="%AID%_PT-CheckBox"              Offset="16" BitOffset="0" Text="Gruppe 1"                             Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%012" Name="d%C%Group2"               ParameterType="%AID%_PT-CheckBox"              Offset="16" BitOffset="1" Text="Gruppe 2"                             Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%013" Name="d%C%Group3"               ParameterType="%AID%_PT-CheckBox"              Offset="16" BitOffset="2" Text="Gruppe 3"                             Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%014" Name="d%C%Group4"               ParameterType="%AID%_PT-CheckBox"              Offset="16" BitOffset="3" Text="Gruppe 4"                             Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%015" Name="d%C%Group5"               ParameterType="%AID%_PT-CheckBox"              Offset="16" BitOffset="4" Text="Gruppe 5"                             Value="0" />
                 <!-- 3 bit free -->
               </Union>
 
-              <Union SizeInBit="16"><Memory CodeSegment="%MID%" Offset="13" BitOffset="0" />
+              <Union SizeInBit="16"><Memory CodeSegment="%MID%" Offset="17" BitOffset="0" />
                 <!-- Staircase (Type 6) AND NOT 7-->
                 <Parameter Id="%AID%_UP-%TT%%CC%007" Name="d%C%OnTimeBase"           ParameterType="%AID%_PT-DelayBase"             Offset="0" BitOffset="0" Text="Einschaltdauer Zeitbasis"             Value="0" op:nowarn="true" />
                 <Parameter Id="%AID%_UP-%TT%%CC%008" Name="d%C%OnTimeTime"           ParameterType="%AID%_PT-DelayTime"             Offset="0" BitOffset="2" Text="Einschaltdauer Zeit"                  Value="1" op:nowarn="true" />

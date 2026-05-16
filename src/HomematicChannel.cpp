@@ -27,8 +27,8 @@ void HomematicChannel::setup()
     if (_channelActive)
     {
         _allowedWriting = ParamHMG_dWrite;
-        logDebugP("active (Serial=%s)", ParamHMG_dDeviceSerial);
-        // logDebugP("active (write=%u; serial='%s')", _allowedWriting, ParamHMG_dDeviceSerial);
+        logDebugP("active (Serial=%s)", ParamHMG_dDeviceSerialStr.c_str());
+        // logDebugP("active (write=%u; serial='%s')", _allowedWriting, ParamHMG_dDeviceSerialStr.c_str());
     }
 }
 
@@ -75,14 +75,14 @@ bool HomematicChannel::update()
     {
         // TODO split http requests
 
-        logDebugP("getParamset('%s:%u', VALUES)", (const char *)ParamHMG_dDeviceSerial, channels[i]);
+        logDebugP("getParamset('%s:%u', VALUES)", ParamHMG_dDeviceSerialStr.c_str(), channels[i]);
         String request;
         request.reserve(200); // >=192+1
         request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         request += "<methodCall>"; // 12 chars
         request += "<methodName>getParamset</methodName>"; // 36 chars
         request += "<params>"; // 8 chars
-        hmgClient.requestAddParamAddress(request, (const char *)ParamHMG_dDeviceSerial, channels[i]); // 61 chars
+        hmgClient.requestAddParamAddress(request, ParamHMG_dDeviceSerialStr.c_str(), channels[i]); // 61 chars
         hmgClient.requestAddParamString(request, "VALUES"); // 53 chars
         request += "</params>"; // 9 chars
         request += "</methodCall>"; // 13 chars
@@ -189,17 +189,17 @@ bool HomematicChannel::processCommandOverview()
 
 bool HomematicChannel::rpcSetValueDouble(const uint8_t channel, const char * paramName, double value)
 {
-    return hmgClient.rpcSetValueDouble((const char *)ParamHMG_dDeviceSerial, channel, paramName, value);
+    return hmgClient.rpcSetValueDouble(ParamHMG_dDeviceSerialStr.c_str(), channel, paramName, value);
 }
 
 bool HomematicChannel::rpcSetValueBool(const uint8_t channel, const char * paramName, bool value)
 {
-    return hmgClient.rpcSetValueBool((const char *)ParamHMG_dDeviceSerial, channel, paramName, value);
+    return hmgClient.rpcSetValueBool(ParamHMG_dDeviceSerialStr.c_str(), channel, paramName, value);
 }
 
 bool HomematicChannel::rpcSetValueInteger4(const uint8_t channel, const char * paramName, int32_t value)
 {
-    return hmgClient.rpcSetValueInteger4((const char *)ParamHMG_dDeviceSerial, channel, paramName, value);
+    return hmgClient.rpcSetValueInteger4(ParamHMG_dDeviceSerialStr.c_str(), channel, paramName, value);
 }
 
 // Channel :0 parameter handlers (device-level parameters)

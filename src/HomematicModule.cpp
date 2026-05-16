@@ -211,7 +211,7 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 
         /* ignore details, as list of serial is the only relevant information
 
-        if (false) //* strcmp(serial1, (const char *)ParamHMG_dDeviceSerial) == 0
+        if (false) //* strncmp(serial1, (const char *)ParamHMG_dDeviceSerial, ParamHMG_dDeviceSerialLength) == 0
         {
             // => this is the device of current channel!
 
@@ -230,7 +230,7 @@ bool HomematicModule::processRssiInfoResponse(tinyxml2::XMLDocument &doc)
 
             // => level2: <name> and <value> are present
             const char *serial2 = elemNameSerial2->GetText();
-            if (true) // //* strcmp(serial2, (const char *)ParamHMG_dDeviceSerial) == 0
+            if (true) // //* strncmp(serial2, (const char *)ParamHMG_dDeviceSerial, ParamHMG_dDeviceSerialLength) == 0
             {
 
                 tinyxml2::XMLElement *elemArray = elemValue2->FirstChildElement("array");
@@ -428,14 +428,14 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
                 const uint8_t resultCode = 0; // OK
                 resultData[i++] = resultCode;
                 // use stored serial
-                for (uint8_t j = 0; j < 10; j++)
+                for (uint8_t j = 0; j < HMG_MAX_SERIAL_LEN; j++)
                 {
                     resultData[i++] = _scannedDevices[devIndex].serial[j];
                 }
                 resultData[i++] = '\0';
 
                 getDeviceDescription(devIndex);
-                for (uint8_t j = 0; (j < 30) && (_scannedDevices[devIndex].type[j] != '\0') ; j++)
+                for (uint8_t j = 0; (j < HMG_MAX_DESCRIPTION_LEN) && (_scannedDevices[devIndex].type[j] != '\0') ; j++)
                 {
                     resultData[i++] = _scannedDevices[devIndex].type[j];
                 }
@@ -445,18 +445,7 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
             {
                 const uint8_t resultCode = 1; // FAIL ">= MAX_SCANNED_DEVICES" // TODO define error-code-list/system and constants
                 resultData[i++] = resultCode;
-                // TODO remove dummy-structure after checking for side-effects
-                resultData[i++] = 'X';
-                resultData[i++] = 'X';
-                resultData[i++] = 'X';
-                resultData[i++] = '9';
-                resultData[i++] = '9';
-                resultData[i++] = '9';
-                resultData[i++] = '9';
-                resultData[i++] = '9';
-                resultData[i++] = '9';
-                resultData[i++] = '9';
-                resultData[i++] = '\0';
+                // Note: following content would not be used in ETS on result!=0
             }
 
             resultLength = i;

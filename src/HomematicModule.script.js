@@ -1,3 +1,4 @@
+var hmgMaxSerialLen = 14;
 var hmgMaxDevices = 32;
 
 /**
@@ -64,13 +65,13 @@ function HMG_invokeDeviceCount(online) {
  */
 function HMG_invokeDeviceDetails(online, index) {
     // request: command=1(DETAILS), index=i
-    var response = HMG_invokeFunctionProperty(online, [1, index]);
-    // expected: [0, serial_1, serial_2, ..., serial_10, 0, type_1, type_2, ...]
+    var response = HMG_invokeFunctionProperty(online, [1, index]); // TODO check using new function id
+    // expected: [0, serial_1, serial_2, ..., serial_14, 0, type_1, type_2, ...]
     if (response.length >= 11 && response[0] == 0) {
         // => result is OK && at least device serial available
         var i = 1;
         var devSerial = "";
-        while (response[i] > 0 && i <= 10) {
+        while (response[i] > 0 && i <= hmgMaxSerialLen) {
             devSerial += String.fromCharCode(response[i++]);
         }
         var devType = "";

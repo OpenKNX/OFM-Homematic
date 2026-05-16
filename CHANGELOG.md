@@ -1,6 +1,8 @@
 # (upcoming) v0.5.0-ALPHA
 
 * Fix: User defined channels were not set to active in setup
+* Feature: Support for Homematic-IP devices with 14 char serial (HM has 10 chars only)
+  * Note: Do NOT use device-scan of new ETS-app with old firmware
 * Fix: Show channel overview on Command `hmgXX`
 * Optimize: Reduce log level for response processing from Debug to Trace
 
