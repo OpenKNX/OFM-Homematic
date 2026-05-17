@@ -56,7 +56,17 @@ class HomematicModule : public OpenKNX::Module
     bool processRssiInfoResponseForScan(tinyxml2::XMLDocument &doc);
     bool encodeSerial(const char* serial, uint8_t* encoded, uint8_t& encodedLength);
     */
+    static const uint8_t FUNCPROP_OBJECT_INDEX = 160;
+    static const uint8_t FUNCPROP_ID = 7;
 
+    enum class FuncPropCall
+    {
+        Scan_Result = 0,
+        Device_Info = 1
+    };    
+
+    static const uint8_t FUNCPROP_RESULT_OK = 0;
+    static const uint8_t FUNCPROP_RESULT_FAIL = 1;
   public:
     HomematicModule();
     const std::string name() override;

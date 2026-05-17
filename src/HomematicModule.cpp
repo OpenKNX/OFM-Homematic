@@ -377,86 +377,78 @@ bool HomematicModule::process_getDeviceDescription(tinyxml2::XMLDocument &doc, c
     return true;
 }
 
-#define HMG_FUNCPROP_OBJECT_INDEX (160)
-#define HMG_FUNCPROP_ID (7)
-#define HMG_FUNCPROP_F_SCAN_RESULT (0)
-#define HMG_FUNCPROP_F_DEV_INFO (1)
-
 bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength)
 {
     logDebugP("processFunctionProperty(..)");
-    if (!knx.configured() || objectIndex != HMG_FUNCPROP_OBJECT_INDEX || propertyId != HMG_FUNCPROP_ID || length < 1 || data == nullptr || resultData == nullptr)
+    if (!knx.configured() || objectIndex != FUNCPROP_OBJECT_INDEX || propertyId != FUNCPROP_ID || length < 1 || data == nullptr || resultData == nullptr)
         return false;
 
     logDebugP("processFunctionProperty(..) ... // data:");
     logHexDebugP(data, length);
 
-    switch (data[0])
+    switch (static_cast<FuncPropCall>(data[0]))
     {
-        case HMG_FUNCPROP_F_SCAN_RESULT: return processFunctionProperty_ScanResult(*resultData, &resultLength);
-        case HMG_FUNCPROP_F_DEV_INFO: return processFunctionProperty_DevInfo(length, *data, *resultData, &resultLength);
+        case FuncPropCall::Scan_Result: return processFunctionProperty_ScanResult(resultData, resultLength);
+        case FuncPropCall::Device_Info: return processFunctionProperty_DevInfo(length, data, resultData, resultLength);
     }
     return false; // No valid function property handled
 }
 
 bool HomematicModule::processFunctionProperty_ScanResult(uint8_t *resultData, uint8_t &resultLength)
 {
-            logDebugP("FuncProp[0]: SCAN_RESULT");
-            updateRssi(); // Ensure list of known devices
+    logDebugP("FuncProp[0]: SCAN_RESULT");
+    updateRssi(); // Ensure list of known devices
 
-            const uint8_t resultCode = 0; // OK
-            const uint16_t found = constrain(_scannedDeviceCount, 0, 0xffff);
-            const uint8_t ignored = constrain(_invalidSerialCount, 0, 0xff);
+    const uint8_t resultCode = FUNCPROP_RESULT_OK;
+    const uint16_t found = constrain(_scannedDeviceCount, 0, 0xffff);
+    const uint8_t ignored = constrain(_invalidSerialCount, 0, 0xff);
 
-            uint8_t i = 0;
-            resultData[i++] = resultCode;
-            resultData[i++] = (found >> 8) & 0xFF;
-            resultData[i++] = found & 0xFF;
-            resultData[i++] = ignored;
+    resultLength = 0;
+    resultData[resultLength++] = resultCode;
+    resultData[resultLength++] = (found >> 8) & 0xFF;
+    resultData[resultLength++] = found & 0xFF;
+    resultData[resultLength++] = ignored;
 
-            resultLength = i;
-            return true;
+    return true;
 }
 
 bool HomematicModule::processFunctionProperty_DevInfo(uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength)
 {
-            if (length < 2)
-            {
-                logErrorP("FuncProp[1]: DEV_INFO(missing)");
-                return false;
-            }
+    if (length < 2)
+    {
+        logErrorP("FuncProp[1]: DEV_INFO(missing)");
+        return false;
+    }
 
-            const uint8_t devIndex = data[1];
-            logDebugP("FuncProp[1]: DEV_INFO(%d)", devIndex);
+    const uint8_t devIndex = data[1];
+    logDebugP("FuncProp[1]: DEV_INFO(%d)", devIndex);
 
-            uint8_t i = 0;
-            if (devIndex < MAX_SCANNED_DEVICES)
-            {
-                const uint8_t resultCode = 0; // OK
-                resultData[i++] = resultCode;
-                // use stored serial
-                for (uint8_t j = 0; j < HMG_MAX_SERIAL_LEN; j++)
-                {
-                    resultData[i++] = _scannedDevices[devIndex].serial[j];
-                }
-                resultData[i++] = '\0';
+    resultLength = 0;
+    if (devIndex < MAX_SCANNED_DEVICES)
+    {
+        static_assert(1 + HMG_MAX_SERIAL_LEN + 1 + HMG_MAX_DESCRIPTION_LEN + 1 <= 255, "Result length exceeds maximum of 255 bytes");
+        resultData[resultLength++] = 0; // resultCode := OK;
+        // use stored serial
+        for (uint8_t j = 0; j < HMG_MAX_SERIAL_LEN; j++)
+        {
+            resultData[resultLength++] = _scannedDevices[devIndex].serial[j];
+        }
+        resultData[resultLength++] = '\0';
 
-                getDeviceDescription(devIndex);
-                for (uint8_t j = 0; (j < HMG_MAX_DESCRIPTION_LEN) && (_scannedDevices[devIndex].type[j] != '\0') ; j++)
-                {
-                    resultData[i++] = _scannedDevices[devIndex].type[j];
-                }
-                resultData[i++] = '\0';
-            }
-            else
-            {
-                const uint8_t resultCode = 1; // FAIL ">= MAX_SCANNED_DEVICES" // TODO define error-code-list/system and constants
-                resultData[i++] = resultCode;
-                // Note: following content would not be used in ETS on result!=0
-            }
-
-            resultLength = i;
-            return (resultData[0] == 0); // TODO check other transfer of this flag
+        getDeviceDescription(devIndex);
+        for (uint8_t j = 0; (j < HMG_MAX_DESCRIPTION_LEN) && (_scannedDevices[devIndex].type[j] != '\0') ; j++)
+        {
+            resultData[resultLength++] = _scannedDevices[devIndex].type[j];
+        }
+        resultData[resultLength++] = '\0';
+        return true;
+    }
+    else
+    {
+        resultData[resultLength++] = FUNCPROP_RESULT_FAIL; // resultCode := FAIL ">= MAX_SCANNED_DEVICES" // TODO define error-code-list/system and constants
+        // Note: following content would not be used in ETS on result!=0
+        return false;
+    }
 }
 
 void HomematicModule::showHelp()
