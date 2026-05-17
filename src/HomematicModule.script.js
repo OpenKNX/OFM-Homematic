@@ -25,24 +25,37 @@ function HMG_getDeviceSerials(device) {
 
 /**
  * Wrapper for invoking function properties for this module Homematic
- * @param {object} online - The online connection object
  * @param {number[]} request - Request data array
+ * @param {object} device - The ets device object
+ * @param {object} online - The ets online connection object
+ * @param {object} progress - The ets progress tracking control
+ * @param {number} progress_start - The progress position before invoke: int within [0,..,100]
+ * @param {number} progress_end - The progress position after invoke: int within [0,..,100]
  * @returns {number[]} Response data array
  */
-function HMG_invokeFunctionProperty(online, request) {
+function HMG_invokeFunctionProperty(request, device, online, progress, progress_start, progress_end) {
     var hmgFunctionId = 160;
     var hmgPropertyId = 7;
-    return online.invokeFunctionProperty(hmgFunctionId, hmgPropertyId, request);
+    return BASE_invokeFunctionPropertyWrapper(hmgFunctionId, hmgPropertyId, request, device, online, progress, progress_start, progress_end);
 }
 
 /**
  * Get the number of assigned devices from CCU
- * @param {object} online - The online connection object
+ * @param {number[]} request - Request data array
+ * @param {object} device - The ets device object
+ * @param {object} online - The ets online connection object
+ * @param {object} progress - The ets progress tracking control
+ * @param {number} progress_start - The progress position before invoke: int within [0,..,100]
+ * @param {number} progress_end - The progress position after invoke: int within [0,..,100]
  * @returns {object|null} Object with found and ignored counts, or null on error
  */
-function HMG_invokeDeviceCount(online) {
+function HMG_invokeDeviceCount(device, online, progress, progress_start, progress_end) {
     // request: command=0(COUNT)
-    var response = HMG_invokeFunctionProperty(online, [0]);
+    var response = HMG_invokeFunctionProperty(
+        // 0 = FuncPropCall::Scan_Result
+        [0],
+        device, online, progress, progress_start, progress_end
+    );
     // expected: [0, found_hi, found_lo, ignored]
     if (response.length >= 4 && response[0] == 0) {
         // => result is OK && at least device count available
@@ -59,13 +72,21 @@ function HMG_invokeDeviceCount(online) {
 
 /**
  * Get detail for one device from CCU
- * @param {object} online - The online connection object
  * @param {number} index - Device index (0-based)
+ * @param {object} device - The ets device object
+ * @param {object} online - The ets online connection object
+ * @param {object} progress - The ets progress tracking control
+ * @param {number} progress_start - The progress position before invoke: int within [0,..,100]
+ * @param {number} progress_end - The progress position after invoke: int within [0,..,100]
  * @returns {object|null} Object with serial and type, or null on error
  */
-function HMG_invokeDeviceDetails(online, index) {
+function HMG_invokeDeviceDetails(index, device, online, progress, progress_start, progress_end) {
     // request: command=1(DETAILS), index=i
-    var response = HMG_invokeFunctionProperty(online, [1, index]); // TODO check using new function id
+    var response = HMG_invokeFunctionProperty(
+        // 1 = FuncPropCall::Device_Info
+        [1, index], // TODO check using new function id
+        device, online, progress, progress_start, progress_end
+    );
     // expected: [0, serial_1, serial_2, ..., serial_14, 0, type_1, type_2, ...]
     if (response.length >= 11 && response[0] == 0) {
         // => result is OK && at least device serial available
@@ -104,7 +125,7 @@ function HMG_ccuKnownDevices(device, online, progress, context) {
 
     progress.setProgress(10);
     progress.setText("Homematic: Ermittle mit CCU verknüpfte Geräte...");
-    var response = HMG_invokeDeviceCount(online);
+    var response = HMG_invokeDeviceCount(device, online, progress, 10, 20);
     if (response) {
 
         found = response.found;
@@ -112,9 +133,11 @@ function HMG_ccuKnownDevices(device, online, progress, context) {
         var isCanceled = progress.isCanceled();
         for (var i = 0; !isCanceled && (i < found) && (i < hmgMaxDevices); i++) {
             progress.setText("Homematic: Ermittle Details für Gerät " + (i+1) + " von " + found + " ...");
-            progress.setProgress(20 + (i * 80 / found));  // found > 0 guaranteed by loop condition
+            var progress_start = 20 + (i * 80 / found);  // found > 0 guaranteed by loop condition
+            var progress_end = 20 + ((i+1) * 80 / found);
+            progress.setProgress(progress_start);
             try {
-                var devDetails = HMG_invokeDeviceDetails(online, i);
+                var devDetails = HMG_invokeDeviceDetails(i, device, online, progress, progress_start, progress_end);
                 if (devDetails) {
                     var devSerial = devDetails.serial;
                     var devType = devDetails.type;
