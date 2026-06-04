@@ -1,0 +1,20 @@
+name: ofm-check
+run-name: OFM-Check
+
+on: [push]
+
+jobs:
+  ofm-check-job:
+    name: Check OFM
+
+    uses: openknx/actions/.github/workflows/openknx-ofm-check.yml@v0
+    with:
+      ofm: OFM-Homematic
+      # Note: use ${{ github.ref_name }} from OFM-repo
+      ofm_ref: ${{ github.ref_name }}
+      ofm_prefix: HMG
+      oam: OAM-Homematic
+      # oam_ref: v1dev
+      # knxprod_xml: StateEngine-DFA16-Release
+      target: Release
+      KNXPROD_PREFIX: HomematicGW
