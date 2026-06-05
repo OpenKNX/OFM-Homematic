@@ -179,6 +179,7 @@ bool RpcUtil::sendRequestGetResponseDoc(String &request, tinyxml2::XMLDocument &
     {
         http.end();
         logErrorP("POST returned http %d", httpStatus);
+        // TODO save error
         return false;
     }
 
@@ -192,6 +193,7 @@ bool RpcUtil::sendRequestGetResponseDoc(String &request, tinyxml2::XMLDocument &
     {
         http.end();
         logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
+        // TODO save error
         return false;
     }
     logDebugP("[DONE] parse %d ms", millis() - tStart3);

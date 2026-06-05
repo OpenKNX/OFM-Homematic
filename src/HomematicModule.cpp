@@ -388,8 +388,9 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
 
     switch (static_cast<FuncPropCall>(data[0]))
     {
-        case FuncPropCall::Scan_Result: return processFunctionProperty_ScanResult(resultData, resultLength);
-        case FuncPropCall::Device_Info: return processFunctionProperty_DevInfo(length, data, resultData, resultLength);
+        case FuncPropCall::ScanResult: return processFunctionProperty_ScanResult(resultData, resultLength);
+        case FuncPropCall::DeviceInfo: return processFunctionProperty_DevInfo(length, data, resultData, resultLength);
+        case FuncPropCall::LastError: return processFunctionProperty_LastError(resultData, resultLength);
     }
     return false; // No valid function property handled
 }
@@ -397,7 +398,11 @@ bool HomematicModule::processFunctionProperty(uint8_t objectIndex, uint8_t prope
 bool HomematicModule::processFunctionProperty_ScanResult(uint8_t *resultData, uint8_t &resultLength)
 {
     logDebugP("FuncProp[0]: SCAN_RESULT");
-    updateRssi(); // Ensure list of known devices
+    const bool updateResult = updateRssi(); // Ensure list of known devices
+    if (!updateResult)
+    {
+        
+    }
 
     const uint8_t resultCode = FUNCPROP_RESULT_OK;
     const uint16_t found = constrain(_scannedDeviceCount, 0, 0xffff);
@@ -414,9 +419,13 @@ bool HomematicModule::processFunctionProperty_ScanResult(uint8_t *resultData, ui
 
 bool HomematicModule::processFunctionProperty_DevInfo(uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength)
 {
+    _lastFuncProp = 1;
+    _lastErrorCode = 0;
     if (length < 2)
     {
         logErrorP("FuncProp[1]: DEV_INFO(missing)");
+        _lastErrorCode = 1;
+        strncpy(_lastError, "PRM_MIS", sizeof(_lastError) - 1);
         return false;
     }
 
@@ -429,7 +438,7 @@ bool HomematicModule::processFunctionProperty_DevInfo(uint8_t length, uint8_t *d
         static_assert(1 + HMG_MAX_SERIAL_LEN + 1 + HMG_MAX_DESCRIPTION_LEN + 1 <= 255, "Result length exceeds maximum of 255 bytes");
         resultData[resultLength++] = 0; // resultCode := OK;
         // use stored serial
-        for (uint8_t j = 0; j < HMG_MAX_SERIAL_LEN; j++)
+        for (uint8_t j = 0; (j < HMG_MAX_SERIAL_LEN) && (_scannedDevices[devIndex].serial[j] != '\0'); j++)
         {
             resultData[resultLength++] = _scannedDevices[devIndex].serial[j];
         }
@@ -447,8 +456,29 @@ bool HomematicModule::processFunctionProperty_DevInfo(uint8_t length, uint8_t *d
     {
         resultData[resultLength++] = FUNCPROP_RESULT_FAIL; // resultCode := FAIL ">= MAX_SCANNED_DEVICES" // TODO define error-code-list/system and constants
         // Note: following content would not be used in ETS on result!=0
+        _lastErrorCode = 2;
+        strncpy(_lastError, "IDX>MAX", sizeof(_lastError) - 1);
         return false;
     }
+}
+
+bool HomematicModule::processFunctionProperty_LastError(uint8_t *resultData, uint8_t &resultLength)
+{
+    logDebugP("FuncProp[0]: LAST_ERR");
+
+    const uint8_t resultCode = FUNCPROP_RESULT_OK;
+
+    resultLength = 0;
+    resultData[resultLength++] = resultCode;
+    resultData[resultLength++] = _lastFuncProp;
+    resultData[resultLength++] = _lastErrorCode;
+    for (uint8_t j = 0; j < sizeof(_lastError) && _lastError[j] != '\0'; j++)
+    {
+        resultData[resultLength++] = _lastError[j];
+    }
+    resultData[resultLength++] = '\0';
+
+    return true;
 }
 
 void HomematicModule::showHelp()

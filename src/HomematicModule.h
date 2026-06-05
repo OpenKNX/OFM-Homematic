@@ -28,6 +28,10 @@ class HomematicModule : public OpenKNX::Module
     uint64_t _devicesBatteryWarning = 0;
     uint64_t _devicesError = 0;
 
+    uint8_t _lastFuncProp = 255;
+    uint8_t _lastErrorCode = 0;
+    char _lastError[8] = "";
+
     // Factory method for creating channels
     HomematicChannel* createChannel(uint8_t _channelIndex);
 
@@ -59,10 +63,11 @@ class HomematicModule : public OpenKNX::Module
     static const uint8_t FUNCPROP_OBJECT_INDEX = 160;
     static const uint8_t FUNCPROP_ID = 7;
 
-    enum class FuncPropCall
+    enum class FuncPropCall: uint8_t
     {
-        Scan_Result = 0,
-        Device_Info = 1
+        ScanResult = 0,
+        DeviceInfo = 1,
+        LastError = 254,
     };    
 
     static const uint8_t FUNCPROP_RESULT_OK = 0;
@@ -84,6 +89,7 @@ class HomematicModule : public OpenKNX::Module
     bool processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength) override;
     bool processFunctionProperty_ScanResult(uint8_t *resultData, uint8_t &resultLength);
     bool processFunctionProperty_DevInfo(uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength);
+    bool processFunctionProperty_LastError(uint8_t *resultData, uint8_t &resultLength);
 
     void updateDeviceStates(const uint8_t i, const bool unreach, const bool batteryWarn, const bool error);
 };
