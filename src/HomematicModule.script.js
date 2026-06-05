@@ -4,7 +4,7 @@ var hmgMaxDevices = 32;
 /**
  * Collect channel serials configured in ETS
  * @param {object} device 
- * @returns {object} serial number to list of channels
+ * @returns {object} mapping of serial number to list of channels
  */
 function HMG_getDeviceSerials(device) {
     // collect channel serials configured in ETS
@@ -143,7 +143,7 @@ function HMG_ccuKnownDevices(device, online, progress, context) {
                     var devType = devDetails.type;
 
                     var channelList = serialToChannel[devSerial] || [];
-                    var strChannel = channelList.length > 0 ? ("\tKanäle: " + channelList.join(",")) : "";
+                    var strChannel = channelList.length > 0 ? ("\tKanal: " + channelList.join(",")) : "";
                     var strType = devType ? ("\tTyp: " + devType) : "";
                     devList.push(devSerial + strChannel + strType);
                 } else {
