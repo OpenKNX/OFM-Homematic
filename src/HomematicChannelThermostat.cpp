@@ -95,11 +95,16 @@ void HomematicChannelThermostat::processDeviceSpecificInputKo(GroupObject &ko)
 void HomematicChannelThermostat::sendSetTemperature(double targetTemperature)
 {
     logDebugP("sendSetTemperature(%.3g)", targetTemperature);
+    // TODO replace with TRY_SENDING_NOW(SendType::SET_TEMPERATURE, targetTemperature)
     rpcSetValueDouble(getDeviceChannel(), "SET_TEMPERATURE", targetTemperature);
 }
 
 void HomematicChannelThermostat::sendBoost(bool boost)
 {
     logDebugP("sendBoost(%s)", boost ? "true" : "false");
+    // TODO replace with TRY_SENDING_NOW(SendType::BOOST_MODE, boost)
     rpcSetValueBool(getDeviceChannel(), "BOOST_MODE", boost);
 }
+
+// TODO TRY_SENDING_NOW(SendType type, Type* value)
+// - do not need value, type ios sufficient, when writing last value only and prevent duplicate

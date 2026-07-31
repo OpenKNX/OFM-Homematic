@@ -47,6 +47,19 @@ void HomematicChannel::loop()
     // !_channelActive will result in _running=false, so no need for checking
     if (_running)
     {
+        /*
+        // TODO check if write command is planned, then send oldest first
+        SendCommand waitingSendCommand = openknxHomematicModule.nextWaitingSendCommand();
+        if (waitingSendCommand)
+        {
+            if (waitingSendCommand.channelIndex == _channelIndex)
+            {
+                // TODO send command
+                waitingSendCommand.send()
+            }
+        }
+        else
+        */
         if (delayCheckMillis(_lastRequest_millis, _requestInterval_millis))
         {
             const bool success = update();
