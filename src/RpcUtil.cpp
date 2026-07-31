@@ -95,6 +95,22 @@ bool RpcUtil::rpcSetValueInteger4(const char* deviceSerial, const uint8_t channe
     return sendRequestCheckResponseOk(request);
 }
 
+bool RpcUtil::rpcInitEventReceiver(const char* url, const char* interfaceId)
+{
+    String request = ""; // "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    request += "<methodCall>";
+    request += "<methodName>init</methodName>";
+    request += "<params>";
+    requestAddParamString(request, url);
+    requestAddParamString(request, interfaceId);
+    request += "</params>";
+    request += "</methodCall>";
+
+    logDebugP("XML-RPC call: init(%s, %s)", url, interfaceId);
+
+    return sendRequestCheckResponseOk(request);
+}
+
 void RpcUtil::requestAddParamString(String &request, const char *str)
 {
     request += "<param><value><string>";
@@ -185,6 +201,8 @@ bool RpcUtil::sendRequestGetResponseDoc(String &request, tinyxml2::XMLDocument &
             return false;
         }
     }
+
+    // AFTER done==true
 
     logDebugP("[DONE] duration request %d ms", millis() - tStart);
 

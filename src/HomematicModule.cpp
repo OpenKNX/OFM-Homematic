@@ -67,6 +67,9 @@ void HomematicModule::setup()
     {
         _channels[i]->setup();
     }
+#ifdef OPENKNX_WEBSERVER
+    setupEventRoute();
+#endif
     logIndentDown();
 }
 
@@ -140,6 +143,9 @@ void HomematicModule::processAfterStartupDelay()
 
 void HomematicModule::loop()
 {
+#ifdef OPENKNX_WEBSERVER
+    loopEventReceiver();
+#endif
     // TODO optimize
     for (uint8_t i = 0; i < HMG_ChannelCount; i++)
     {
@@ -553,5 +559,335 @@ bool HomematicModule::processCommand(const std::string cmd, bool diagnoseKo)
     }
     return false;
 }
+
+// #ifdef OPENKNX_WEBSERVER
+
+// Helper: parse event address format "SERIAL:CHANNEL" into components
+// Returns false if address is malformed
+static bool parseEventAddress(const char* address, std::string& outSerial, uint8_t& outChannel)
+{
+    if (address == nullptr || address[0] == '\0')
+        return false;
+
+    const char* colonPos = strchr(address, ':');
+    if (colonPos == nullptr || colonPos == address)
+        return false;
+
+    outSerial.assign(address, colonPos - address);
+    outChannel = (uint8_t)strtoul(colonPos + 1, nullptr, 10);
+    return true;
+}
+
+// Helper: extract typed value from XML <value> element
+// Checks for typed elements (<boolean>, <i4>, <double>, <string>) and returns the type
+// If no typed element found, treats bare text as string
+// Returns type name ("boolean", "i4", "double", "string") or nullptr if no value found
+static const char* extractTypedValue(tinyxml2::XMLElement *value, std::string& outValue)
+{
+    if (value == nullptr)
+        return nullptr;
+
+    // Check for typed elements in priority order
+    tinyxml2::XMLElement *typed = value->FirstChildElement("boolean");
+    if (typed && typed->GetText())
+    {
+        outValue = typed->GetText();
+        return "boolean";
+    }
+
+    typed = value->FirstChildElement("i4");
+    if (typed && typed->GetText())
+    {
+        outValue = typed->GetText();
+        return "i4";
+    }
+
+    typed = value->FirstChildElement("double");
+    if (typed && typed->GetText())
+    {
+        outValue = typed->GetText();
+        return "double";
+    }
+
+    typed = value->FirstChildElement("string");
+    if (typed && typed->GetText())
+    {
+        outValue = typed->GetText();
+        return "string";
+    }
+
+    // Bare text (implicit string)
+    const char *text = value->GetText();
+    if (text)
+    {
+        outValue = text;
+        return "string";
+    }
+
+    return nullptr;
+}
+
+void HomematicModule::setupEventRoute()
+{
+    if (_eventRouteRegistered)
+        return;
+    _eventRouteRegistered = true;
+
+    _eventInterfaceId = std::string("OFM-Homematic-") + openknx.info.humanSerialNumber();
+
+    openknxNetwork.webserver.addRoute(OpenKNX::Network::WEB_POST, "/HMG/events",
+        [this](OpenKNX::Network::WebRequest &req, OpenKNX::Network::WebResponse &res) {
+            handleEventRequest(req, res);
+        });
+
+    logInfoP("Event route /HMG/events registered (interface_id=%s)", _eventInterfaceId.c_str());
+}
+
+void HomematicModule::loopEventReceiver()
+{
+    if (!_eventRouteRegistered || !openknxNetwork.established() || !openknxNetwork.webserver.isRunning())
+        return;
+
+    // Prototype: (re-)register once at start, and again whenever no event arrived within the timeout.
+    if (!_eventReceiverRegistered || (millis() - _lastEventOrRegisterMs > HMG_EVENT_RENEW_TIMEOUT_MS))
+    {
+        registerEventReceiver();
+    }
+}
+
+void HomematicModule::registerEventReceiver()
+{
+    String url = "http://";
+    url += openknxNetwork.localIP().toString();
+    url += "/HMG/events";
+
+    logInfoP("Registering event receiver at CCU: init(%s, %s)", url.c_str(), _eventInterfaceId.c_str());
+
+    _eventReceiverRegistered = hmgClient.rpcInitEventReceiver(url.c_str(), _eventInterfaceId.c_str());
+    _lastEventOrRegisterMs = millis();
+
+    if (!_eventReceiverRegistered)
+    {
+        logErrorP("Registering event receiver at CCU failed");
+    }
+}
+
+void HomematicModule::handleEventRequest(OpenKNX::Network::WebRequest &req, OpenKNX::Network::WebResponse &res)
+{
+    static const char *emptyMethodResponse =
+        "<?xml version=\"1.0\"?><methodResponse><params><param><value></value></param></params></methodResponse>";
+
+    tinyxml2::XMLDocument doc;
+    if (req.body() == nullptr || doc.Parse((const char *)req.body(), req.bodyLength()) != tinyxml2::XML_SUCCESS)
+    {
+        logErrorP("Failed to parse incoming XML-RPC event request");
+        res.setContentType("text/xml");
+        res.send(emptyMethodResponse);
+        return;
+    }
+
+    tinyxml2::XMLElement *methodCall = doc.FirstChildElement("methodCall");
+    tinyxml2::XMLElement *methodNameElem = methodCall ? methodCall->FirstChildElement("methodName") : nullptr;
+    const char *methodName = methodNameElem ? methodNameElem->GetText() : nullptr;
+
+    uint32_t multicallCount = 0;
+
+    if (methodName && strcmp(methodName, "event") == 0)
+    {
+        tinyxml2::XMLElement *params = methodCall->FirstChildElement("params");
+        tinyxml2::XMLElement *paramValues[4] = {nullptr, nullptr, nullptr, nullptr};
+        uint8_t n = 0;
+        for (tinyxml2::XMLElement *param = params ? params->FirstChildElement("param") : nullptr; param && n < 4; param = param->NextSiblingElement("param"))
+        {
+            paramValues[n++] = param->FirstChildElement("value");
+        }
+        processEventValues(paramValues);
+        _lastEventOrRegisterMs = millis();
+    }
+    else if (methodName && strcmp(methodName, "system.multicall") == 0)
+    {
+        // path: params/param/value/array/data/value[]/struct/member[]{name,value}
+        tinyxml2::XMLElement *params = methodCall->FirstChildElement("params");
+        tinyxml2::XMLElement *param = params ? params->FirstChildElement("param") : nullptr;
+        tinyxml2::XMLElement *value = param ? param->FirstChildElement("value") : nullptr;
+        tinyxml2::XMLElement *array = value ? value->FirstChildElement("array") : nullptr;
+        tinyxml2::XMLElement *data = array ? array->FirstChildElement("data") : nullptr;
+
+        for (tinyxml2::XMLElement *entry = data ? data->FirstChildElement("value") : nullptr; entry; entry = entry->NextSiblingElement("value"))
+        {
+            multicallCount++;
+            tinyxml2::XMLElement *entryStruct = entry->FirstChildElement("struct");
+            if (entryStruct == nullptr)
+                continue;
+
+            const char *entryMethodName = nullptr;
+            tinyxml2::XMLElement *entryParamsData = nullptr;
+            for (tinyxml2::XMLElement *member = entryStruct->FirstChildElement("member"); member; member = member->NextSiblingElement("member"))
+            {
+                tinyxml2::XMLElement *nameElem = member->FirstChildElement("name");
+                tinyxml2::XMLElement *valueElem = member->FirstChildElement("value");
+                if (nameElem == nullptr || valueElem == nullptr)
+                    continue;
+
+                const char *memberName = nameElem->GetText();
+                if (memberName == nullptr)
+                    continue;
+
+                if (strcmp(memberName, "methodName") == 0)
+                {
+                    entryMethodName = valueElem->GetText();
+                    if (entryMethodName == nullptr)
+                    {
+                        if (tinyxml2::XMLElement *strElem = valueElem->FirstChildElement("string"))
+                            entryMethodName = strElem->GetText();
+                    }
+                }
+                else if (strcmp(memberName, "params") == 0)
+                {
+                    if (tinyxml2::XMLElement *entryArray = valueElem->FirstChildElement("array"))
+                        entryParamsData = entryArray->FirstChildElement("data");
+                }
+            }
+
+            if (entryMethodName && strcmp(entryMethodName, "event") == 0)
+            {
+                tinyxml2::XMLElement *paramValues[4] = {nullptr, nullptr, nullptr, nullptr};
+                uint8_t n = 0;
+                for (tinyxml2::XMLElement *entryValue = entryParamsData ? entryParamsData->FirstChildElement("value") : nullptr; entryValue && n < 4; entryValue = entryValue->NextSiblingElement("value"))
+                {
+                    paramValues[n++] = entryValue;
+                }
+                processEventValues(paramValues);
+            }
+        }
+        _lastEventOrRegisterMs = millis();
+    }
+    else
+    {
+        logDebugP("Ignoring incoming XML-RPC call '%s'", methodName ? methodName : "?");
+    }
+
+    res.setContentType("text/xml");
+    if (multicallCount == 0)
+    {
+        res.send(emptyMethodResponse);
+    }
+    else
+    {
+        std::string response = "<?xml version=\"1.0\"?><methodResponse><params><param><value><array><data>";
+        for (uint32_t i = 0; i < multicallCount; i++)
+            response += "<value></value>";
+        response += "</data></array></value></param></params></methodResponse>";
+        res.send(response.c_str());
+    }
+}
+
+void HomematicModule::processEventValues(tinyxml2::XMLElement *paramValues[4])
+{
+    // Parameter 0: Token (String)
+    const char *token = paramValues[0] ? paramValues[0]->GetText() : nullptr;
+    if (!token)
+        token = "";
+
+    // Parameter 1: Address "SERIAL:CHANNEL" (String)
+    const char *addressStr = paramValues[1] ? paramValues[1]->GetText() : nullptr;
+    if (!addressStr)
+    {
+        logWarningP("Event missing address parameter");
+        return;
+    }
+
+    std::string serial;
+    uint8_t channel;
+    if (!parseEventAddress(addressStr, serial, channel))
+    {
+        logWarningP("Invalid event address format (expected SERIAL:CHANNEL): %s", addressStr);
+        return;
+    }
+
+    // Parameter 2: Parameter key (String)
+    const char *paramKey = paramValues[2] ? paramValues[2]->GetText() : nullptr;
+    if (!paramKey || paramKey[0] == '\0')
+    {
+        logWarningP("Event missing parameter key");
+        return;
+    }
+
+    // Parameter 3: Value (can be typed: boolean, i4, double, or string)
+    std::string paramValueStr;
+    const char *valueType = extractTypedValue(paramValues[3], paramValueStr);
+    if (valueType == nullptr)
+    {
+        logWarningP("Event missing parameter value for key %s", paramKey);
+        return;
+    }
+
+    logDebugP("HMG event: serial=%s ch=%d key=%s type=%s value=%s", serial.c_str(), channel, paramKey, valueType, paramValueStr.c_str());
+
+    // Dispatch based on XML type tag
+    if (strcmp(valueType, "boolean") == 0)
+    {
+        bool bval = strcasecmp(paramValueStr.c_str(), "true") == 0 || paramValueStr == "1";
+        _processEventParamBool(serial.c_str(), channel, paramKey, bval);
+    }
+    else if (strcmp(valueType, "i4") == 0)
+    {
+        int32_t ival = (int32_t)strtol(paramValueStr.c_str(), nullptr, 10);
+        _processEventParamInt32(serial.c_str(), channel, paramKey, ival);
+    }
+    else if (strcmp(valueType, "double") == 0)
+    {
+        double dval = strtod(paramValueStr.c_str(), nullptr);
+        _processEventParamDouble(serial.c_str(), channel, paramKey, dval);
+    }
+    else
+    {
+        logDebugP("Unsupported parameter type '%s': key=%s value=%s", valueType, paramKey, paramValueStr.c_str());
+    }
+}
+
+// Interne Hilfsfunktion: generische Verarbeitung für alle Datentypen
+template<typename ValueType>
+bool HomematicModule::_processEventParamGeneric(
+    const char* serial, 
+    uint8_t channel, 
+    const char* pName, 
+    ValueType value,
+    bool (HomematicChannel::*processFn)(uint8_t, const char*, ValueType))
+{
+    uint8_t countProcessed = 0;
+    for (uint8_t _channelIndex = 0; _channelIndex < HMG_ChannelCount; _channelIndex++)
+    {
+        if (_channels[_channelIndex]->getSerial() == serial)
+        {
+            if ((_channels[_channelIndex]->*processFn)(channel, pName, value))
+                countProcessed++;
+        }
+    }
+    return countProcessed > 0;
+}
+
+// Spezialisierte Funktionen: nur Logging + Delegation
+bool HomematicModule::_processEventParamDouble(const char* serial, uint8_t channel, const char* pName, double value)
+{
+    logInfoP("HMG event: serial=%s channel=%d key=%s value<double>=%f", serial, channel, pName, value);
+    return _processEventParamGeneric(serial, channel, pName, value, &HomematicChannel::_processResponseParamDouble);
+}
+
+bool HomematicModule::_processEventParamInt32(const char* serial, uint8_t channel, const char* pName, int32_t value)
+{
+    logInfoP("HMG event: serial=%s channel=%d key=%s value<int32>=%d", serial, channel, pName, value);
+    return _processEventParamGeneric(serial, channel, pName, value, &HomematicChannel::_processResponseParamInt32);
+}
+
+bool HomematicModule::_processEventParamBool(const char* serial, uint8_t channel, const char* pName, bool value)
+{
+    logInfoP("HMG event: serial=%s channel=%d key=%s value<bool>=%s", serial, channel, pName, value ? "true" : "false");
+    return _processEventParamGeneric(serial, channel, pName, value, &HomematicChannel::_processResponseParamBool);
+}
+
+
+
+// #endif // OPENKNX_WEBSERVER
 
 HomematicModule openknxHomematicModule;

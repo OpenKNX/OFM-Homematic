@@ -27,11 +27,6 @@ class HomematicChannel : public OpenKNX::Channel
     bool _unreach = false;
     bool _batteryWarn = false;
 
-    // handler-methods by value-type: first delegate to device-type, when not processed check :0
-    bool _processResponseParamDouble(uint8_t channel, const char* pName, double value);
-    bool _processResponseParamInt32(uint8_t channel, const char* pName, int32_t value);
-    bool _processResponseParamBool(uint8_t channel, const char* pName, bool value);
-
   protected:
     // Channel state
     bool _channelActive = false;
@@ -105,4 +100,12 @@ class HomematicChannel : public OpenKNX::Channel
     void processInputKo(GroupObject &ko) override;
 
     bool processCommandOverview();
+
+    const std::string getSerial();
+
+    // handler-methods by value-type: first delegate to device-type, when not processed check :0
+    bool _processResponseParamDouble(uint8_t channel, const char* pName, double value);
+    bool _processResponseParamInt32(uint8_t channel, const char* pName, int32_t value);
+    bool _processResponseParamBool(uint8_t channel, const char* pName, bool value);
+
 };

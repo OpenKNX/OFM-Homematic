@@ -135,4 +135,52 @@ Für die Integration beliebiger Homematic-Geräte mit flexibler Auswahl von bis 
 * Sofortigen Werteabruf von CCU auslösen (sonst in regelmäßigem Intervall)
 
 
+## Event-Verarbeitung (Callback-Architektur)
+
+Das Modul unterstützt Events von der Homematic-CCU über einen HTTP-Webserver-Endpunkt (`POST /HMG/events`).
+
+### Architektur
+
+Events werden von der CCU als XML-RPC-Nachrichten mit den Methodennamen `"event"` (einzeln) oder `"system.multicall"` (gebündelt) gesendet:
+
+```
+CCU2  ──XML-RPC event──> Webserver (/HMG/events) ──parse──> Module Event Handler
+                                                              ├─> Address: "SERIAL:CHANNEL"
+                                                              ├─> value_key
+                                                              └─> value (auto-typed)
+```
+
+### Datentyp-Erkennung
+
+Empfangene Werte werden automatisch typisiert:
+
+| Erkennung | Typ | Beispiel |
+|-----------|-----|---------|
+| `"true"` / `"false"` | `bool` | `true` |
+| Dezimalzahl ohne `.` | `int32_t` | `42`, `-17` |
+| Mit `.` oder E-Notation | `double` | `1.5`, `2e-3` |
+
+### Logging
+
+Jedes empfangene Event wird mit Seriennummer und Kanalnummer geloggt:
+
+```
+HMG event: serial=NEQ0123456 channel=1 key=TEMPERATURE value=21.5
+HMG event: serial=OEQ5555555 channel=0 key=STATE value=true
+```
+
+### Status: Partial Implementation
+
+**Implementiert:**
+- XML-RPC Event-Parsing für `"event"` und `"system.multicall"`
+- Automatische Typ-Erkennung (bool/int32/double)
+- Logging mit Seriennummer + Channel-Nr.
+- Module-interne Datentyp-Handler
+
+**Ausstehend:**
+- Integration mit `HomematicChannel::processResponseParamX()` zur KO-Aktualisierung
+- Geräte-Registrierungs-Tabelle (Serial→Channel-Lookup)
+- Reachability-Update (UNREACH-Zustand auf Event-Empfang zurücksetzen)
+
+Detaillierte Implementierungspläne: siehe [doc/CONCEPT-Events.md](doc/CONCEPT-Events.md)
 

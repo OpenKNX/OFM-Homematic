@@ -9,6 +9,9 @@
 #include "OpenKNX.h"
 // always include for RUNTIME_MEASURE_{BEGIN,END}
 #include "OpenKNX/Stat/RuntimeStat.h"
+#ifdef OPENKNX_WEBSERVER
+#include "OpenKNX/Network/Webserver/Webserver.h"
+#endif
 
 class HomematicModule : public OpenKNX::Module
 {
@@ -72,6 +75,31 @@ class HomematicModule : public OpenKNX::Module
 
     static const uint8_t FUNCPROP_RESULT_OK = 0;
     static const uint8_t FUNCPROP_RESULT_FAIL = 1;
+
+#ifdef OPENKNX_WEBSERVER
+    // Event receiver (Prototype): CCU callback route "/HMG/events", see doc/CONCEPT-Events.md
+    // renew registration when no event arrived within this time
+    static const uint32_t HMG_EVENT_RENEW_TIMEOUT_MS = 15 * 60 * 1000;
+    bool _eventRouteRegistered = false;
+    bool _eventReceiverRegistered = false;
+    uint32_t _lastEventOrRegisterMs = 0;
+    std::string _eventInterfaceId;
+
+    void setupEventRoute();
+    void loopEventReceiver();
+    void registerEventReceiver();
+    void handleEventRequest(OpenKNX::Network::WebRequest &req, OpenKNX::Network::WebResponse &res);
+    void processEventValues(tinyxml2::XMLElement *paramValues[4]);
+    
+    // Event parameter processing methods by value type
+    bool _processEventParamDouble(const char* serial, uint8_t channel, const char* pName, double value);
+    bool _processEventParamInt32(const char* serial, uint8_t channel, const char* pName, int32_t value);
+    bool _processEventParamBool(const char* serial, uint8_t channel, const char* pName, bool value);
+    template<typename ValueType>
+    bool _processEventParamGeneric(const char* serial, uint8_t channel, const char* pName, ValueType value,
+                                   bool (HomematicChannel::*processFn)(uint8_t, const char*, ValueType));
+#endif
+
   public:
     HomematicModule();
     const std::string name() override;

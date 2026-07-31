@@ -21,6 +21,11 @@ const std::string HomematicChannel::name()
     return "Homematic-Channel";
 }
 
+const std::string HomematicChannel::getSerial()
+{
+    return ParamHMG_dDeviceSerialStr;
+}
+
 void HomematicChannel::setup()
 {
     _channelActive = (ParamHMG_dDeviceType != 0) && !ParamHMG_dDisable && (ParamHMG_dDeviceSerial[0] != '\0');

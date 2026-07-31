@@ -36,38 +36,40 @@ This is step 1 (done). Step 2 (full async) was only sketched/discussed, NOT impl
 
 If asked to implement this later, start here instead of re-deriving the design.
 
-## Event-based CCU callback design (also sketched, not implemented)
+## Event-based CCU callback design (implementation in progress; see doc/CONCEPT-Events.md status section for current state)
 
 Goal: CCU2 pushes value-changed events instead of relying only on polling.
 
 Decisions (see doc/CONCEPT-Events.md for full writeup):
-1. OPENKNX_WEBSERVER will be enabled for this feature (currently OFF in OAM-Homematic
-   platformio.custom.ini).
+1. OPENKNX_WEBSERVER is enabled for this feature.
 2. Large event bursts (system.multicall after CCU reboot) are a secondary concern for now:
    tolerate + log, missing values get picked up by the next poll. Streaming-parsing is a
    possible later improvement, not part of the first implementation.
 3. Events shall count towards reachability - a received event resets a channel's `unreach`
    state analogous to a successful poll response, feeding into the existing group
-   aggregation (updateDeviceStates), not poll-only anymore.
+   aggregation (updateDeviceStates), not poll-only anymore. **Not yet implemented** - event
+   path currently only forwards to the value handlers, `updateDeviceStates()` is still only
+   called from the polling path (`HomematicChannel::update()`).
 4. Callback path is fixed (not ETS-configurable): `/HMG/events`. Re-registration interval: 15
    minutes.
 
-- New inbound route `POST /HMG/events` registered via openknxNetwork.webserver.addRoute.
-- Must implement XML-RPC *server* side: parse incoming methodName "event" (single) and
-  "system.multicall" (CCU batches many events, esp. after its own restart - could exceed
-  OPENKNX_WEBSERVER_MAX_BODY 4KB/32KB - tolerate + log per decision 2 above).
-- Registration: call XML-RPC `init(url, interface_id)` on same ParamHMG_Host/Port used for
-  other calls, url = http://<our-ip>:<webserver-port>/HMG/events. Deregister with
-  init(empty-url, interface_id) on shutdown (optional). Needs periodic re-init as keep-alive
-  every 15 min since CCU forgets listeners after its own reboot.
-- Need new serial+subchannel -> local channel-index lookup table (doesn't exist yet), built
-  at HomematicModule::setup() from ParamHMG_dDeviceSerialStr per channel.
-- Reuse existing (currently private) HomematicChannel::_processResponseParamDouble/Int32/Bool
-  handlers for event values too (same as poll-response path) - needs small API opening
-  (protected/friend or public wrapper).
-- States: Registration state machine (Unregistered -> Registering -> Registered ->
-  re-Registering periodically / RetryWait on failure). Webserver HTTP dispatch already runs
-  deferred outside lwIP callbacks (Webserver_RP2040.cpp doHttpDispatch from loop()), so no
-  extra queue-and-defer needed for the route handler itself.
+Implemented:
+- Inbound route `POST /HMG/events` registered via `HomematicModule::setupEventRoute()`.
+- XML-RPC server-side parsing for `"event"` (single) and `"system.multicall"`, factored into
+  `extractEventParameters()`/`processMulticallEvents()` helpers in HomematicModule.cpp to avoid
+  duplicating the params-array extraction logic between both call shapes.
+- Registration/keep-alive via `registerEventReceiver()` (calls `init(url, interface_id)`),
+  driven by `loopEventReceiver()` on the 15-minute renew timeout.
+- Value dispatch: `HomematicModule::processEventValues()` parses address ("SERIAL:CHANNEL") and
+  typed value, then calls `_processEventParamBool/Int32/Double()`, which look up the matching
+  channel via linear scan over `_channels[]` comparing `HomematicChannel::getSerial()`, and
+  delegate through the generic template `_processEventParamGeneric()` to the existing
+  `HomematicChannel::_processResponseParamBool/Int32/Double()` handlers (same code path as
+  poll responses).
+
+Still open:
+- Reachability update from events (see decision 3 above).
+- Serial -> channel-index lookup table (currently linear scan per event instead of a
+  precomputed index built in `HomematicModule::setup()`).
 - Remaining open details to clarify at implementation time: exact interface_id format,
   error-handling behaviour on init() failures.

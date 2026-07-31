@@ -76,3 +76,19 @@ stateDiagram-v2
 4. **Callback-Pfad/Intervall:** fester Pfad `/HMG/events`, Re-Registrierungsintervall 15 Minuten.
 
 Dieser Entwurf ist damit umsetzungsreif; verbleibende Detailfragen (z. B. genaues Interface-ID-Format, Fehlerverhalten bei `init()`-Fehlschlägen) können bei Implementierungsbeginn geklärt werden.
+
+### 6) Implementierungsstatus (2026-08-01)
+
+#### Abgeschlossen:
+- **Event-Endpunkt:** Route `POST /HMG/events` registriert in `setupEventRoute()` ✓
+- **XML-RPC Parsing:** Unterstützung für `"event"` (einzeln) und `"system.multicall"` ✓, dedupliziert über `extractEventParameters()`/`processMulticallEvents()`
+- **Address-Parsing:** Format "SERIAL:CHANNEL" wird korrekt extrahiert ✓
+- **Typ-Erkennung:** Automatische Klassifizierung der Werte als bool/int32/double ✓
+- **Channel-Integration:** `_processEventParamBool/Int32/Double()` finden den Kanal per `HomematicChannel::getSerial()`-Vergleich (lineare Suche über alle Kanäle, kein Lookup-Index) und delegieren an die generische Vorlage `_processEventParamGeneric()`, die wiederum die bestehenden `HomematicChannel::_processResponseParamBool/Int32/Double()` aufruft (gleicher Pfad wie beim Polling) ✓
+- **Logging:** Ereignisse werden mit Seriennummer und Channel-Nr. geloggt ✓
+
+#### Zu implementieren (weiterhin TODO):
+- **Reachability-Update:** Empfang eines Events soll den `unreach`-Status des Geräts aktualisieren bzw. `updateDeviceStates()` anstoßen (aktuell nur aus `HomematicChannel::update()` beim Polling aufgerufen, nicht aus dem Event-Pfad).
+- **Serial-Lookup-Optimierung:** Aktuell lineare Suche über `_channels[]` je Event; ein Index (Serial→Kanal) aus `HomematicModule::setup()` wäre effizienter bei vielen Kanälen, ist aber (noch) nicht umgesetzt.
+
+> **Hinweis für Weiterentwicklung:** Bei jeder Änderung an der Event-Verarbeitung (Parsing, Dispatch, Channel-Integration, Reachability) diesen Abschnitt sowie `doc/homematic-async-rpc-design.md` synchron aktualisieren – siehe AGENTS.md.

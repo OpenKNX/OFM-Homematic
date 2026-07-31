@@ -122,3 +122,10 @@ Die Rückgabe muss robust gegen ungültige Längen, Indizes und Null-Pointer sei
 - Jede verwendete `HelpContext`-Id muss in der Applikationsbeschreibung als `<!-- DOC HelpContext="HMG-..." -->` dokumentiert sein
 - Baggages werden über VS Code Task "OpenKNXproducer Documentation" erzeugt (`.vscode/tasks.json`)
 - Deutsche Texte mit echten Umlauten (ä, ö, ü, ß) schreiben
+
+### Event-Verarbeitung (CCU-Callbacks)
+
+Bei jeder Änderung an der Event-Verarbeitung (Route `/HMG/events`, Parsing, Registrierung,
+Channel-Dispatch, Reachability) sind `doc/CONCEPT-Events.md` (Implementierungsstatus-Abschnitt)
+und `doc/homematic-async-rpc-design.md` (Abschnitt "Event-based CCU callback design") im selben
+Zug zu aktualisieren, damit sie den tatsächlichen Code-Stand widerspiegeln.

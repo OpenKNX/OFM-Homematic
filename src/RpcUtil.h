@@ -67,6 +67,9 @@ public:
     bool rpcSetValueBool(const char* deviceSerial, const uint8_t channel, const char * paramName, bool value);
     bool rpcSetValueInteger4(const char* deviceSerial, const uint8_t channel, const char * paramName, int32_t value);
 
+    // Registers/deregisters our event receiver callback URL at the CCU (XML-RPC "init")
+    bool rpcInitEventReceiver(const char* url, const char* interfaceId);
+
 private:
     const std::string logPrefix() { return "HMG<Client>"; }
 
