@@ -4,7 +4,6 @@
 #pragma once
 #include "OpenKNX.h"
 
-#include "HTTPClient.h"
 #include <tinyxml2.h>
 
 

@@ -4,14 +4,22 @@
 #pragma once
 
 #include <Arduino.h>
-#include <HTTPClient.h>
 #include <tinyxml2.h>
 #include <string>
 #include "OpenKNX.h"
 #include "OpenKNX/Base.h"
+#include "OpenKNX/Network/Module.h" // openknxNetwork.webclient
 
+#ifndef OPENKNX_WEBCLIENT
+#error "OFM-Homematic requires the OFM-Network Webclient - define OPENKNX_WEBCLIENT in the device project"
+#endif
 
 #define ADDRESS_CHANNEL_NONE (0xff)
+
+// Max size buffered from a single XML-RPC response (e.g. rssiInfo with many devices)
+#ifndef HMG_RPC_MAX_RESPONSE_SIZE
+#define HMG_RPC_MAX_RESPONSE_SIZE 8192
+#endif
 
 // Helper macros for XML element checking
 #define CHECK_RETURN(element, name, result) \
@@ -41,8 +49,8 @@ public:
     bool sendRequestCheckResponseOk(String &request);
     bool checkSendRequestResponse(tinyxml2::XMLDocument &doc);
     tinyxml2::XMLElement* getMethodResponseMember(tinyxml2::XMLDocument &doc);
-    void debugLogResponse(HTTPClient &http, bool logResponse = false);
-    
+    void debugLogResponse(const std::string response, bool logResponse = false);
+
     // XML Request parameter builders
     void requestAddParamString(String &request, const char *str);
     /**

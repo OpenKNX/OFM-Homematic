@@ -146,61 +146,70 @@ bool RpcUtil::sendRequestGetResponseDoc(String &request, tinyxml2::XMLDocument &
 {
     const uint32_t tStart = millis();
 
-    // logDebugP("Read URL POST: http://%s:%d", (const char *)ParamHMG_Host, ParamHMG_Port);
-
-    HTTPClient http;
-
-    // reduce timeout
-    http.setTimeout(2000);
-    // http.setConnectTimeout(500);
-
-    /*
-    String url = "http://";
+    // URL has format "http://{$Host}:{$Port}"
+    std::string url = "http://";
     url += (const char *)ParamHMG_Host;
     url += ":";
-    url += ParamHMG_Port;
+    url += std::to_string(ParamHMG_Port);
 
-#ifdef ARDUINO_ARCH_RP2040
-    if (url.startsWith("https://"))
-        http.setInsecure();
-#endif
-    http.begin(url);
-    */
+    bool done = false;
+    OpenKNX::Network::Webclient::Response result;
 
-    http.begin((const char *)ParamHMG_Host, ParamHMG_Port);
-    // TODO check using reuse of the connection; needs moving to module
-    http.setReuse(false);
-    http.addHeader("Content-Type", "text/xml");
-    http.addHeader("Accept", "text/xml");
-
-    // send value read request
-    int httpStatus = http.POST(request);
-    if (httpStatus != 200)
+    const bool queued = openknxNetwork.webclient.post(url)
+                            .contentType("text/xml")
+                            .header("Accept", "text/xml")
+                            .body(request.c_str(), request.length())
+                            .ignoreHeaders()
+                            .maxBodySize(HMG_RPC_MAX_RESPONSE_SIZE)
+                            .onDone([&done, &result](const OpenKNX::Network::Webclient::Response &res) {
+                                result = res;
+                                done = true;
+                            })
+                            .send();
+    if (!queued)
     {
-        http.end();
-        logErrorP("POST returned http %d", httpStatus);
-        // TODO save error
+        logErrorP("Webclient request could not be queued");
         return false;
+    }
+
+    // TODO: still processed synchronously (blocking) for now - pump the webclient loop ourselves until onDone fires.
+    //       Switch HomematicModule/HomematicChannel to fully asynchronous processing in a follow-up step.
+    while (!done)
+    {
+        openknxNetwork.webclient.loop();
+        // TODO check and replace with full async implementation
+        yield(); // let other tasks/background processing (USB, watchdog, ...) run while we wait
+        if (delayCheckMillis(tStart, OPENKNX_WEBCLIENT_TIMEOUT))
+        {
+            logErrorP("Webclient request timed out");
+            return false;
+        }
     }
 
     logDebugP("[DONE] duration request %d ms", millis() - tStart);
 
-    const uint32_t tStart2 = millis();
-    // FIXME: will consume http-response string debugLogResponse(http);
+    if (!result.success())
+    {
+        logErrorP("POST returned http %d", result.status());
+        return false;
+    }
+    if (result.bodyIncomplete())
+    {
+        logErrorP("Response body exceeded %d bytes, truncated", HMG_RPC_MAX_RESPONSE_SIZE);
+        return false;
+    }
+
+    debugLogResponse(result.body(), false);
 
     const uint32_t tStart3 = millis();
-    if (doc.Parse(http.getString().c_str()) != tinyxml2::XML_SUCCESS)
+    if (doc.Parse(result.body().c_str()) != tinyxml2::XML_SUCCESS)
     {
-        http.end();
         logErrorP("Parsing-Error, ID=%d", doc.ErrorID());
         // TODO save error
         return false;
     }
     logDebugP("[DONE] parse %d ms", millis() - tStart3);
 
-    http.end();
-
-    logDebugP("[DONE] sendRequest2 %d ms", millis() - tStart2);
     return true;
 }
 
@@ -255,20 +264,19 @@ bool RpcUtil::checkSendRequestResponse(tinyxml2::XMLDocument &doc)
     return true;
 }
 
-void RpcUtil::debugLogResponse(HTTPClient &http, bool logResponse)
+void RpcUtil::debugLogResponse(const std::string response, bool logResponse /* = false */)
 {
 #ifdef OPENKNX_DEBUG
     if (logResponse)
     {
         const uint32_t tStart2 = millis();
 
-        String response = http.getString();
         logDebugP("response length: %d", response.length());
         const size_t len = response.length();
         const size_t lineLen = 100;
         for (size_t i = 0; i < len; i += lineLen)
         {
-            logDebugP("response: %s", response.substring(i, std::min(i + lineLen, len)).c_str());
+            logDebugP("response: %s", response.substr(i, std::min(i + lineLen, len)).c_str());
         }
 
         logDebugP("[DONE] duration log response %d ms", millis() - tStart2);

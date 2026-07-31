@@ -84,8 +84,10 @@ Aktuell genutzte XML-RPC-Methoden:
 - `getDeviceDescription` für Geräteinformationen in der ETS-Hilfe
 
 Implementierungsdetails (aktueller Stand):
-- Request-Timeout ist auf 2000 ms gesetzt
-- HTTP-Verbindungen werden nicht wiederverwendet (`setReuse(false)`)
+- Transport ist der Webclient aus OFM-Network (`openknxNetwork.webclient`, benötigt `OPENKNX_WEBCLIENT`), angesprochen über `RpcUtil::sendRequestGetResponseDoc()`
+- Verarbeitung ist weiterhin synchron/blockierend: `RpcUtil` stößt den Request an und pumpt `webclient.loop()` in einer Warteschleife, bis `onDone` feuert oder ein Timeout greift (TODO: vollständig asynchrone Verarbeitung)
+- Request-Timeout ist auf 2000 ms gesetzt (`OPENKNX_WEBCLIENT_TIMEOUT=2000` in `platformio.custom.ini` des Geräteprojekts)
+- Keine HTTP-Keep-Alive-Verbindungen (`Connection: close`, eine Anfrage je Verbindung)
 - Kommunikation erfolgt derzeit ohne Authentifizierung
 
 Wichtige Betriebsgrenzen:
