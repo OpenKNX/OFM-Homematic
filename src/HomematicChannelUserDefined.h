@@ -7,6 +7,10 @@
 #define HMG_DEVTYPE__USER_DEFINED (7)
 #define HMG_USERDEF_DATAPOINTS_COUNT (5)
 
+#define HMG_ACCESS_MASK_READ (0x01)
+#define HMG_ACCESS_MASK_WRITE (0x02)
+#define HMG_ACCESS_MASK_EVENT (0x04)
+
 /**
  * User-defined Homematic channel implementation for custom device configurations.
  * Supports up to 5 configurable datapoints with flexible data types and access patterns.
@@ -18,11 +22,9 @@ class HomematicChannelUserDefined : public HomematicChannel
     uint8_t _datapointAccess[5];
 
     // Helper methods for datapoint configuration
-    bool isDatapointConfigured(uint8_t index) const;
-    bool isDatapointReadable(uint8_t index) const;
-    bool isDatapointWritable(uint8_t index) const;
-    bool isDatapointEventBased(uint8_t index) const;
     const char* getDatapointParamName(uint8_t index) const;
+
+    uint8_t _checkProcessResponseParam(const uint8_t datapointIndex, const uint8_t channel, const char* pName, const bool isEvent);
     
     // Helper method for processing individual datapoint KOs
     void processInputKo(uint8_t access, uint8_t type, const uint32_t posParamName, GroupObject &ko);
@@ -33,6 +35,9 @@ class HomematicChannelUserDefined : public HomematicChannel
     // Helper to set GroupObject value with DPT
     bool setDatapointValue(uint8_t datapointIndex, const char* paramName, const KNXValue& value, const Dpt& dpt);
 
+  protected:
+    uint8_t getDeviceChannel() const override;
+
   public:
     HomematicChannelUserDefined(uint8_t index);
     virtual ~HomematicChannelUserDefined() = default;
@@ -42,7 +47,6 @@ class HomematicChannelUserDefined : public HomematicChannel
     
     // Device-specific implementations
     void processDeviceSpecificInputKo(GroupObject &ko) override;
-    uint8_t getDeviceChannel() const override { return ParamHMG_dUDChannelNumber; }
     
     // Response parameter processing for reading
     bool processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent = false) override;

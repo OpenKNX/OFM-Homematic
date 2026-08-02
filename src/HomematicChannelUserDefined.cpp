@@ -14,6 +14,11 @@ const std::string HomematicChannelUserDefined::name()
     return "HMG-UserDefined";
 }
 
+uint8_t HomematicChannelUserDefined::getDeviceChannel() const
+{
+    return ParamHMG_dUDChannelNumber;
+}
+
 void HomematicChannelUserDefined::setup()
 {
     HomematicChannel::setup();
@@ -114,35 +119,59 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
 }
 
 // Response parameter processing for reading values from CCU
+
+/**
+ * Check if a value with a given name within a device channel should be processed be the datapoint definition.
+ * @param datapointIndex - the index of the datapoint (0-4)
+ * @param channel - the device channel number from which the parameter was received
+ * @param pName - the parameter name string
+ * @param isEvent - the reponse is from event, or reponse to read otherwise
+ * @return the type of the datapoint if it should be processed, 0 otherwise
+ */
+uint8_t HomematicChannelUserDefined::_checkProcessResponseParam(const uint8_t datapointIndex, const uint8_t channel, const char* pName, const bool isEvent)
+{
+    if ((datapointIndex < HMG_USERDEF_DATAPOINTS_COUNT) && channel == getDeviceChannel())
+    {
+        const uint8_t type = _datapointType[datapointIndex];
+        if ((type != 0)
+            && (_datapointAccess[datapointIndex] & (isEvent ? HMG_ACCESS_MASK_EVENT : HMG_ACCESS_MASK_READ))
+            && (strcmp(pName, getDatapointParamName(datapointIndex)) == 0))
+        {
+            return type;
+        }
+    }
+    return 0;
+}
+
 bool HomematicChannelUserDefined::processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < HMG_USERDEF_DATAPOINTS_COUNT; i++) {
-        if (isDatapointConfigured(i) && isDatapointReadable(i)) {
-            const char* configuredName = getDatapointParamName(i);
-            if (strcmp(pName, configuredName) == 0) {
-                uint8_t type = _datapointType[i];
-                switch (type)
-                {
-                    case 3: // float type DPT9
-                        if (setDatapointValue(i, pName, value, DPT_Value_Tempd)) {
-                            logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
-                            return true;
-                        }
-                        break;
-                    case 6: // float type DPT5.001
-                        if (setDatapointValue(i, pName, value * 100, DPT_Scaling)) {
-                            logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
-                            return true;
-                        }
-                        break;
-                    case 8: // float type DPT14
-                        if (setDatapointValue(i, pName, value, DPT_Value_Amplitude)) {
-                            logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
-                            return true;
-                        }
-                        break;
-                }
+        const uint8_t type = _checkProcessResponseParam(i, channel, pName, isEvent);
+        if (type)
+        {
+            switch (type)
+            {
+                case 3: // float type DPT9
+                    if (setDatapointValue(i, pName, value, DPT_Value_Tempd)) {
+                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                        return true;
+                    }
+                    break;
+                case 6: // float type DPT5.001
+                    if (setDatapointValue(i, pName, value * 100, DPT_Scaling)) {
+                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                        return true;
+                    }
+                    break;
+                case 8: // float type DPT14
+                    if (setDatapointValue(i, pName, value, DPT_Value_Amplitude)) {
+                        logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
+                        return true;
+                    }
+                    break;
+                default:
+                    break; // ignore incompatible types
             }
         }
     }
@@ -153,36 +182,33 @@ bool HomematicChannelUserDefined::processResponseParamInt32(const uint8_t channe
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < HMG_USERDEF_DATAPOINTS_COUNT; i++) {
-        if (isDatapointConfigured(i) && isDatapointReadable(i)) {
-            const char* configuredName = getDatapointParamName(i);
-            if (strcmp(pName, configuredName) == 0) {
-                uint8_t type = _datapointType[i];
-                
-                // Set datapoint value based on type and log if successful
-                bool success = false;
-                switch (type) {
-                    case 4:
-                    case 5:
-                        // integer or option type (DPT13)
-                        success = setDatapointValue(i, pName, value, DPT_Value_4_Count);
-                        break;
-                    case 7:
-                        // integer or option type (DPT 5.001)
-                        success = setDatapointValue(i, pName, value, DPT_Scaling);
-                        break;
-                    case 9:
-                    case 10:
-                        // integer or option type (DPT 5.005)
-                        success = setDatapointValue(i, pName, value, DPT_DecimalFactor);
-                        break;
-                    default:
-                        continue; // Skip unsupported types
-                }
-                
-                if (success) {
-                    logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
-                    return true;
-                }
+        const uint8_t type = _checkProcessResponseParam(i, channel, pName, isEvent);
+        if (type)
+        {
+            // Set datapoint value based on type and log if successful
+            bool success = false;
+            switch (type) {
+                case 4:
+                case 5:
+                    // integer or option type (DPT13)
+                    success = setDatapointValue(i, pName, value, DPT_Value_4_Count);
+                    break;
+                case 7:
+                    // integer or option type (DPT 5.001)
+                    success = setDatapointValue(i, pName, value, DPT_Scaling);
+                    break;
+                case 9:
+                case 10:
+                    // integer or option type (DPT 5.005)
+                    success = setDatapointValue(i, pName, value, DPT_DecimalFactor);
+                    break;
+                default:
+                    break; // ignore incompatible types
+            }
+            
+            if (success) {
+                logTraceP("Updated integer datapoint %d (%s) with value: %d", i + 1, pName, value);
+                return true;
             }
         }
     }
@@ -193,19 +219,19 @@ bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < HMG_USERDEF_DATAPOINTS_COUNT; i++) {
-        const uint8_t type = _datapointType[i]; // TODO used in isDatapointConfigured
-        if (isDatapointConfigured(i) && isDatapointReadable(i)) {
-            const char* configuredName = getDatapointParamName(i);
-            if (strcmp(pName, configuredName) == 0) {
-                switch (type) {
-                    case 1: // action type (DPT 1.017)
-                    case 2: // boolean type (DPT 1)
-                        if (setDatapointValue(i, pName, value, DPT_Switch)) {
-                            logTraceP("Updated bool datapoint %d (%s) with value: %s", i + 1, pName, value ? "true" : "false");
-                            return true;
-                        }
-                        break;
-                }
+        const uint8_t type = _checkProcessResponseParam(i, channel, pName, isEvent);
+        if (type)
+        {
+            switch (type) {
+                case 1: // action type (DPT 1.017)
+                case 2: // boolean type (DPT 1)
+                    if (setDatapointValue(i, pName, value, DPT_Switch)) {
+                        logTraceP("Updated bool datapoint %d (%s) with value: %s", i + 1, pName, value ? "true" : "false");
+                        return true;
+                    }
+                    break;
+                default:
+                    break; // ignore incompatible types
             }
         }
     }
@@ -213,25 +239,6 @@ bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel
 }
 
 // Helper methods using parameter macros
-bool HomematicChannelUserDefined::isDatapointConfigured(uint8_t index) const
-{
-    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointType[index] != 0);
-}
-
-bool HomematicChannelUserDefined::isDatapointReadable(uint8_t index) const
-{
-    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointAccess[index] & 0x01); // L bit (lesen)
-}
-
-bool HomematicChannelUserDefined::isDatapointWritable(uint8_t index) const
-{
-    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointAccess[index] & 0x02); // W bit (schreiben)
-}
-
-bool HomematicChannelUserDefined::isDatapointEventBased(uint8_t index) const
-{
-    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointAccess[index] & 0x04); // E bit (ereignisse)
-}
 
 const char* HomematicChannelUserDefined::getDatapointParamName(uint8_t index) const
 {
