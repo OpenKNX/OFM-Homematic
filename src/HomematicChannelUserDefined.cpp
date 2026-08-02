@@ -22,27 +22,17 @@ uint8_t HomematicChannelUserDefined::getDeviceChannel() const
 void HomematicChannelUserDefined::setup()
 {
     HomematicChannel::setup();
-    _datapointType[0] = ParamHMG_dUD1Type;
-    _datapointType[1] = ParamHMG_dUD2Type;
-    _datapointType[2] = ParamHMG_dUD3Type;
-    _datapointType[3] = ParamHMG_dUD4Type;
-    _datapointType[4] = ParamHMG_dUD5Type;
-    _datapointAccess[0] = ParamHMG_dUD1Access;
-    _datapointAccess[1] = ParamHMG_dUD2Access;
-    _datapointAccess[2] = ParamHMG_dUD3Access;
-    _datapointAccess[3] = ParamHMG_dUD4Access;
-    _datapointAccess[4] = ParamHMG_dUD5Access;
 }
 
 void HomematicChannelUserDefined::processDeviceSpecificInputKo(GroupObject &ko)
 {
-    uint8_t koIndex = HMG_KoCalcIndex(ko.asap());
+    const uint8_t koIndex = HMG_KoCalcIndex(ko.asap());
     switch (koIndex) {
-        case HMG_KoKOdUD1Set: processInputKo(ParamHMG_dUD1Access, ParamHMG_dUD1Type, HMG_dUD1ParamName, ko); break;
-        case HMG_KoKOdUD2Set: processInputKo(ParamHMG_dUD2Access, ParamHMG_dUD2Type, HMG_dUD2ParamName, ko); break;
-        case HMG_KoKOdUD3Set: processInputKo(ParamHMG_dUD3Access, ParamHMG_dUD3Type, HMG_dUD3ParamName, ko); break;
-        case HMG_KoKOdUD4Set: processInputKo(ParamHMG_dUD4Access, ParamHMG_dUD4Type, HMG_dUD4ParamName, ko); break;
-        case HMG_KoKOdUD5Set: processInputKo(ParamHMG_dUD5Access, ParamHMG_dUD5Type, HMG_dUD5ParamName, ko); break;
+        case HMG_KoKOdUD1Set: processInputKo(0, ko); break;
+        case HMG_KoKOdUD2Set: processInputKo(1, ko); break;
+        case HMG_KoKOdUD3Set: processInputKo(2, ko); break;
+        case HMG_KoKOdUD4Set: processInputKo(3, ko); break;
+        case HMG_KoKOdUD5Set: processInputKo(4, ko); break;
         default:
             // ignore other KOs
             break;
@@ -50,16 +40,17 @@ void HomematicChannelUserDefined::processDeviceSpecificInputKo(GroupObject &ko)
 }
 
 // Helper method for processing individual datapoint KOs
-void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, const uint32_t posParamName, GroupObject &ko)
+void HomematicChannelUserDefined::processInputKo(const uint8_t datepointIndex, GroupObject &ko)
 {
+    const uint8_t type = ParamHMG_dUD___Type(datepointIndex);
     // Check if datapoint is configured and writable
     if (type == 0) {
         logTraceP("Datapoint not configured (type = 0)");
         return;
     }
 
-    const char* paramName = (const char*)knx.paramData(HMG_ParamCalcIndex(posParamName));
-    if ((access & 0x02) == 0) { // W bit (schreiben) not set
+    const char* paramName = getDatapointParamName(datepointIndex);
+    if ((ParamHMG_dUD___Access(datepointIndex) & HMG_ACCESS_MASK_WRITE) == 0) { // W bit (schreiben) not set
         logTraceP("Datapoint (%s) is not writable", paramName);
         return;
     }
@@ -132,9 +123,9 @@ uint8_t HomematicChannelUserDefined::_checkProcessResponseParam(const uint8_t da
 {
     if ((datapointIndex < HMG_USERDEF_DATAPOINTS_COUNT) && channel == getDeviceChannel())
     {
-        const uint8_t type = _datapointType[datapointIndex];
+        const uint8_t type = ParamHMG_dUD___Type(datapointIndex);
         if ((type != 0)
-            && (_datapointAccess[datapointIndex] & (isEvent ? HMG_ACCESS_MASK_EVENT : HMG_ACCESS_MASK_READ))
+            && (ParamHMG_dUD___Access(datapointIndex) & (isEvent ? HMG_ACCESS_MASK_EVENT : HMG_ACCESS_MASK_READ))
             && (strcmp(pName, getDatapointParamName(datapointIndex)) == 0))
         {
             return type;
@@ -242,13 +233,7 @@ bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel
 
 const char* HomematicChannelUserDefined::getDatapointParamName(uint8_t index) const
 {
-    #define HMG_dUD_ParamName_Distance (HMG_dUD2ParamName - HMG_dUD1ParamName)
-    static_assert(HMG_dUD2ParamName == HMG_dUD1ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 1 and 2");
-    static_assert(HMG_dUD3ParamName == HMG_dUD2ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 2 and 3");
-    static_assert(HMG_dUD4ParamName == HMG_dUD3ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 3 and 4");
-    static_assert(HMG_dUD5ParamName == HMG_dUD4ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 4 and 5");
-
-    return (index < HMG_USERDEF_DATAPOINTS_COUNT) ? (const char*)(knx.paramData(HMG_ParamCalcIndex(HMG_dUD1ParamName + index * HMG_dUD_ParamName_Distance))) : "";
+    return (index < HMG_USERDEF_DATAPOINTS_COUNT) ? (ParamHMG_dUD___ParamName(index)) : "";
 }
 
 // Helper to set GroupObject value with DPT
@@ -256,14 +241,7 @@ bool HomematicChannelUserDefined::setDatapointValue(uint8_t datapointIndex, cons
 {
     if (datapointIndex < HMG_USERDEF_DATAPOINTS_COUNT)
     {
-        #define HMG_KoKOdUD_Val_Distance (HMG_KoKOdUD2Val - HMG_KoKOdUD1Val)
-        static_assert(HMG_KoKOdUD2Val ==  HMG_KoKOdUD1Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 1 and 2");
-        static_assert(HMG_KoKOdUD3Val ==  HMG_KoKOdUD2Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 2 and 3");
-        static_assert(HMG_KoKOdUD4Val ==  HMG_KoKOdUD3Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 3 and 4");
-        static_assert(HMG_KoKOdUD5Val ==  HMG_KoKOdUD4Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 4 and 5");
-
-        GroupObject& koObj = knx.getGroupObject(HMG_KoCalcNumber(HMG_KoKOdUD1Val + datapointIndex * HMG_KoKOdUD_Val_Distance));
-        koObj.valueCompare(value, dpt);
+        KoHMG_KOdUD___Val(datapointIndex).valueCompare(value, dpt);
         return true;
     }
     else
