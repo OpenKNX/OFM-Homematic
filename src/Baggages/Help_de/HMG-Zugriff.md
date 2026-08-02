@@ -8,7 +8,6 @@ Es existieren drei Zugriffsarten auf Homematic-Datenpunkte:
 * **schreibend** (Write):
   Stellt ein KO bereit überschreiben des Wertes im Gerät.
 * **über Ereignisse** (Event): 
-  ***(- bislang nicht unterstützt -)***
   Benachrichtigt sofort (ohne explizite Abfrage) bei Änderung im Gerät.
   Der Wert wird wie bei *lesend* über ein Status-KO bereitgestellt. 
 

@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
-<!-- Copyright (C) 2025 Cornelius Köpp -->
+<!-- Copyright (C) 2025-2026 Cornelius Köpp -->
 # Applikationsbeschreibung OFM-Homematic
 
 
@@ -263,7 +263,6 @@ Es existieren drei Zugriffsarten auf Homematic-Datenpunkte:
 * **schreibend** (Write):
   Stellt ein KO bereit überschreiben des Wertes im Gerät.
 * **über Ereignisse** (Event): 
-  ***(- bislang nicht unterstützt -)***
   Benachrichtigt sofort (ohne explizite Abfrage) bei Änderung im Gerät.
   Der Wert wird wie bei *lesend* über ein Status-KO bereitgestellt. 
 
