@@ -853,14 +853,15 @@ bool HomematicModule::_processEventParamGeneric(
     uint8_t channel, 
     const char* pName, 
     ValueType value,
-    bool (HomematicChannel::*processFn)(uint8_t, const char*, ValueType))
+    bool (HomematicChannel::*processFn)(const uint8_t, const char*, ValueType, const bool))
 {
     uint8_t countProcessed = 0;
     for (uint8_t _channelIndex = 0; _channelIndex < HMG_ChannelCount; _channelIndex++)
     {
         if (_channels[_channelIndex]->getSerial() == serial)
         {
-            if ((_channels[_channelIndex]->*processFn)(channel, pName, value))
+            // TODO must replace last param, when used for reading!
+            if ((_channels[_channelIndex]->*processFn)(channel, pName, value, true))
                 countProcessed++;
         }
     }

@@ -59,7 +59,7 @@ class HomematicChannel : public OpenKNX::Channel
      * @param value - the double value of the parameter
      * @return true if the parameter was successfully processed
      */
-    virtual bool processResponseParamDouble(uint8_t channel, const char* pName, double value) { return false; }
+    virtual bool processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent = false) { return false; }
     /**
      * @brief Processes a `i4` (32-bit integer) parameter from XML-RPC response
      *
@@ -71,7 +71,7 @@ class HomematicChannel : public OpenKNX::Channel
      * @param value - the 32-bit integer value of the parameter
      * @return true if the parameter was successfully processed
      */
-    virtual bool processResponseParamInt32(uint8_t channel, const char* pName, int32_t value) { return false; }
+    virtual bool processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent = false) { return false; }
     /**
      * @brief Processes a `boolean` parameter from XML-RPC response
      *
@@ -83,7 +83,7 @@ class HomematicChannel : public OpenKNX::Channel
      * @param value - the boolean value of the parameter
      * @return true if the parameter was successfully processed
      */
-    virtual bool processResponseParamBool(uint8_t channel, const char* pName, bool value) { return false; }
+    virtual bool processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent = false) { return false; }
 
     // Pure virtual methods - to be implemented in child classes
     virtual void processDeviceSpecificInputKo(GroupObject &ko) = 0;
@@ -104,8 +104,8 @@ class HomematicChannel : public OpenKNX::Channel
     const std::string getSerial();
 
     // handler-methods by value-type: first delegate to device-type, when not processed check :0
-    bool _processResponseParamDouble(uint8_t channel, const char* pName, double value);
-    bool _processResponseParamInt32(uint8_t channel, const char* pName, int32_t value);
-    bool _processResponseParamBool(uint8_t channel, const char* pName, bool value);
+    bool _processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent = false);
+    bool _processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent = false);
+    bool _processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent = false);
 
 };

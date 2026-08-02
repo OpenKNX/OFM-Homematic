@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #include "HomematicChannelThermostat.h"
 
@@ -13,7 +13,7 @@ const std::string HomematicChannelThermostat::name()
     return "HMG-Thermostat";
 }
 
-bool HomematicChannelThermostat::processResponseParamDouble(uint8_t channel, const char* pName, double value)
+bool HomematicChannelThermostat::processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent /*= false*/)
 {
     if (channel != 4)
     {
@@ -37,7 +37,7 @@ bool HomematicChannelThermostat::processResponseParamDouble(uint8_t channel, con
     return false;
 }
 
-bool HomematicChannelThermostat::processResponseParamInt32(uint8_t channel, const char* pName, int32_t value)
+bool HomematicChannelThermostat::processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent /*= false*/)
 {
     if (channel != 4)
     {

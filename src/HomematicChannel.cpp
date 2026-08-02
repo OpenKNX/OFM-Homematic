@@ -221,7 +221,7 @@ bool HomematicChannel::rpcSetValueInteger4(const uint8_t channel, const char * p
 }
 
 // Channel :0 parameter handlers (device-level parameters)
-bool HomematicChannel::_processResponseParamDouble(uint8_t channel, const char* pName, double value)
+bool HomematicChannel::_processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent /*= false*/)
 {
     if (processResponseParamDouble(channel, pName, value))
     {
@@ -237,7 +237,7 @@ bool HomematicChannel::_processResponseParamDouble(uint8_t channel, const char* 
     return false;
 }
 
-bool HomematicChannel::_processResponseParamInt32(uint8_t channel, const char* pName, int32_t value)
+bool HomematicChannel::_processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent /*= false*/)
 {
     if (processResponseParamInt32(channel, pName, value))
     {
@@ -304,7 +304,7 @@ bool HomematicChannel::_processResponseParamInt32(uint8_t channel, const char* p
     return processed;
 }
 
-bool HomematicChannel::_processResponseParamBool(uint8_t channel, const char* pName, bool value)
+bool HomematicChannel::_processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent /*= false*/)
 {
     if (processResponseParamBool(channel, pName, value))
     {

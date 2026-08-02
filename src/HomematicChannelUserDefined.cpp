@@ -114,7 +114,7 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
 }
 
 // Response parameter processing for reading values from CCU
-bool HomematicChannelUserDefined::processResponseParamDouble(uint8_t channel, const char* pName, double value)
+bool HomematicChannelUserDefined::processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < 5; i++) {
@@ -149,7 +149,7 @@ bool HomematicChannelUserDefined::processResponseParamDouble(uint8_t channel, co
     return false;
 }
 
-bool HomematicChannelUserDefined::processResponseParamInt32(uint8_t channel, const char* pName, int32_t value)
+bool HomematicChannelUserDefined::processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < 5; i++) {
@@ -189,7 +189,7 @@ bool HomematicChannelUserDefined::processResponseParamInt32(uint8_t channel, con
     return false;
 }
 
-bool HomematicChannelUserDefined::processResponseParamBool(uint8_t channel, const char* pName, bool value)
+bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
     for (int i = 0; i < 5; i++) {

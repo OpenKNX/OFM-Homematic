@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #pragma once
 #include "HomematicChannel.h"
@@ -31,8 +31,8 @@ class HomematicChannelThermostat : public HomematicChannel
     uint8_t getDeviceChannel() const override { return 4; }
     
     // Parameter-handler
-    bool processResponseParamDouble(uint8_t channel, const char* pName, double value) override;
-    bool processResponseParamInt32(uint8_t channel, const char* pName, int32_t value) override;
+    bool processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent = false) override;
+    bool processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent = false) override;
 
   public:
     explicit HomematicChannelThermostat(uint8_t index);

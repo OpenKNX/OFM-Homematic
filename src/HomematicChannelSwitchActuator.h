@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #pragma once
 #include "HomematicChannel.h"
@@ -30,7 +30,7 @@ class HomematicChannelSwitchActuator : public HomematicChannel
     uint8_t getDeviceChannel() const override { return 1; }
     
     // Parameter-handler
-    bool processResponseParamBool(uint8_t channel, const char* pName, bool value) override;
+    bool processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent = false) override;
 
   public:
     explicit HomematicChannelSwitchActuator(uint8_t index);

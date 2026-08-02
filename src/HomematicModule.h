@@ -97,7 +97,7 @@ class HomematicModule : public OpenKNX::Module
     bool _processEventParamBool(const char* serial, uint8_t channel, const char* pName, bool value);
     template<typename ValueType>
     bool _processEventParamGeneric(const char* serial, uint8_t channel, const char* pName, ValueType value,
-                                   bool (HomematicChannel::*processFn)(uint8_t, const char*, ValueType));
+                                   bool (HomematicChannel::*processFn)(const uint8_t, const char*, ValueType, const bool));
 #endif
 
   public:

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #pragma once
 #include "HomematicChannel.h"
@@ -44,7 +44,7 @@ class HomematicChannelUserDefined : public HomematicChannel
     uint8_t getDeviceChannel() const override { return ParamHMG_dUDChannelNumber; }
     
     // Response parameter processing for reading
-    bool processResponseParamDouble(uint8_t channel, const char* pName, double value) override;
-    bool processResponseParamInt32(uint8_t channel, const char* pName, int32_t value) override;
-    bool processResponseParamBool(uint8_t channel, const char* pName, bool value) override;
+    bool processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent = false) override;
+    bool processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent = false) override;
+    bool processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent = false) override;
 };

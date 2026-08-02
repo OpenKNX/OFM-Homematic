@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Copyright (C) 2024-2025 Cornelius Koepp
+// Copyright (C) 2024-2026 Cornelius Koepp
 
 #include "HomematicChannelSwitchActuator.h"
 
@@ -13,7 +13,7 @@ const std::string HomematicChannelSwitchActuator::name()
     return "HMG-SwitchActuator";
 }
 
-bool HomematicChannelSwitchActuator::processResponseParamBool(uint8_t channel, const char* pName, bool value)
+bool HomematicChannelSwitchActuator::processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent /*= false*/)
 {
     if (channel != 1)
     {
