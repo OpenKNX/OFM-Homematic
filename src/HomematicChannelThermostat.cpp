@@ -13,6 +13,11 @@ const std::string HomematicChannelThermostat::name()
     return "HMG-Thermostat";
 }
 
+uint8_t HomematicChannelThermostat::getDeviceChannel() const
+{
+    return 4;
+}
+
 bool HomematicChannelThermostat::processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent /*= false*/)
 {
     if (channel != 4)

@@ -27,7 +27,7 @@ class HomematicChannelSwitchActuator : public HomematicChannel
   protected:
     // Implementation of pure virtual methods from base class
     void processDeviceSpecificInputKo(GroupObject &ko) override;
-    uint8_t getDeviceChannel() const override { return 1; }
+    uint8_t getDeviceChannel() const override;
     
     // Parameter-handler
     bool processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent = false) override;

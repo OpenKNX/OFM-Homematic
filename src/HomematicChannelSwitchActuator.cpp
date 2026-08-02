@@ -13,6 +13,11 @@ const std::string HomematicChannelSwitchActuator::name()
     return "HMG-SwitchActuator";
 }
 
+uint8_t HomematicChannelSwitchActuator::getDeviceChannel() const
+{
+    return 1;
+}
+
 bool HomematicChannelSwitchActuator::processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent /*= false*/)
 {
     if (channel != 1)
