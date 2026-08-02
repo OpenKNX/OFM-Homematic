@@ -117,7 +117,7 @@ void HomematicChannelUserDefined::processInputKo(uint8_t access, uint8_t type, c
 bool HomematicChannelUserDefined::processResponseParamDouble(const uint8_t channel, const char* pName, const double value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < HMG_USERDEF_DATAPOINTS_COUNT; i++) {
         if (isDatapointConfigured(i) && isDatapointReadable(i)) {
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
@@ -152,7 +152,7 @@ bool HomematicChannelUserDefined::processResponseParamDouble(const uint8_t chann
 bool HomematicChannelUserDefined::processResponseParamInt32(const uint8_t channel, const char* pName, const int32_t value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < HMG_USERDEF_DATAPOINTS_COUNT; i++) {
         if (isDatapointConfigured(i) && isDatapointReadable(i)) {
             const char* configuredName = getDatapointParamName(i);
             if (strcmp(pName, configuredName) == 0) {
@@ -192,7 +192,7 @@ bool HomematicChannelUserDefined::processResponseParamInt32(const uint8_t channe
 bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel, const char* pName, const bool value, const bool isEvent /*= false*/)
 {
     // Find matching datapoint by parameter name
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < HMG_USERDEF_DATAPOINTS_COUNT; i++) {
         const uint8_t type = _datapointType[i]; // TODO used in isDatapointConfigured
         if (isDatapointConfigured(i) && isDatapointReadable(i)) {
             const char* configuredName = getDatapointParamName(i);
@@ -215,22 +215,22 @@ bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel
 // Helper methods using parameter macros
 bool HomematicChannelUserDefined::isDatapointConfigured(uint8_t index) const
 {
-    return (index < 5) && (_datapointType[index] != 0);
+    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointType[index] != 0);
 }
 
 bool HomematicChannelUserDefined::isDatapointReadable(uint8_t index) const
 {
-    return (index < 5) && (_datapointAccess[index] & 0x01); // L bit (lesen)
+    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointAccess[index] & 0x01); // L bit (lesen)
 }
 
 bool HomematicChannelUserDefined::isDatapointWritable(uint8_t index) const
 {
-    return (index < 5) && (_datapointAccess[index] & 0x02); // W bit (schreiben)
+    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointAccess[index] & 0x02); // W bit (schreiben)
 }
 
 bool HomematicChannelUserDefined::isDatapointEventBased(uint8_t index) const
 {
-    return (index < 5) && (_datapointAccess[index] & 0x04); // E bit (ereignisse)
+    return (index < HMG_USERDEF_DATAPOINTS_COUNT) && (_datapointAccess[index] & 0x04); // E bit (ereignisse)
 }
 
 const char* HomematicChannelUserDefined::getDatapointParamName(uint8_t index) const
@@ -241,13 +241,13 @@ const char* HomematicChannelUserDefined::getDatapointParamName(uint8_t index) co
     static_assert(HMG_dUD4ParamName == HMG_dUD3ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 3 and 4");
     static_assert(HMG_dUD5ParamName == HMG_dUD4ParamName + HMG_dUD_ParamName_Distance, "User Defined Datapoint: Param Name Distance Missmatch between 4 and 5");
 
-    return (index < 5) ? (const char*)(knx.paramData(HMG_ParamCalcIndex(HMG_dUD1ParamName + index * HMG_dUD_ParamName_Distance))) : "";
+    return (index < HMG_USERDEF_DATAPOINTS_COUNT) ? (const char*)(knx.paramData(HMG_ParamCalcIndex(HMG_dUD1ParamName + index * HMG_dUD_ParamName_Distance))) : "";
 }
 
 // Helper to set GroupObject value with DPT
 bool HomematicChannelUserDefined::setDatapointValue(uint8_t datapointIndex, const char* paramName, const KNXValue& value, const Dpt& dpt)
 {
-    if (datapointIndex < 5)
+    if (datapointIndex < HMG_USERDEF_DATAPOINTS_COUNT)
     {
         #define HMG_KoKOdUD_Val_Distance (HMG_KoKOdUD2Val - HMG_KoKOdUD1Val)
         static_assert(HMG_KoKOdUD2Val ==  HMG_KoKOdUD1Val + HMG_KoKOdUD_Val_Distance, "User Defined Datapoint: Value Distance Missmatch between 1 and 2");

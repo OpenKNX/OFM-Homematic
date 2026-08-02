@@ -5,6 +5,7 @@
 #include "HomematicChannel.h"
 
 #define HMG_DEVTYPE__USER_DEFINED (7)
+#define HMG_USERDEF_DATAPOINTS_COUNT (5)
 
 /**
  * User-defined Homematic channel implementation for custom device configurations.
