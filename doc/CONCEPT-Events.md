@@ -77,7 +77,7 @@ stateDiagram-v2
 
 Dieser Entwurf ist damit umsetzungsreif; verbleibende Detailfragen (z. B. genaues Interface-ID-Format, Fehlerverhalten bei `init()`-Fehlschlägen) können bei Implementierungsbeginn geklärt werden.
 
-### 6) Implementierungsstatus (2026-08-01)
+### 6) Implementierungsstatus
 
 #### Abgeschlossen:
 - **Event-Endpunkt:** Route `POST /HMG/events` registriert in `setupEventRoute()` ✓
