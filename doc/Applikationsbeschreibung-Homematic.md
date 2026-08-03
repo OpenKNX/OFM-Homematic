@@ -13,6 +13,9 @@
       * [Geräte-Kommunikation](#geräte-kommunikation)
     * [**Geräteübersicht**](#geräteübersicht)
     * [**Gerät n: ...**](#gerät-n-)
+      * [Konfiguration](#konfiguration) 
+      * [Datenpunkt-Konfiguration](#datenpunkt-konfiguration-datenpunkt-1-bis-5) (nur Typ benutzerdefiniert)
+      * [Zuordnung zu Aggregationsgruppen](#zuordnung-zu-aggregationsgruppen)
     * [**(mehr)**](#mehr)
 
 * [Kommunikationsobjekte](#kommunikationsobjekte)
@@ -206,6 +209,10 @@ Ansonsten können ausschließlich Status-Werte abgerufen werden.
 Legt fest, wie nach welcher Verzögerung wieder ausgeschaltet wird bei Nutzung der Treppenhaus-Funktion
 
 
+### Benutzerdefiniertes Gerät
+
+> Diese Einstellungen werden nur für den Geräte-Typ *benutzerdefiniert* angeboten.
+
 <!-- DOC -->
 #### Batteriebetrieben
 
@@ -215,12 +222,6 @@ Legt fest, wie nach welcher Verzögerung wieder ausgeschaltet wird bei Nutzung d
 Für Geräte mit Stromversorgung per Batterie wird ein KO zur Ausgabe des Batteriestatus bereitgestellt. 
 
 
-### Datenpunkt-Konfiguration
-
-> Diese Einstellungen werden nur für den Geräte-Typ *benutzerdefiniert* angeboten.
-
-
-
 <!-- DOC -->
 #### Homematic-Geräte-Kanalnummer
 
@@ -228,12 +229,12 @@ Legt fest zu welcher Kanal-Nummer des Gerätes die nachfolgend definierten Daten
 
 > ***Hinweis:*** Falls Datenpunkte aus mehreren Kanalnummern genutzt werden sollen, so können mehrere benutzerdefinierte Instanzen mit derselben Seriennummer angelegt werden.
 
+### Datenpunkt-Konfiguration (Datenpunkt 1 bis 5)
 
-#### Datenpunkt 1 bis 5
-
+> ***Hinweis:*** Der Parameter-Name, Typ und Zugriff müssen alle gesetzt sein, ansonsten bleibt der Datenpunkt inaktiv. 
 
 <!-- DOC -->
-##### Parameter-Name
+#### Parameter-Name
 
 Hier muss der exakte technische Parameter-Name angegeben werden.
 Dieser ist der Dokumentation der Geräte-Datenpunkte von Homematic zu entnehmen, 
@@ -241,7 +242,7 @@ oder ist alternativ selbst zu ermitteln über Abfrage aus der CCU.
 
 
 <!-- DOC -->
-##### Typ (und Abbildung in KNX)
+#### Typ (und Abbildung in KNX)
 
 Hier muss der Datentyp des Datenpunktes angegeben werden.
 Bei einigen Datentypen muss gleichzeit auch ausgewählt werden wie diese in KNX dargestellt werden sollen, 
@@ -253,7 +254,7 @@ Bei Auswahl **-** wird dieser Datenpunkt deaktiviert.
 
 
 <!-- DOC -->
-##### Zugriff
+#### Zugriff
 
 Hier muss angegeben werden in welcher Form auf den Datenpunkt zugegriffen werden kann und soll.
 Es existieren drei Zugriffsarten auf Homematic-Datenpunkte:
@@ -272,7 +273,7 @@ Bei Auswahl **-** wird dieser Datenpunkt deaktiviert.
 
 
 <!-- DOC -->
-#### Zuordnung zu Aggregationsgruppen
+### Zuordnung zu Aggregationsgruppen
 
 Das Gerät kann den Gruppen 1 bis 5 zugeordnet werden.
 Für jede dieser Gruppen werden folgende Status-Werte (auf Basis aller enthaltenen Geräte) ermittelt:
