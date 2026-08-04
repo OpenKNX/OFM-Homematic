@@ -3,11 +3,28 @@
 * Fix: User defined channels were not set to active in setup
 * Feature: Support for Homematic-IP devices with 14 char serial (HM has 10 chars only)
   * Note: Do NOT use device-scan of new ETS-app with old firmware
-* Fix: Show channel overview on Command `hmgXX`
-* Optimize: Reduce log level for response processing from Debug to Trace
+  * NOT used yet; Include Channel 0 State-Values for HmIP
+    * "TIME_OF_OPERATION", "TIME_OF_OPERATION_STATUS", "BOOTED", "DUTY_CYCLE"
+* Feature: Support Access-Type Event
+  * Allow configuration of sending for user defined devices datapoints 
+* Request-Handling
+  * Begin migration to new OFM-Network Webclient
+* Function-Properties and online device-scan
+  * Fix: Result-code !=0 for function-prop device-list-entry request over maximum
+  * Improve console logging messages
+  * Refactor: Extract Methods and Cleanup
+  * Fix for large APDU: Use function-property wrapper
+  * Prepare error-collection
+  * ETS-App: Change device-list output to singular
 * OpenKNX Standardization of ETS-App:
   * Adoption to new channel selection pattern, but individual different in overview page
   * Use term suspended
+* Fix: Show channel overview on Command `hmgXX`
+* OpenKNXproducer update
+  * Fix: Annotate parameters intended to overlap
+* Optimize: Reduce log level for response processing from Debug to Trace
+* Refactor: User Defined Device
+* Develop: Add agent files (draft)
 
 
 # v0.4.0-ALPHA 2026-03-20
