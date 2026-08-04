@@ -144,19 +144,19 @@ bool HomematicChannelUserDefined::processResponseParamDouble(const uint8_t chann
             switch (type)
             {
                 case 3: // float type DPT9
-                    if (setDatapointValue(i, pName, value, DPT_Value_Tempd)) {
+                    if (setDatapointValue(i, value, DPT_Value_Tempd, isEvent)) {
                         logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
                         return true;
                     }
                     break;
                 case 6: // float type DPT5.001
-                    if (setDatapointValue(i, pName, value * 100, DPT_Scaling)) {
+                    if (setDatapointValue(i, value * 100, DPT_Scaling, isEvent)) {
                         logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
                         return true;
                     }
                     break;
                 case 8: // float type DPT14
-                    if (setDatapointValue(i, pName, value, DPT_Value_Amplitude)) {
+                    if (setDatapointValue(i, value, DPT_Value_Amplitude, isEvent)) {
                         logTraceP("Updated float datapoint %d (%s) with value: %f", i + 1, pName, value);
                         return true;
                     }
@@ -182,16 +182,16 @@ bool HomematicChannelUserDefined::processResponseParamInt32(const uint8_t channe
                 case 4:
                 case 5:
                     // integer or option type (DPT13)
-                    success = setDatapointValue(i, pName, value, DPT_Value_4_Count);
+                    success = setDatapointValue(i, value, DPT_Value_4_Count, isEvent);
                     break;
                 case 7:
                     // integer or option type (DPT 5.001)
-                    success = setDatapointValue(i, pName, value, DPT_Scaling);
+                    success = setDatapointValue(i, value, DPT_Scaling, isEvent);
                     break;
                 case 9:
                 case 10:
                     // integer or option type (DPT 5.005)
-                    success = setDatapointValue(i, pName, value, DPT_DecimalFactor);
+                    success = setDatapointValue(i, value, DPT_DecimalFactor, isEvent);
                     break;
                 default:
                     break; // ignore incompatible types
@@ -216,7 +216,7 @@ bool HomematicChannelUserDefined::processResponseParamBool(const uint8_t channel
             switch (type) {
                 case 1: // action type (DPT 1.017)
                 case 2: // boolean type (DPT 1)
-                    if (setDatapointValue(i, pName, value, DPT_Switch)) {
+                    if (setDatapointValue(i, value, DPT_Switch, isEvent)) {
                         logTraceP("Updated bool datapoint %d (%s) with value: %s", i + 1, pName, value ? "true" : "false");
                         return true;
                     }
@@ -237,12 +237,20 @@ const char* HomematicChannelUserDefined::getDatapointParamName(uint8_t index) co
 }
 
 // Helper to set GroupObject value with DPT
-bool HomematicChannelUserDefined::setDatapointValue(uint8_t datapointIndex, const char* paramName, const KNXValue& value, const Dpt& dpt)
+bool HomematicChannelUserDefined::setDatapointValue(uint8_t datapointIndex, const KNXValue& value, const Dpt& dpt, const bool byEvent /*= false*/)
 {
     if (datapointIndex < HMG_USERDEF_DATAPOINTS_COUNT)
     {
-        KoHMG_KOdUD___Val(datapointIndex).valueCompare(value, dpt);
-        return true;
+        const bool forceSending = byEvent && ParamHMG_dUD___EventSend(datapointIndex);
+        if (forceSending)
+        {
+            KoHMG_KOdUD___Val(datapointIndex).value(value, dpt);
+        }
+        else
+        {
+            KoHMG_KOdUD___Val(datapointIndex).valueCompare(value, dpt);
+        }
+        return true; // ignoring result of KO update. Return indicates the "usage" of KO...
     }
     else
     {

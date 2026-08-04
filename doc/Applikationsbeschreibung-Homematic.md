@@ -273,6 +273,18 @@ Es kann eine Kombination von Zugriffsarten (Teilmenge aus Dokumentation der Ger�
 
 Bei Auswahl **-** wird dieser Datenpunkt deaktiviert.
 
+<!-- DOC -->
+#### Sendeverhalten bei Ereigniseingang
+
+<!-- DOC Skip="2" -->
+> Die Option wird nur angeboten, wenn ein Zugriff *über Ereignisse* ausgewählt ist.
+
+Legt fest, wann ein Parameter-Wert, der als Ereignis empfangen wurde, auf den Bus gesendet wird.
+
+* **nur bei Änderung (Statuswerte)**: Das KO sendet nur, wenn der Ausgangswert sich durch den Wert aus dem Ereignis verändert.
+* **immer, bei jedem Event (Befehle)**: Bei jedem eingehenden Ereignis für diesen Datenpunkt wird erneut auf den Bus gesendet.
+ 
+
 
 <!-- DOC -->
 ### Zuordnung zu Aggregationsgruppen

@@ -11,8 +11,8 @@
               <!-- Parameter Id="%AID%_P-%TT%%CC%1%HMDP%1"    Name="d%C%UD%HMDP%Comment"       ParameterType="%AID%_PT-UDComment"                                      Text="Kommentar"                                 Value=""  /-->
               <Union SizeInBit="264"><Memory CodeSegment="%MID%" Offset="%MEMOFFSET%" BitOffset="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%2" Name="d%C%UD%HMDP%Type"          ParameterType="%AID%_PT-UDDatapointType"       Offset="0" BitOffset="0" Text="Typ (und Abbildung in KNX)"                Value="0" />
-                <!-- 1 bit unused -->
-                <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%3" Name="d%C%UD%HMDP%Access"        ParameterType="%AID%_PT-UDAccess"              Offset="0" BitOffset="5" Text="Zugriff"                                   Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%3" Name="d%C%UD%HMDP%Access"        ParameterType="%AID%_PT-UDAccess"              Offset="0" BitOffset="4" Text="Zugriff"                                   Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%5" Name="d%C%UD%HMDP%EventSend"     ParameterType="%AID%_PT-UDEventSend"           Offset="0" BitOffset="7" Text="Sendeverhalten bei Ereigniseingang"        Value="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%1%HMDP%4" Name="d%C%UD%HMDP%ParamName"     ParameterType="%AID%_PT-UDParamName"           Offset="1" BitOffset="0" Text="Parameter-Name"                            Value=""  />
                 <!-- 1 byte free after ParamName -->
               </Union>
@@ -23,6 +23,7 @@
               <ParameterRef Id="%AID%_UP-%TT%%CC%1%HMDP%2_R-%TT%%CC%1%HMDP%201" RefId="%AID%_UP-%TT%%CC%1%HMDP%2" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%1%HMDP%3_R-%TT%%CC%1%HMDP%301" RefId="%AID%_UP-%TT%%CC%1%HMDP%3" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%1%HMDP%4_R-%TT%%CC%1%HMDP%401" RefId="%AID%_UP-%TT%%CC%1%HMDP%4" />
+              <ParameterRef Id="%AID%_UP-%TT%%CC%1%HMDP%5_R-%TT%%CC%1%HMDP%501" RefId="%AID%_UP-%TT%%CC%1%HMDP%5" />
             </ParameterRefs>
             <ComObjectTable>
               <!-- User Defined Device ComObjects für Datenpunkt %HMDP% -->
@@ -59,8 +60,11 @@
               <ParameterRefRef RefId="%AID%_UP-%TT%%CC%1%HMDP%2_R-%TT%%CC%1%HMDP%201" IndentLevel="1" HelpContext="HMG-Typ-und-Abbildung-in-KNX" /><!-- typ -->
               <ParameterRefRef RefId="%AID%_UP-%TT%%CC%1%HMDP%3_R-%TT%%CC%1%HMDP%301" IndentLevel="1" HelpContext="HMG-Zugriff" /><!-- zugriff -->
               
-              <!-- ComObjects abhängig von Zugriff und Typ -->
+              <!-- ComObject und weitere Parameter abhängig von Zugriff und Typ -->
               <choose ParamRefId="%AID%_UP-%TT%%CC%1%HMDP%3_R-%TT%%CC%1%HMDP%301"><!-- Access -->
+                <when test="4 5 6 7"><!-- 0x04 Event -->
+                   <ParameterRefRef RefId="%AID%_UP-%TT%%CC%1%HMDP%5_R-%TT%%CC%1%HMDP%501" IndentLevel="2" HelpContext="HMG-Sendeverhalten-bei-Ereigniseingang" />
+                </when>
                 <when test="1 3 4 5 6 7"><!-- Read and Events (from Device) allowed, to send to KNX -->
                   <!-- 1 3 5 7 = 0x01 Read   -->
                   <!-- 4 5 6 7 = 0x04 Events -->

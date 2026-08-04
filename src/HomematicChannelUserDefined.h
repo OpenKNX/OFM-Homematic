@@ -42,6 +42,21 @@ static_assert(HMG_dUD___Access(2) == HMG_dUD3Access);
 static_assert(HMG_dUD___Access(3) == HMG_dUD4Access);
 static_assert(HMG_dUD___Access(4) == HMG_dUD5Access);
 #define ParamHMG_dUD___Access(IDX) ((knx.paramByte(HMG_ParamCalcIndex(HMG_dUD___Access(IDX))) & HMG_dUD___AccessMask) >> HMG_dUD___AccessShift)
+// sending on event:
+#define HMG_dUD___EventSendMask (HMG_dUD1EventSendMask)
+#define HMG_dUD___EventSendShift (HMG_dUD1EventSendShift)
+static_assert(HMG_dUD1EventSendMask == HMG_dUD___EventSendMask); static_assert(HMG_dUD1EventSendShift == HMG_dUD___EventSendShift);
+static_assert(HMG_dUD2EventSendMask == HMG_dUD___EventSendMask); static_assert(HMG_dUD2EventSendShift == HMG_dUD___EventSendShift);
+static_assert(HMG_dUD3EventSendMask == HMG_dUD___EventSendMask); static_assert(HMG_dUD3EventSendShift == HMG_dUD___EventSendShift);
+static_assert(HMG_dUD4EventSendMask == HMG_dUD___EventSendMask); static_assert(HMG_dUD4EventSendShift == HMG_dUD___EventSendShift);
+static_assert(HMG_dUD5EventSendMask == HMG_dUD___EventSendMask); static_assert(HMG_dUD5EventSendShift == HMG_dUD___EventSendShift);
+#define HMG_dUD___EventSend(IDX) (HMG_dUD1EventSend + IDX * (HMG_dUD2EventSend - HMG_dUD1EventSend))
+static_assert(HMG_dUD___EventSend(0) == HMG_dUD1EventSend);
+static_assert(HMG_dUD___EventSend(1) == HMG_dUD2EventSend);
+static_assert(HMG_dUD___EventSend(2) == HMG_dUD3EventSend);
+static_assert(HMG_dUD___EventSend(3) == HMG_dUD4EventSend);
+static_assert(HMG_dUD___EventSend(4) == HMG_dUD5EventSend);
+#define ParamHMG_dUD___EventSend(IDX) ((knx.paramByte(HMG_ParamCalcIndex(HMG_dUD___EventSend(IDX))) & HMG_dUD___EventSendMask) >> HMG_dUD___EventSendShift)
 // name:
 /*
 #define HMG_dUD___ParamNameMask (HMG_dUD1ParamNameMask)
@@ -89,7 +104,7 @@ class HomematicChannelUserDefined : public HomematicChannel
     uint8_t getDatapointAccess(uint8_t index) const;
     
     // Helper to set GroupObject value with DPT
-    bool setDatapointValue(uint8_t datapointIndex, const char* paramName, const KNXValue& value, const Dpt& dpt);
+    bool setDatapointValue(uint8_t datapointIndex, const KNXValue& value, const Dpt& dpt, const bool byEvent /*= false*/);
 
   protected:
     uint8_t getDeviceChannel() const override;
