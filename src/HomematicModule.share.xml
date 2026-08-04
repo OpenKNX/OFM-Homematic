@@ -113,8 +113,8 @@
 
               <ParameterType Id="%AID%_PT-UDEventSend" Name="UDEventSend">
                 <TypeRestriction Base="Value" SizeInBit="1">
-                  <Enumeration Id="%ENID%" Value="0" Text="nur bei Änderung (Statuswerte)" />
-                  <Enumeration Id="%ENID%" Value="1" Text="immer, bei jedem Event (Befehle)" />
+                  <Enumeration Id="%ENID%" Value="0" Text="nur bei Änderung  (Statuswerte)" />
+                  <Enumeration Id="%ENID%" Value="1" Text="bei jedem Eingang (Befehle)" />
                 </TypeRestriction>
               </ParameterType>
 
