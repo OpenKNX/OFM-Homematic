@@ -119,7 +119,7 @@ Spalten:
 
 * **Name**: Sprechende Bezeichnung für das Gerät. Wird nur in der ETS verwendet.
 * **Geräte-Typ**: Legt fest, ob das Gerät aktiv ist und wenn ja, um welchen Typ von Gerät es sich handelt.
-* **!**: Temporäres deaktivieren des Gerätes (unter beibehaltung aller Konfigurationswerte und GA-Verknüpfungen).
+* **!**: Gerät suspendiert (unter Beibehaltung aller Konfigurationswerte und GA-Verknüpfungen).
 * **Seriennr.**: Die Homematic-Seriennummer zur Identifikation des Gerätes.
 * **1** bis **5**: Zuordnung des Gerätes zur Aggregationsgruppe 1 bis 5.
 
@@ -176,10 +176,12 @@ Die Sichtbarkeit der nachfolgenden Parameter ist abhängig von der Art des Gerä
 
 
 <!-- DOC -->
-#### Kanal deaktivieren (zu Testzwecken)
+#### Suspendiert
 
-Sorgt dafür, dass der Kanal wie mit Geräte-Typ **inaktiv** behandelt wird, 
-lässt allerdings die Konfiguration in der ETS sichtbar und erhält die GA-Verknüpfungen. 
+Sorgt dafür, dass der Kanal wie **inaktiv** behandelt wird, 
+lässt allerdings die Konfiguration in der ETS sichtbar und erhält die GA-Verknüpfungen.
+
+Nutzung z.B. temporär zur Fehlerdiagnose.
 
 <!-- DOC -->
 #### Seriennummer

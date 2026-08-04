@@ -50,11 +50,21 @@
                 <TypeText SizeInBit="112" />
               </ParameterType>
 
+              <!-- TODO new type-numbering to reduce choose-complexity. Use N as minimal regular device and c<N for custom -->
               <ParameterType Id="%AID%_PT-HmDevType" Name="HmDevType">
                 <TypeRestriction Base="Value" SizeInBit="5">
-                  <Enumeration Id="%ENID%" Value="0" Text="inaktiv"                                           />
-                  <Enumeration Id="%ENID%" Value="7" Text="benutzerdefiniert              (für nicht aufgeführte Geräte)" />
-                  <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN                  (Funk-Thermostat)"         />
+                  <Enumeration Id="%ENID%" Value="0" Text="Deaktiviert"                                                           />
+                  <Enumeration Id="%ENID%" Value="7" Text="benutzerdefiniert              (für nicht aufgeführte Geräte)"         />
+                  <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN                  (Funk-Thermostat)"                        />
+                  <!-- ... other ... sort by HM-Product Id? ... -->
+                  <Enumeration Id="%ENID%" Value="6" Text="HM-LC-Sw1-Pl-DN-R1      (Funk-Zwischenstecker-Schaltaktor 1fach)"      />
+                </TypeRestriction>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-HmDevTypeEnabled" Name="HmDevTypeEnabled">
+                <TypeRestriction Base="Value" SizeInBit="5">
+                  <!-- without 0 -->
+                  <Enumeration Id="%ENID%" Value="7" Text="benutzerdefiniert              (für nicht aufgeführte Geräte)"         />
+                  <Enumeration Id="%ENID%" Value="1" Text="HM-CC-RT-DN                  (Funk-Thermostat)"                        />
                   <!-- ... other ... sort by HM-Product Id? ... -->
                   <Enumeration Id="%ENID%" Value="6" Text="HM-LC-Sw1-Pl-DN-R1      (Funk-Zwischenstecker-Schaltaktor 1fach)"      />
                 </TypeRestriction>
@@ -130,7 +140,7 @@
             </ParameterTypes>
             <Parameters>
               <Union SizeInBit="712"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
-                <Parameter Id="%AID%_UP-%TT%00001"   Name="VisibleChannels"          ParameterType="%AID%_PT-HMGNumChannels"   Offset="0"  BitOffset="0"  Text="Verfügbare Kanäle"                     Value="%HMG_NumChannelsDefault%"    SuffixText=" von %N%" />
+                <!-- 1 byte free -->
                 <Parameter Id="%AID%_UP-%TT%00002"   Name="StartupDelayBase"         ParameterType="%AID%_PT-DelayBase"        Offset="1"  BitOffset="0"  Text="Einschaltverzögerung Zeitbasis"        Value="0"                                                 />
                 <Parameter Id="%AID%_UP-%TT%00003"   Name="StartupDelayTime"         ParameterType="%AID%_PT-DelayTime"        Offset="1"  BitOffset="2"  Text="Einschaltverzögerung Zeit"             Value="1"                                                 />
                 <Parameter Id="%AID%_UP-%TT%00004"   Name="Host"                     ParameterType="%AID%_PT-Host"             Offset="3"  BitOffset="0"  Text="Host"                                  Value="homematic-ccu2"                                    />
@@ -143,7 +153,6 @@
 
             </Parameters>
             <ParameterRefs>
-              <ParameterRef Id="%AID%_UP-%TT%00001_R-%TT%0000101" RefId="%AID%_UP-%TT%00001" />
               <ParameterRef Id="%AID%_UP-%TT%00002_R-%TT%0000201" RefId="%AID%_UP-%TT%00002" />
               <ParameterRef Id="%AID%_UP-%TT%00003_R-%TT%0000301" RefId="%AID%_UP-%TT%00003" />
               <ParameterRef Id="%AID%_UP-%TT%00004_R-%TT%0000401" RefId="%AID%_UP-%TT%00004" />
@@ -213,9 +222,6 @@
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl" UIHint="Headline" />
-                <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" HelpContext="HMG-Kanalauswahl" />
-
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Startverhalten" UIHint="Headline" />
                 <!-- ChannelDelay Delay pattern, as used in LOG or VPM -->
                 <ParameterBlock Id="%AID%_PB-nnn" Name="a%C%ChannelDelayCycle" Inline="true" Layout="Grid" HelpContext="HMG-Verzoegerung-nach-Neustart" >
@@ -261,12 +267,12 @@
                 <ComObjectRefRef RefId="%AID%_O-%TT%00152_R-%TT%0015201" />
               </ParameterBlock>
 
-              <ParameterBlock Id="%AID%_PB-nnn" Name="MmDevices" Text="Geräteübersicht" Icon="view-list-outline" HelpContext="HMG-Geraeteuebersicht" ShowInComObjectTree="false">
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräteübersicht" UIHint="Headline" />
+              <ParameterBlock Id="%AID%_PB-nnn" Name="MmDevices" Text="Kanalauswahl/Geräteübersicht" Icon="format-list-bulleted-type" HelpContext="HMG-Geraeteuebersicht" ShowInComObjectTree="false">
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Gerätesuche" UIHint="Headline" />
                 <Button Id="%AID%_B-%TT%00001" Text="Bekannte Geräte ermitteln" EventHandler="HMG_ccuKnownDevices" EventHandlerOnline="ConnectionOriented" />
                 <ParameterRefRef RefId="%AID%_P-%TT%00008_R-%TT%0000801" IndentLevel="1" />
 
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräteübersicht" UIHint="Headline" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl / Geräteübersicht" UIHint="Headline" />
 
                 <ParameterBlock Id="%AID%_PB-nnn" Name="DeviceTable" Inline="true" Layout="Table">
                   <Rows>
@@ -277,8 +283,8 @@
                   <Columns>
                     <Column Id="%AID%_PB-nnn_C-1" Name="Col1" Width="24%" Text="Name"                    />
                     <Column Id="%AID%_PB-nnn_C-2" Name="Col2" Width="81%" Text="Geräte-Typ"              />
-                    <Column Id="%AID%_PB-nnn_C-3" Name="Col3" Width="6%"  Text="!"                       />
-                    <Column Id="%AID%_PB-nnn_C-4" Name="Col4" Width="17%" Text="Seriennr."               />
+                    <Column Id="%AID%_PB-nnn_C-3" Name="Col3" Width="7%"  Text="&#x26D4;"                />
+                    <Column Id="%AID%_PB-nnn_C-4" Name="Col4" Width="21%" Text="Seriennummer"            />
                     <Column Id="%AID%_PB-nnn_C-5" Name="Col5" Width="6%"  Text="1"                       />
                     <Column Id="%AID%_PB-nnn_C-6" Name="Col6" Width="6%"  Text="2"                       />
                     <Column Id="%AID%_PB-nnn_C-7" Name="Col7" Width="6%"  Text="3"                       />
@@ -295,15 +301,6 @@
               -->
               <op:include href="HomematicModule.templ.xml" xpath="//Dynamic/ChannelIndependentBlock/*" type="template" prefix="HMG" IsInner="true" />
 
-              <!-- show page for adding invisible channels -->
-              <choose ParamRefId="%AID%_UP-%TT%00001_R-%TT%0000101">
-                <when test="&lt;%N%">
-                  <ParameterBlock Id="%AID%_PB-nnn" Name="aAdditionalChannels" Text="(mehr)" Icon="dots-horizontal"><!-- HelpContext="Empty" -->
-                    <ParameterSeparator Id="%AID%_PS-nnn" Text="Kanalauswahl" UIHint="Headline" />
-                    <ParameterRefRef RefId="%AID%_UP-%TT%00001_R-%TT%0000101" IndentLevel="1" HelpContext="BASE-Verfuegbare-Kanaele" />
-                  </ParameterBlock>
-                </when>
-              </choose>
             </Channel>
           </Dynamic>
         </ApplicationProgram>

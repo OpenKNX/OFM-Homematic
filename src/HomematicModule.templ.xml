@@ -14,11 +14,13 @@
           </op:part>
           <Static>
             <Parameters>
-              <Parameter Id="%AID%_P-%TT%%CC%001" Name="d%C%Name"            ParameterType="%AID%_PT-Text40Byte"   Text="Name / Beschreibung"           Value="" />
-              <Parameter Id="%AID%_P-%TT%%CC%002" Name="d%C%Comment"         ParameterType="%AID%_PT-Text512Byte"  Text="Kommentar"                     Value="" />
+              <Parameter Id="%AID%_P-%TT%%CC%001" Name="d%C%Name"                  ParameterType="%AID%_PT-Text40Byte"                                     Text="Name / Beschreibung"                   Value="" />
+              <Parameter Id="%AID%_P-%TT%%CC%999" Name="d%C%NameDisplay"           ParameterType="%AID%_PT-Text45Byte"                                     Text="Beschreibung (Anzeige)"                Value="" Access="Read" op:configTransfer="never" />
+              <Parameter Id="%AID%_P-%TT%%CC%002" Name="d%C%Comment"               ParameterType="%AID%_PT-Text512Byte"                                    Text="Kommentar"                             Value="" />
+              <Parameter Id="%AID%_P-%TT%%CC%009" Name="d%C%DeviceTypeEnabled"     ParameterType="%AID%_PT-HmDevTypeEnabled"                               Text="Geräte-Typ"                            Value="7" op:configTransfer="never" />
 
               <Union SizeInBit="136"><Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
-                <Parameter Id="%AID%_UP-%TT%%CC%005" Name="d%C%Disable"              ParameterType="%AID%_PT-CheckBox"              Offset="0" BitOffset="0" Text="Kanal deaktivieren (zu Testzwecken)"   Value="0" />
+                <Parameter Id="%AID%_UP-%TT%%CC%005" Name="d%C%Disable"              ParameterType="%AID%_PT-CheckBox"              Offset="0" BitOffset="0" Text="Suspendiert"                           Value="0" />
                 <Parameter Id="%AID%_UP-%TT%%CC%006" Name="d%C%Write"                ParameterType="%AID%_PT-OnOffYesNo"            Offset="0" BitOffset="1" Text="Steuerung über KNX erlauben"           Value="1" />
                 <!-- 1 bit free -->
                 <Parameter Id="%AID%_UP-%TT%%CC%003" Name="d%C%DeviceType"           ParameterType="%AID%_PT-HmDevType"             Offset="0" BitOffset="3" Text="Geräte-Typ"                            Value="0" />
@@ -59,7 +61,8 @@
               
               <ParameterRef Id="%AID%_UP-%TT%%CC%007_R-%TT%%CC%00701" RefId="%AID%_UP-%TT%%CC%007" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%008_R-%TT%%CC%00801" RefId="%AID%_UP-%TT%%CC%008" />
-              
+              <ParameterRef Id="%AID%_P-%TT%%CC%009_R-%TT%%CC%00901" RefId="%AID%_P-%TT%%CC%009" />
+
               <ParameterRef Id="%AID%_UP-%TT%%CC%011_R-%TT%%CC%01101" RefId="%AID%_UP-%TT%%CC%011" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%012_R-%TT%%CC%01201" RefId="%AID%_UP-%TT%%CC%012" />
               <ParameterRef Id="%AID%_UP-%TT%%CC%013_R-%TT%%CC%01301" RefId="%AID%_UP-%TT%%CC%013" />
@@ -72,7 +75,28 @@
               
               <!-- User Defined Datapoints via Parts -->
               <op:usePart name="HMDATAPOINT" xpath="//ParameterRefs/*" />
+
+              <ParameterRef Id="%AID%_P-%TT%%CC%999_R-%TT%%CC%99901" RefId="%AID%_P-%TT%%CC%999" />
             </ParameterRefs>
+            <ParameterCalculations>
+              <ParameterCalculation Id="%AID%_PC-%TT%%CC%001" Language="JavaScript" Name="SyncType%CC%" RLTransformationFunc="BASE_SyncChannelType" LRTransformationFunc="BASE_SyncChannelType">
+                <LParameters>
+                  <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" AliasName="TypeValue" />
+                </LParameters>
+                <RParameters>
+                  <ParameterRefRef RefId="%AID%_P-%TT%%CC%009_R-%TT%%CC%00901" AliasName="TypeValue" />
+                </RParameters>
+              </ParameterCalculation>
+              <ParameterCalculation Id="%AID%_PC-%TT%%CC%002" Language="JavaScript" Name="MarkInactive%CC%" LRTransformationFunc="BASE_MarkInactive" RLTransformationFunc="BASE_Nop">
+                <LParameters>
+                  <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101"  AliasName="TextInput" />
+                  <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" AliasName="CheckboxInactive" />
+                </LParameters>
+                <RParameters>
+                  <ParameterRefRef RefId="%AID%_P-%TT%%CC%999_R-%TT%%CC%99901" AliasName="TextOutput" />
+                </RParameters>
+              </ParameterCalculation>
+            </ParameterCalculations>
             <ComObjectTable>
               <ComObject Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"                 Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             DatapointType="DPST-1-1"   ObjectSize="1 Bit"     ReadFlag="Enabled"  WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled"  UpdateFlag="Disabled" ReadOnInitFlag="Disabled" />
               <ComObject Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"          Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                DatapointType="DPST-1-17"  ObjectSize="1 Bit"     ReadFlag="Disabled" WriteFlag="Enabled"  CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled"  ReadOnInitFlag="Disabled" />
@@ -127,9 +151,9 @@
           </Static>
           <Dynamic>
             <ChannelIndependentBlock> 
-              <choose ParamRefId="%AID%_UP-%TT%00001_R-%TT%0000101">
-                <when test="&gt;=%C%">
-                  <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" Icon="cast-connected" ShowInComObjectTree="true">
+              <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
+                <when test="!=0">
+                  <ParameterBlock Id="%AID%_PB-%C%01" Name="a%C%HMG" Text="Gerät %C%: {{0: ...}}" TextParameterRefId="%AID%_P-%TT%%CC%999_R-%TT%%CC%99901" Icon="cast-connected" ShowInComObjectTree="true">
 
                     <ParameterSeparator Id="%AID%_PS-nnn" Text="Geräte-Definition" UIHint="Headline" />
                     <ParameterRefRef RefId="%AID%_P-%TT%%CC%001_R-%TT%%CC%00101" IndentLevel="1" HelpContext="HMG-Name-Beschreibung" />
@@ -150,27 +174,26 @@
                         <Column Id="%AID%_PB-nnn_C-2" Name="Col2" Width="81%" />
                       </Columns>
                       <ParameterSeparator Id="%AID%_PS-nnn" Text="Gerätetyp" Cell="1,1" />
-                      <ParameterRefRef RefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301" Cell="1,2" HelpContext="HMG-Geraete-Typ" />
+                      <ParameterRefRef RefId="%AID%_P-%TT%%CC%009_R-%TT%%CC%00901" Cell="1,2" HelpContext="HMG-Geraete-Typ" />
                     </ParameterBlock>
 
-                    <choose ParamRefId="%AID%_UP-%TT%%CC%003_R-%TT%%CC%00301">
+                    <!-- ALLE Aktiven -->
 
+                    <!-- Temporary Disable -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" IndentLevel="1" HelpContext="HMG-Suspendiert" />
+                    <!-- Serial -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" HelpContext="HMG-Seriennummer" />
 
-                      <when test="!=0"><!-- ALLE Aktiven -->
-                        <!-- Temporary Disable -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%005_R-%TT%%CC%00501" IndentLevel="1" HelpContext="HMG-Kanal-deaktivieren-zu-Testzwecken" />
-                        <!-- Serial -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%004_R-%TT%%CC%00401" IndentLevel="1" HelpContext="HMG-Seriennummer" />
+                    <!-- KOs -->
+                    <!-- generic -->
+                    <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" /><!-- Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             -->
+                    <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" /><!-- Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                -->
+                    <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" /><!-- Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               -->
+                    <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" /><!-- Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 -->
+                    <!-- generic with radio -->
+                    <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" /><!-- Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        -->
 
-                        <!-- KOs -->
-                        <!-- generic -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%000_R-%TT%%CC%00001" /><!-- Id="%AID%_O-%TT%%CC%000" Name="KOd%C%Reachable"       Text="Erreichbar"          Number="%K0%"  FunctionText="Gerät %C%, Ausgabe Erreichbar"             -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%001_R-%TT%%CC%00101" /><!-- Id="%AID%_O-%TT%%CC%001" Name="KOd%C%TriggerRequest"  Text="Abfrage ausführen"   Number="%K1%"  FunctionText="Gerät %C%, Auslöser Update"                -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%007_R-%TT%%CC%00701" /><!-- Id="%AID%_O-%TT%%CC%007" Name="KOd%C%Diagnose"        Text="Diagnose"            Number="%K7%"  FunctionText="Gerät %C%, Ausgabe Diagnose"               -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%006_R-%TT%%CC%00601" /><!-- Id="%AID%_O-%TT%%CC%006" Name="KOd%C%Error"           Text="Fehler"              Number="%K6%"  FunctionText="Gerät %C%, Ausgabe Fehler"                 -->
-                        <!-- generic with radio -->
-                        <ComObjectRefRef RefId="%AID%_O-%TT%%CC%011_R-%TT%%CC%01101" /><!-- Id="%AID%_O-%TT%%CC%011" Name="KOd%C%SignalQuality"   Text="Signal-Qualität"     Number="%K11%" FunctionText="Gerät %C%, Ausgabe Signal-Qualität"        -->
-                      </when>
+                    <choose ParamRefId="%AID%_P-%TT%%CC%009_R-%TT%%CC%00901">
 
 
                       <when test="1"><!-- HM-CC-RT-DN (Funk-Thermostat) -->
@@ -273,20 +296,18 @@
                       </when>
 
 
-                      <when test="!=0"><!-- ALLE Aktiven -->
-                        <!-- Group Selection -->
-                        <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
-
-                        <ParameterSeparator Id="%AID%_PS-nnn" Text="Zuordnung zu Aggregationsgruppen" UIHint="Headline" />
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%011_R-%TT%%CC%01101" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%012_R-%TT%%CC%01201" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%013_R-%TT%%CC%01301" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%014_R-%TT%%CC%01401" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%CC%015_R-%TT%%CC%01501" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
-                      </when>
-
-
                     </choose>
+
+                    <!-- ALLE Aktiven -->
+                    <!-- Group Selection -->
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="Zuordnung zu Aggregationsgruppen" UIHint="Headline" />
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%011_R-%TT%%CC%01101" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%012_R-%TT%%CC%01201" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%013_R-%TT%%CC%01301" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%014_R-%TT%%CC%01401" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%CC%015_R-%TT%%CC%01501" IndentLevel="1" HelpContext="HMG-Zuordnung-zu-Aggregationsgruppen" />
 
                   </ParameterBlock>
                 </when>

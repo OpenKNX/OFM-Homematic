@@ -34,27 +34,23 @@
 
               <!-- Device Table -->
               <ParameterBlock Id="%AID%_PB-%C%01" Name="DEVICE_TABLE" >
-                <choose ParamRefId="%AID%_UP-%TT%00001_R-%TT%0000101">
-                  <when test="&gt;=%D%">
-                    <!-- Name -->
-                    <ParameterRefRef RefId="%AID%_P-%TT%%DD%001_R-%TT%%DD%00101"  Cell="%D%,1" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
-                    <!-- Type -->
-                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%003_R-%TT%%DD%00301" Cell="%D%,2" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
-    
-                    <choose ParamRefId="%AID%_UP-%TT%%DD%003_R-%TT%%DD%00301">
-                      <when test="!=0">
-                        <!-- Temporary Disable -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%005_R-%TT%%DD%00501" Cell="%D%,3" /><!-- HelpContext="TODO" -->
-                        <!-- Serial -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%004_R-%TT%%DD%00401" Cell="%D%,4" /><!-- HelpContext="TODO" -->
-                        <!-- Group 1..5 -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%011_R-%TT%%DD%01101" Cell="%D%,5" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%012_R-%TT%%DD%01201" Cell="%D%,6" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%013_R-%TT%%DD%01301" Cell="%D%,7" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%014_R-%TT%%DD%01401" Cell="%D%,8" /><!-- HelpContext="TODO" -->
-                        <ParameterRefRef RefId="%AID%_UP-%TT%%DD%015_R-%TT%%DD%01501" Cell="%D%,9" /><!-- HelpContext="TODO" -->
-                      </when>
-                    </choose>
+                <!-- Name -->
+                <ParameterRefRef RefId="%AID%_P-%TT%%DD%001_R-%TT%%DD%00101"  Cell="%D%,1" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
+                <!-- Type -->
+                <ParameterRefRef RefId="%AID%_UP-%TT%%DD%003_R-%TT%%DD%00301" Cell="%D%,2" /><!-- HelpContext="DFA-Beschreibung-des-DEA"  -->
+
+                <choose ParamRefId="%AID%_UP-%TT%%DD%003_R-%TT%%DD%00301">
+                  <when test="!=0">
+                    <!-- Temporary Disable -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%005_R-%TT%%DD%00501" Cell="%D%,3" /><!-- HelpContext="TODO" -->
+                    <!-- Serial -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%004_R-%TT%%DD%00401" Cell="%D%,4" /><!-- HelpContext="TODO" -->
+                    <!-- Group 1..5 -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%011_R-%TT%%DD%01101" Cell="%D%,5" /><!-- HelpContext="TODO" -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%012_R-%TT%%DD%01201" Cell="%D%,6" /><!-- HelpContext="TODO" -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%013_R-%TT%%DD%01301" Cell="%D%,7" /><!-- HelpContext="TODO" -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%014_R-%TT%%DD%01401" Cell="%D%,8" /><!-- HelpContext="TODO" -->
+                    <ParameterRefRef RefId="%AID%_UP-%TT%%DD%015_R-%TT%%DD%01501" Cell="%D%,9" /><!-- HelpContext="TODO" -->
                   </when>
                 </choose>
 

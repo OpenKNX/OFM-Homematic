@@ -14,7 +14,7 @@ Spalten:
 
 * **Name**: Sprechende Bezeichnung für das Gerät. Wird nur in der ETS verwendet.
 * **Geräte-Typ**: Legt fest, ob das Gerät aktiv ist und wenn ja, um welchen Typ von Gerät es sich handelt.
-* **!**: Temporäres deaktivieren des Gerätes (unter beibehaltung aller Konfigurationswerte und GA-Verknüpfungen).
+* **!**: Gerät suspendiert (unter Beibehaltung aller Konfigurationswerte und GA-Verknüpfungen).
 * **Seriennr.**: Die Homematic-Seriennummer zur Identifikation des Gerätes.
 * **1** bis **5**: Zuordnung des Gerätes zur Aggregationsgruppe 1 bis 5.
 

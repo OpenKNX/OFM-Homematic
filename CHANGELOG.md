@@ -5,6 +5,9 @@
   * Note: Do NOT use device-scan of new ETS-app with old firmware
 * Fix: Show channel overview on Command `hmgXX`
 * Optimize: Reduce log level for response processing from Debug to Trace
+* OpenKNX Standardization of ETS-App:
+  * Adoption to new channel selection pattern, but individual different in overview page
+  * Use term suspended
 
 
 # v0.4.0-ALPHA 2026-03-20
